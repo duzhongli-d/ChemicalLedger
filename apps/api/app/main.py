@@ -1,0 +1,25 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from app.api.v1 import auth, ledgers, users, categories, notifications, research
+
+app = FastAPI(title="QC Platform API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
+app.include_router(ledgers.router, prefix="/api/v1/ledgers", tags=["ledgers"])
+app.include_router(users.router, prefix="/api/v1/users", tags=["users"])
+app.include_router(categories.router, prefix="/api/v1/categories", tags=["categories"])
+app.include_router(notifications.router, prefix="/api/v1/notifications", tags=["notifications"])
+app.include_router(research.router, prefix="/api/v1/research", tags=["research"])
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}

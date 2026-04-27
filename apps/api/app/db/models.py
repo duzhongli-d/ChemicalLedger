@@ -1,0 +1,124 @@
+import uuid as uuid_lib
+from datetime import datetime, timezone
+from sqlalchemy import Column, String, Integer, Boolean, Date, DateTime, ForeignKey, Text
+from sqlalchemy import Uuid
+from sqlalchemy.orm import relationship, declarative_base
+
+Base = declarative_base()
+
+
+class UserRole(str):
+    user = "user"
+    admin = "admin"
+
+
+class LedgerStatus(str):
+    active = "active"
+    archived = "archived"
+
+
+class NotificationType(str):
+    expiry_warning = "expiry_warning"
+    expiry_alert = "expiry_alert"
+    system = "system"
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Uuid, primary_key=True, default=uuid_lib.uuid4)
+    username = Column(String(50), unique=True, nullable=False)
+    email = Column(String(255), unique=True, nullable=False)
+    phone = Column(String(20), nullable=True)
+    password_hash = Column(String(255), nullable=False)
+    role = Column(String(20), default="user")
+    department = Column(String(100), nullable=True)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    last_login_at = Column(DateTime(timezone=True), nullable=True)
+
+    ledgers = relationship("Ledger", back_populates="creator", foreign_keys="Ledger.created_by_id")
+    notifications = relationship("Notification", back_populates="user")
+    notebooks = relationship("ResearchNotebook", back_populates="user")
+    daily_usages = relationship("DailyUsage", back_populates="user")
+
+
+class Category(Base):
+    __tablename__ = "categories"
+
+    id = Column(Uuid, primary_key=True, default=uuid_lib.uuid4)
+    level1 = Column(String(100), nullable=False)
+    level2 = Column(String(100), nullable=False)
+    warning_threshold_days = Column(Integer, default=30)
+    unopened_shelf_months = Column(Integer, nullable=False)
+    opened_shelf_months = Column(Integer, nullable=False)
+    remarks = Column(Text, nullable=True)
+
+    ledgers = relationship("Ledger", back_populates="category")
+
+
+class Ledger(Base):
+    __tablename__ = "ledgers"
+
+    id = Column(Uuid, primary_key=True, default=uuid_lib.uuid4)
+    internal_batch_no = Column(String(20), unique=True, nullable=False)
+    product_name = Column(String(255), nullable=False)
+    batch_no = Column(String(100), nullable=False)
+    cas_no = Column(String(50), nullable=False)
+    weight_capacity = Column(String(50), nullable=False)
+    supplier = Column(String(255), nullable=False)
+    quantity = Column(Integer, default=1)
+    category_id = Column(Uuid, ForeignKey("categories.id"), nullable=False)
+    cert_expiry_date = Column(Date, nullable=False)
+    open_date = Column(Date, nullable=True)
+    effective_expiry_date = Column(Date, nullable=False)
+    is_opened = Column(Boolean, default=False)
+    status = Column(String(20), default=LedgerStatus.active)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    created_by_id = Column(Uuid, ForeignKey("users.id"), nullable=False)
+    open_date_entered_by_id = Column(Uuid, ForeignKey("users.id"), nullable=True)
+    open_date_entered_at = Column(DateTime, nullable=True)
+    archived_at = Column(DateTime, nullable=True)
+    archived_by_id = Column(Uuid, ForeignKey("users.id"), nullable=True)
+    remarks = Column(Text, nullable=True)
+
+    category = relationship("Category", back_populates="ledgers")
+    creator = relationship("User", foreign_keys=[created_by_id], back_populates="ledgers")
+
+
+class Notification(Base):
+    __tablename__ = "notifications"
+
+    id = Column(Uuid, primary_key=True, default=uuid_lib.uuid4)
+    user_id = Column(Uuid, ForeignKey("users.id"), nullable=False)
+    type = Column(String(50), nullable=False)
+    title = Column(String(255), nullable=False)
+    content = Column(Text, nullable=False)
+    ledger_id = Column(Uuid, ForeignKey("ledgers.id"), nullable=True)
+    is_read = Column(Boolean, default=False)
+    sent_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+    user = relationship("User", back_populates="notifications")
+    ledger = relationship("Ledger")
+
+
+class ResearchNotebook(Base):
+    __tablename__ = "research_notebooks"
+
+    id = Column(Uuid, primary_key=True, default=uuid_lib.uuid4)
+    user_id = Column(Uuid, ForeignKey("users.id"), nullable=False)
+    notebook_id = Column(String(255), nullable=False)
+    name = Column(String(255), nullable=False)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+    user = relationship("User", back_populates="notebooks")
+
+
+class DailyUsage(Base):
+    __tablename__ = "daily_usages"
+
+    id = Column(Uuid, primary_key=True, default=uuid_lib.uuid4)
+    user_id = Column(Uuid, ForeignKey("users.id"), nullable=False)
+    date = Column(Date, nullable=False)
+    question_count = Column(Integer, default=0)
+
+    user = relationship("User", back_populates="daily_usages")

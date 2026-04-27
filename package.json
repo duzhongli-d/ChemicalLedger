@@ -1,0 +1,11 @@
+{
+  "name": "qc-platform",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "pnpm --parallel -r dev",
+    "build": "pnpm --parallel -r build",
+    "lint": "pnpm --parallel -r lint",
+    "test": "pnpm --parallel -r test"
+  }
+}
