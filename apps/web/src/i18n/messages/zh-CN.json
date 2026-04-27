@@ -1,0 +1,101 @@
+{
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "edit": "编辑",
+    "delete": "删除",
+    "search": "搜索",
+    "filter": "筛选",
+    "loading": "加载中...",
+    "noData": "暂无数据",
+    "confirm": "确认",
+    "back": "返回",
+    "next": "下一步",
+    "submit": "提交",
+    "required": "必填"
+  },
+  "nav": {
+    "ledgers": "台账管理",
+    "research": "深度调研",
+    "admin": "管理后台",
+    "profile": "个人中心",
+    "logout": "退出登录",
+    "login": "登录",
+    "register": "注册"
+  },
+  "auth": {
+    "login": "登录",
+    "register": "注册",
+    "username": "用户名",
+    "password": "密码",
+    "email": "邮箱",
+    "phone": "电话",
+    "loginTitle": "登录雅本化学QC平台",
+    "registerTitle": "注册账号",
+    "noAccount": "还没有账号？",
+    "hasAccount": "已有账号？"
+  },
+  "ledger": {
+    "create": "新建台账",
+    "createScan": "扫描创建",
+    "createManual": "手动创建",
+    "edit": "编辑台账",
+    "archive": "归档台账",
+    "confirmArchive": "确认归档此台账？",
+    "status": {
+      "active": "在用",
+      "archived": "已归档"
+    },
+    "fields": {
+      "internalBatchNo": "内部批号",
+      "productName": "品名",
+      "batchNo": "批号",
+      "casNo": "CAS号",
+      "weightCapacity": "重量/容量",
+      "supplier": "供应商",
+      "quantity": "数量",
+      "category": "品类",
+      "certExpiryDate": "证书有效期",
+      "openDate": "开封日期",
+      "effectiveExpiryDate": "有效截止日",
+      "isOpened": "已开封",
+      "remarks": "备注",
+      "createdBy": "创建人",
+      "createdAt": "创建时间"
+    },
+    "filter": {
+      "status": "状态",
+      "category": "品类",
+      "search": "搜索品名/批号/CAS号",
+      "all": "全部"
+    },
+    "enterOpenDate": "录入开封日期",
+    "openDatePlaceholder": "选择开封日期"
+  },
+  "research": {
+    "title": "QC深度调研",
+    "quota": "今日可用次数",
+    "notebooks": "笔记本列表",
+    "newNotebook": "新建笔记本",
+    "ask": "提问",
+    "placeholder": "输入您的问题..."
+  },
+  "admin": {
+    "users": "用户管理",
+    "categories": "品类管理",
+    "addUser": "添加用户",
+    "addCategory": "添加品类"
+  },
+  "dashboard": {
+    "title": "台账总览",
+    "totalLedgers": "台账总数",
+    "expiringSoon": "即将到期",
+    "activeLedgers": "在用台账",
+    "archivedLedgers": "已归档台账"
+  },
+  "notifications": {
+    "title": "通知",
+    "expiryWarning": "到期提醒",
+    "markRead": "标为已读"
+  }
+}

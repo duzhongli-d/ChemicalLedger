@@ -1,0 +1,10 @@
+Requirement already satisfied: Pillow in e:\tools\python\python313\lib\site-packages (12.1.0)
+Collecting pytesseract
+  Downloading pytesseract-0.3.13-py3-none-any.whl.metadata (11 kB)
+Requirement already satisfied: packaging>=21.3 in e:\tools\python\python313\lib\site-packages (from pytesseract) (24.2)
+Downloading pytesseract-0.3.13-py3-none-any.whl (14 kB)
+Installing collected packages: pytesseract
+Successfully installed pytesseract-0.3.13
+
+[notice] A new release of pip is available: 25.3 -> 26.1
+[notice] To update, run: python.exe -m pip install --upgrade pip

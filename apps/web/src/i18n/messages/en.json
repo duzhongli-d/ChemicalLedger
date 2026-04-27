@@ -1,0 +1,101 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "search": "Search",
+    "filter": "Filter",
+    "loading": "Loading...",
+    "noData": "No data",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "required": "Required"
+  },
+  "nav": {
+    "ledgers": "Ledger",
+    "research": "Research",
+    "admin": "Admin",
+    "profile": "Profile",
+    "logout": "Logout",
+    "login": "Login",
+    "register": "Register"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "username": "Username",
+    "password": "Password",
+    "email": "Email",
+    "phone": "Phone",
+    "loginTitle": "Login to Abachem QC Platform",
+    "registerTitle": "Create Account",
+    "noAccount": "No account yet?",
+    "hasAccount": "Already have an account?"
+  },
+  "ledger": {
+    "create": "New Ledger",
+    "createScan": "Scan Create",
+    "createManual": "Manual Create",
+    "edit": "Edit Ledger",
+    "archive": "Archive Ledger",
+    "confirmArchive": "Confirm archiving this ledger?",
+    "status": {
+      "active": "Active",
+      "archived": "Archived"
+    },
+    "fields": {
+      "internalBatchNo": "Internal Batch No.",
+      "productName": "Product Name",
+      "batchNo": "Batch No.",
+      "casNo": "CAS No.",
+      "weightCapacity": "Weight/Capacity",
+      "supplier": "Supplier",
+      "quantity": "Quantity",
+      "category": "Category",
+      "certExpiryDate": "Cert Expiry Date",
+      "openDate": "Open Date",
+      "effectiveExpiryDate": "Effective Expiry Date",
+      "isOpened": "Opened",
+      "remarks": "Remarks",
+      "createdBy": "Created By",
+      "createdAt": "Created At"
+    },
+    "filter": {
+      "status": "Status",
+      "category": "Category",
+      "search": "Search product/batch/CAS",
+      "all": "All"
+    },
+    "enterOpenDate": "Enter Open Date",
+    "openDatePlaceholder": "Select open date"
+  },
+  "research": {
+    "title": "QC Deep Research",
+    "quota": "Questions remaining today",
+    "notebooks": "Notebooks",
+    "newNotebook": "New Notebook",
+    "ask": "Ask",
+    "placeholder": "Ask a question..."
+  },
+  "admin": {
+    "users": "User Management",
+    "categories": "Category Management",
+    "addUser": "Add User",
+    "addCategory": "Add Category"
+  },
+  "dashboard": {
+    "title": "Ledger Dashboard",
+    "totalLedgers": "Total Ledgers",
+    "expiringSoon": "Expiring Soon",
+    "activeLedgers": "Active Ledgers",
+    "archivedLedgers": "Archived Ledgers"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "expiryWarning": "Expiry Warning",
+    "markRead": "Mark as Read"
+  }
+}
