@@ -40,7 +40,11 @@ export default function CreateLedgerPage() {
   }, {});
 
   const createMutation = useMutation({
-    mutationFn: () => ledgerApi.create({ ...form, quantity: Number(form.quantity) }),
+    mutationFn: () => {
+      const payload = { ...form, quantity: Number(form.quantity) };
+      if (!payload.open_date) delete payload.open_date;
+      return ledgerApi.create(payload);
+    },
     onSuccess: () => router.push("/"),
     onError: (err: unknown) => setError(err instanceof Error ? err.message : "创建失败"),
   });
