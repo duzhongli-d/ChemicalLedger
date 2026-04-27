@@ -71,7 +71,11 @@
       "all": "全部"
     },
     "enterOpenDate": "录入开封日期",
-    "openDatePlaceholder": "选择开封日期"
+    "openDatePlaceholder": "选择开封日期",
+    "back": "返回",
+    "cancel": "取消",
+    "confirm": "确认",
+    "loading": "加载中..."
   },
   "research": {
     "title": "QC深度调研",

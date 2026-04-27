@@ -71,7 +71,11 @@
       "all": "All"
     },
     "enterOpenDate": "Enter Open Date",
-    "openDatePlaceholder": "Select open date"
+    "openDatePlaceholder": "Select open date",
+    "back": "Back",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "loading": "Loading..."
   },
   "research": {
     "title": "QC Deep Research",
