@@ -25,14 +25,10 @@ export const useAuthStore = create<AuthState>()(
       user: null,
 
       setAuth: (token: string, user: User) => {
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user));
         set({ token, user });
       },
 
       logout: () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
         set({ token: null, user: null });
       },
 

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr
 from datetime import date, datetime
 from uuid import UUID
 from typing import Optional
@@ -25,8 +25,7 @@ class UserResponse(BaseModel):
     department: Optional[str]
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class CategoryCreate(BaseModel):
@@ -46,8 +45,7 @@ class CategoryResponse(BaseModel):
     unopened_shelf_months: int
     opened_shelf_months: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class LedgerCreate(BaseModel):
@@ -93,8 +91,7 @@ class LedgerResponse(BaseModel):
     created_by_id: UUID
     remarks: Optional[str]
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class TokenResponse(BaseModel):
@@ -112,8 +109,7 @@ class NotificationResponse(BaseModel):
     is_read: bool
     sent_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class QuotaResponse(BaseModel):

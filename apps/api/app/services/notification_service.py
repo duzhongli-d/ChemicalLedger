@@ -1,6 +1,7 @@
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from typing import Optional
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
+from sqlalchemy import and_
 from app.core.config import get_settings
 
 
@@ -79,34 +80,46 @@ def check_and_create_notifications(db: Session) -> dict:
 
     Returns summary dict: {"notified": N, "emails_sent": M, "skipped": K}
     """
-    from app.db.models import Ledger, Category, Notification, User
+    from app.db.models import Ledger, Category, Notification
 
     today = date.today()
-    ledgers = db.query(Ledger).filter(Ledger.status == "active").all()
+    # Use a generous window since we filter per-ledger by its own threshold below
+    warning_window = today + timedelta(days=30)
+    ledgers = (
+        db.query(Ledger)
+        .options(joinedload(Ledger.category), joinedload(Ledger.created_by))
+        .filter(Ledger.status == "active")
+        .filter(Ledger.effective_expiry_date <= warning_window)
+        .filter(Ledger.effective_expiry_date >= today)
+        .all()
+    )
 
     notified = 0
     emails_sent = 0
     skipped = 0
 
+    # Batch-fetch recent notifications for all ledger IDs to avoid N queries
+    ledger_ids = [l.id for l in ledgers]
+    recent_window = today - timedelta(days=3)
+    recent_notifs = (
+        db.query(Notification.ledger_id)
+        .filter(
+            Notification.ledger_id.in_(ledger_ids),
+            Notification.type.in_(["expiry_warning", "expiry_alert"]),
+            Notification.sent_at >= datetime.combine(recent_window, datetime.min.time()).replace(tzinfo=timezone.utc),
+        )
+        .all()
+    )
+    notified_ledger_ids = {row[0] for row in recent_notifs}
+
     for ledger in ledgers:
-        category = ledger.category
         days_left = (ledger.effective_expiry_date - today).days
 
-        if not (0 <= days_left <= category.warning_threshold_days):
+        if days_left < 0 or days_left > (ledger.category.warning_threshold_days if ledger.category else 30):
             continue
 
-        # Deduplication: don't spam if a recent notification exists (within 3 days)
-        recent_window = today - timedelta(days=3)
-        existing = (
-            db.query(Notification)
-            .filter(
-                Notification.ledger_id == ledger.id,
-                Notification.type.in_(["expiry_warning", "expiry_alert"]),
-                Notification.sent_at >= datetime.combine(recent_window, datetime.min.time()),
-            )
-            .first()
-        )
-        if existing:
+        # Deduplication using pre-fetched set
+        if ledger.id in notified_ledger_ids:
             skipped += 1
             continue
 
@@ -130,8 +143,8 @@ def check_and_create_notifications(db: Session) -> dict:
         db.add(notification)
         notified += 1
 
-        # Send email
-        user = db.query(User).filter(User.id == ledger.created_by_id).first()
+        # User already loaded via joinedload
+        user = ledger.created_by
         if user and user.email:
             sent = send_expiry_warning_email(
                 user_email=user.email,
