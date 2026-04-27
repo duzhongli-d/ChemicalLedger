@@ -60,6 +60,7 @@
       "effectiveExpiryDate": "Effective Expiry Date",
       "isOpened": "Opened",
       "remarks": "Remarks",
+      "status": "Status",
       "createdBy": "Created By",
       "createdAt": "Created At"
     },

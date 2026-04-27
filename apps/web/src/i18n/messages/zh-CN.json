@@ -60,6 +60,7 @@
       "effectiveExpiryDate": "有效截止日",
       "isOpened": "已开封",
       "remarks": "备注",
+      "status": "状态",
       "createdBy": "创建人",
       "createdAt": "创建时间"
     },
