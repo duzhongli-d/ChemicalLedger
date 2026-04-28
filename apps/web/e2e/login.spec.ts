@@ -5,10 +5,10 @@ test.describe("Login Journey", () => {
     await page.goto("/zh-CN/login");
 
     await page.locator('input[type="text"]').fill("testuser");
-    await page.locator('input[type="password"]').fill("testpassword");
+    await page.locator('input[type="password"]').fill(process.env.E2E_PASSWORD || "testpassword");
     await page.getByRole("button", { name: /登录/i }).click();
 
-    await expect(page).toHaveURL("/zh-CN/");
+    await expect(page).toHaveURL(/\/zh-CN\/$/);
     await expect(page.getByText(/Total Ledgers/i)).toBeVisible();
   });
 
@@ -20,6 +20,6 @@ test.describe("Login Journey", () => {
     await page.getByRole("button", { name: /登录/i }).click();
 
     await expect(page.getByText(/登录失败/i)).toBeVisible();
-    await expect(page).toHaveURL("/zh-CN/login");
+    await expect(page).toHaveURL(/\/zh-CN\/login/);
   });
 });

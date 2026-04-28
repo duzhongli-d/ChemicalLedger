@@ -35,26 +35,50 @@ function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
 export function TechMetrics() {
   const t = useTranslations("home");
   return (
-    <section className="py-24 bg-slate-900 text-white relative overflow-hidden">
+    <section
+      className="py-24 relative overflow-hidden"
+      style={{ background: 'var(--slate-900)' }}
+    >
       {/* Background glow effects */}
-      <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-[120px]"></div>
-      <div className="absolute top-1/2 right-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-[120px]"></div>
-
-      {/* Decorative circular gauges */}
-      <div className="absolute top-8 right-8 w-32 h-32 border-4 border-slate-700 rounded-full opacity-30"></div>
-      <div className="absolute bottom-8 left-8 w-24 h-24 border-4 border-slate-700 rounded-full opacity-30"></div>
+      <div
+        className="absolute top-1/2 left-1/4 w-96 h-96 rounded-full blur-[120px]"
+        style={{ background: 'var(--accent)', opacity: 0.1 }}
+      />
+      <div
+        className="absolute top-1/2 right-1/4 w-80 h-80 rounded-full blur-[120px]"
+        style={{ background: 'var(--primary)', opacity: 0.08 }}
+      />
 
       <div className="max-w-[1320px] mx-auto px-4 relative z-10">
-        <h2 className="text-2xl font-bold mb-4 text-center font-mono">{t("metrics.title")}</h2>
-        <p className="text-slate-400 text-center mb-12">{t("metrics.subtitle")}</p>
+        <h2
+          className="text-2xl font-bold mb-4 text-center"
+          style={{ fontFamily: "'Plus Jakarta Sans', monospace", color: 'var(--foreground)' }}
+        >
+          {t("metrics.title")}
+        </h2>
+        <p className="text-center mb-12" style={{ color: 'var(--muted-foreground)' }}>
+          {t("metrics.subtitle")}
+        </p>
 
         <div className="grid md:grid-cols-3 gap-8">
           {metrics.map((m, i) => (
-            <div key={m.key} className="glass rounded-2xl p-8 text-center relative">
-              <div className="text-5xl font-bold font-mono mb-2">
+            <div
+              key={m.key}
+              className="glass rounded-2xl p-8 text-center relative"
+              style={{ animationDelay: `${i * 100}ms` }}
+            >
+              <div
+                className="text-5xl font-bold mb-2"
+                style={{ fontFamily: "'Plus Jakarta Sans', monospace", color: 'var(--foreground)' }}
+              >
                 <AnimatedNumber value={m.value} suffix={m.suffix} />
               </div>
-              <div className="text-teal-400 font-mono text-sm">{t("metrics." + m.key + "Label")}</div>
+              <div
+                className="font-mono text-sm"
+                style={{ color: 'var(--accent)' }}
+              >
+                {t("metrics." + m.key + "Label")}
+              </div>
             </div>
           ))}
         </div>

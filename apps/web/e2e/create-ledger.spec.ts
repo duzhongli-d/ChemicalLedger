@@ -4,7 +4,7 @@ test.describe("Create Ledger Journey", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/zh-CN/login");
     await page.locator('input[type="text"]').fill(process.env.E2E_USERNAME || "admin");
-    await page.locator('input[type="password"]').fill(process.env.E2E_PASSWORD || "admin");
+    await page.locator('input[type="password"]').fill(process.env.E2E_PASSWORD || "testpassword");
     await page.getByRole("button", { name: /登录/i }).click();
     await page.goto("/zh-CN/ledger/create");
   });

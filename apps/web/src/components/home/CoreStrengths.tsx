@@ -31,32 +31,50 @@ const strengths = [
 export function CoreStrengths() {
   const t = useTranslations("home");
   return (
-    <section className="py-20 bg-slate-50 dark:bg-slate-900/50 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 bg-dot-grid opacity-30" />
-
+    <section
+      className="py-20 relative overflow-hidden"
+      style={{ background: 'var(--muted)' }}
+    >
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid md:grid-cols-3 gap-6">
-          {strengths.map((s) => (
+          {strengths.map((s, index) => (
             <div
               key={s.key}
-              className="glass rounded-2xl p-8 relative group overflow-hidden transition-all duration-300 hover:shadow-xl border border-border-accent"
+              className="glass rounded-2xl p-8 relative group overflow-hidden transition-all duration-300 hover-lift card-gradient-border"
+              style={{
+                animationDelay: `${index * 100}ms`,
+                animation: 'slide-up 0.6s ease-out forwards',
+                opacity: 0
+              }}
             >
-              {/* Metal shine effect */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
-
-              {/* Gradient border appears on hover */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-teal-500 via-blue-500 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" style={{ padding: '2px' }}>
-                <div className="w-full h-full bg-slate-50 dark:bg-slate-900 rounded-2xl" />
+              {/* Icon container with gradient */}
+              <div
+                className="w-16 h-16 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300"
+                style={{
+                  background: 'linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%)',
+                }}
+              >
+                <div className="text-white">{s.icon}</div>
               </div>
 
-              {/* Icon with gradient background */}
-              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 border border-teal-500/30">
-                <div className="text-teal-400">{s.icon}</div>
-              </div>
+              <h3
+                className="text-xl font-bold mb-2"
+                style={{
+                  fontFamily: "'DM Serif Display', serif",
+                  color: 'var(--foreground)'
+                }}
+              >
+                {t(`strengths.${s.key}`)}
+              </h3>
+              <p style={{ color: 'var(--muted-foreground)' }}>
+                {t(`strengths.${s.key}Desc`)}
+              </p>
 
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 font-mono">{t(`strengths.${s.key}`)}</h3>
-              <p className="text-gray-600 dark:text-slate-400">{t(`strengths.${s.key}Desc`)}</p>
+              {/* Hover glow effect */}
+              <div
+                className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-500 blur-2xl"
+                style={{ background: 'var(--accent)' }}
+              />
             </div>
           ))}
         </div>

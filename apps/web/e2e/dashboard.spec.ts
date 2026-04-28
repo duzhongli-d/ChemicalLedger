@@ -5,9 +5,9 @@ test.describe("Ledger Dashboard Journey", () => {
     // Authenticate before each test — login via UI
     await page.goto("/zh-CN/login");
     await page.locator('input[type="text"]').fill(process.env.E2E_USERNAME || "admin");
-    await page.locator('input[type="password"]').fill(process.env.E2E_PASSWORD || "admin");
+    await page.locator('input[type="password"]').fill(process.env.E2E_PASSWORD || "testpassword");
     await page.getByRole("button", { name: /登录/i }).click();
-    await expect(page).toHaveURL("/zh-CN/");
+    await expect(page).toHaveURL(/\/zh-CN\/$/);
   });
 
   test("should display ledger list with stats", async ({ page }) => {

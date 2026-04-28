@@ -116,7 +116,16 @@
     "sloganZh": "精准驱动，智领未来",
     "hero": {
       "title": "Abachem QC Technology Platform",
-      "subtitle": "Integrating chemical rigor with digital intelligence for next-gen QC laboratory management"
+      "subtitle": "Integrating chemical rigor with digital intelligence for next-gen QC laboratory management",
+      "badge": "GMP/ISO Certified",
+      "cta1": "Get Started",
+      "cta2": "Learn More",
+      "chartTitle": "Detection Trends",
+      "chartBadge": "Live",
+      "stat1": "Efficiency Gain",
+      "stat2": "Accuracy Rate",
+      "badge1": "Data Visualization",
+      "badge2": "Smart Alerts"
     },
     "strengths": {
       "compliance": "Compliance System",
@@ -142,7 +151,8 @@
       "polarimeter": { "use": "Optical Rotation", "application": "Chiral Analysis" },
       "gc": { "use": "Volatility Analysis", "application": "Residual Analysis" },
       "tlc": { "use": "Qualitative Identification", "application": "Rapid Detection" },
-      "ea": { "use": "C/H/N/S Analysis", "application": "Composition Analysis" }
+      "ea": { "use": "C/H/N/S Analysis", "application": "Composition Analysis" },
+      "viewDetails": "View Details →"
     },
     "metrics": {
       "title": "Technical Capabilities",

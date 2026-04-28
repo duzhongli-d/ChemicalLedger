@@ -17,33 +17,35 @@ export function Header() {
   const { theme, setTheme } = useTheme();
   const [isHidden, setIsHidden] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const navLinks = [
-    { href: "/ledgers", label: t("ledgers") },
+    { href: "/", label: t("home") },
+    { href: "/#capabilities", label: t("tech") },
+    { href: "/ledgers", label: t("aiAssistant") },
+    { href: "/research", label: t("deepResearch") },
+    { href: "/#about", label: t("about") },
     ...(isAuthenticated() ? [
       { href: "/notifications", label: t("notifications") || "通知" },
-      { href: "/research", label: t("research") },
+      { href: "/admin/users", label: t("admin") },
     ] : []),
-    ...(isAdmin() ? [{ href: "/admin/users", label: t("admin") }] : []),
+    ...(isAdmin() && isAuthenticated() ? [] : []),
   ];
+
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
-      // Always show header at top of page
       if (currentScrollY < 50) {
         setIsHidden(false);
-      }
-      // Hide when scrolling down past 100px
-      else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
         setIsHidden(true);
-      }
-      // Show when scrolling up
-      else if (currentScrollY < lastScrollY) {
+      } else if (currentScrollY < lastScrollY) {
         setIsHidden(false);
       }
-
       setLastScrollY(currentScrollY);
     };
 
@@ -52,53 +54,129 @@ export function Header() {
   }, [lastScrollY]);
 
   return (
-<header className={clsx(
-    "sticky top-0 z-50 transition-transform duration-300 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700 shadow-sm",
-    isHidden ? "-translate-y-full" : "translate-y-0"
-  )}>
-      <div className="max-w-[1320px] mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+    <header
+      className={clsx(
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+        isHidden ? "-translate-y-full" : "translate-y-0",
+        isLoaded ? "opacity-100" : "opacity-0"
+      )}
+      style={{
+        background: 'var(--nav-background)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        borderBottom: '1px solid var(--nav-border)',
+      }}
+    >
+      {/* Accent line top */}
+      <div
+        className="absolute top-0 left-0 right-0 h-px"
+        style={{
+          background: `linear-gradient(to right, transparent, var(--accent), transparent)`
+        }}
+      />
+
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 text-xl font-bold text-blue-700 dark:text-blue-400">
-            <svg className="w-8 h-8" viewBox="0 0 32 32" fill="none">
-              <rect width="32" height="32" rx="6" fill="currentColor" />
-              <path d="M8 16h16M16 8v16" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
-            </svg>
-            {t("brand")}
+          <Link
+            href="/"
+            className="group flex items-center gap-3 transition-all duration-300 hover:scale-[1.02]"
+          >
+            <div className="relative">
+              <div
+                className="absolute inset-0 rounded-lg blur-xl transition-all duration-300"
+                style={{ background: 'var(--accent)', opacity: 0.3 }}
+              />
+              <div
+                className="relative w-10 h-10 rounded-lg flex items-center justify-center shadow-lg"
+                style={{
+                  background: `linear-gradient(135deg, var(--accent) 0%, var(--teal-600) 100%)`
+                }}
+              >
+                <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2v-4M9 21H5a2 2 0 01-2-2v-4m0-6v6" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <span
+                className="text-lg font-bold tracking-tight"
+                style={{ color: 'var(--foreground)' }}
+              >
+                雅本化学 <span style={{ color: 'var(--accent)' }}>QC</span>
+              </span>
+              <span
+                className="text-[10px] uppercase tracking-[0.2em] font-medium"
+                style={{ color: 'var(--muted-foreground)' }}
+              >
+                Quality Control
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-6">
-            {navLinks.map((link) => (
+          <nav className="hidden lg:flex items-center gap-1">
+            {navLinks.map((link, index) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className={clsx(
-                  "text-sm font-medium transition-colors",
+                  "group relative px-4 py-2 text-sm font-medium transition-all duration-300",
+                  "hover:opacity-80",
                   pathname === link.href
-                    ? "text-blue-700 dark:text-blue-400 border-b-2 border-blue-700 dark:border-blue-400 pb-1"
-                    : "text-gray-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-300"
+                    ? ""
+                    : ""
                 )}
+                style={{ animationDelay: `${index * 50}ms` }}
               >
-                {link.label}
+                <span
+                  className="relative z-10 transition-colors"
+                  style={{
+                    color: pathname === link.href ? 'var(--accent)' : 'var(--foreground)'
+                  }}
+                >
+                  {link.label}
+                </span>
+                {/* Animated underline */}
+                <span
+                  className={clsx(
+                    "absolute bottom-0 left-4 right-4 h-0.5 rounded-full",
+                    "transform origin-left transition-transform duration-300"
+                  )}
+                  style={{
+                    background: 'var(--accent)',
+                    transform: pathname === link.href ? 'scaleX(1)' : 'scaleX(0)'
+                  }}
+                />
+                {/* Glow effect on active */}
+                {pathname === link.href && (
+                  <span
+                    className="absolute inset-0 rounded-lg blur-sm"
+                    style={{ background: 'var(--accent)', opacity: 0.1 }}
+                  />
+                )}
               </Link>
             ))}
           </nav>
 
           {/* Right side */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {/* Theme toggle */}
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors border border-slate-300 dark:border-slate-600"
+              className="p-2.5 rounded-lg transition-all duration-300 hover-lift"
+              style={{
+                background: 'var(--card)',
+                border: '1px solid var(--border)'
+              }}
               aria-label="Toggle theme"
             >
               {theme === "dark" ? (
-                <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: '#fbbf24' }}>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               ) : (
-                <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: 'var(--muted-foreground)' }}>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                 </svg>
               )}
@@ -111,32 +189,78 @@ export function Header() {
               <div className="relative">
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
-                  className="flex items-center gap-2 text-sm text-gray-700 dark:text-slate-200 hover:text-blue-700 dark:hover:text-blue-400"
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-lg transition-all duration-300"
+                  style={{
+                    background: 'var(--accent)',
+                    opacity: 0.1
+                  }}
                 >
-                  <span className="w-8 h-8 rounded-full bg-blue-700 dark:bg-blue-600 text-white flex items-center justify-center font-medium">
+                  <span
+                    className="w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm text-white shadow-lg"
+                    style={{
+                      background: `linear-gradient(135deg, var(--accent) 0%, var(--teal-600) 100%)`
+                    }}
+                  >
                     {user?.username?.charAt(0).toUpperCase()}
                   </span>
-                  <span className="hidden md:inline">{user?.username}</span>
+                  <span
+                    className="hidden md:inline text-sm font-medium"
+                    style={{ color: 'var(--foreground)' }}
+                  >
+                    {user?.username}
+                  </span>
+                  <svg
+                    className={clsx("w-4 h-4 transition-transform duration-200", menuOpen && "rotate-180")}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    style={{ color: 'var(--muted-foreground)' }}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
                 </button>
                 {menuOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-lg z-50">
-                    <div className="px-4 py-2 border-b border-gray-100 dark:border-slate-700">
-                      <p className="text-sm font-medium">{user?.username}</p>
-                      <p className="text-xs text-gray-500 dark:text-slate-400">{user?.role === "admin" ? "管理员" : "用户"}</p>
+                  <div
+                    className="absolute right-0 top-full mt-2 w-56 rounded-xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200"
+                    style={{
+                      background: 'var(--card)',
+                      backdropFilter: 'blur(16px)',
+                      border: '1px solid var(--border)'
+                    }}
+                  >
+                    <div
+                      className="px-4 py-3"
+                      style={{
+                        background: `linear-gradient(to right, var(--accent), transparent)`,
+                        opacity: 0.1
+                      }}
+                    >
+                      <p className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>{user?.username}</p>
+                      <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>{user?.role === "admin" ? "管理员 Admin" : "用户 User"}</p>
                     </div>
-                    <Link
-                      href="/profile"
-                      className="block px-4 py-2 text-sm text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-700"
-                      onClick={() => setMenuOpen(false)}
-                    >
-                      {t("profile")}
-                    </Link>
-                    <button
-                      onClick={() => { logout(); setMenuOpen(false); }}
-                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50 dark:hover:bg-slate-700"
-                    >
-                      {t("logout")}
-                    </button>
+                    <div className="py-2">
+                      <Link
+                        href="/profile"
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors"
+                        style={{ color: 'var(--foreground)' }}
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        {t("profile")}
+                      </Link>
+                      <button
+                        onClick={() => { logout(); setMenuOpen(false); }}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors"
+                        style={{ color: 'var(--error)' }}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        {t("logout")}
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -144,13 +268,18 @@ export function Header() {
               <div className="flex items-center gap-2">
                 <Link
                   href="/login"
-                  className="text-sm font-medium text-gray-600 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400"
+                  className="px-4 py-2 text-sm font-medium transition-colors"
+                  style={{ color: 'var(--foreground)' }}
                 >
                   {t("login")}
                 </Link>
                 <Link
                   href="/register"
-                  className="text-sm font-medium bg-blue-700 dark:bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800 dark:hover:bg-blue-700 transition-colors"
+                  className="px-5 py-2 text-sm font-semibold rounded-lg transition-all duration-300 hover-lift shadow-lg"
+                  style={{
+                    background: `linear-gradient(135deg, var(--accent) 0%, var(--teal-600) 100%)`,
+                    color: 'white'
+                  }}
                 >
                   {t("register")}
                 </Link>
@@ -159,6 +288,14 @@ export function Header() {
           </div>
         </div>
       </div>
+
+      {/* Accent line bottom */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-px"
+        style={{
+          background: `linear-gradient(to right, transparent, var(--border-accent), transparent)`
+        }}
+      />
     </header>
   );
 }

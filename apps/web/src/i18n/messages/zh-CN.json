@@ -116,7 +116,16 @@
     "sloganZh": "精准驱动，智领未来",
     "hero": {
       "title": "雅本化学QC技术服务平台",
-      "subtitle": "融合化学严谨与数字智能，打造QC实验室一体化管理新范式"
+      "subtitle": "融合化学严谨与数字智能，打造QC实验室一体化管理新范式",
+      "badge": "GMP/ISO 双体系认证",
+      "cta1": "开始使用",
+      "cta2": "了解更多",
+      "chartTitle": "检测趋势",
+      "chartBadge": "实时",
+      "stat1": "效率提升",
+      "stat2": "检测准确率",
+      "badge1": "数据可视化",
+      "badge2": "智能预警"
     },
     "strengths": {
       "compliance": "合规体系",
@@ -142,7 +151,8 @@
       "polarimeter": { "use": "旋光度测定", "application": "手性分析" },
       "gc": { "use": "挥发性分析", "application": "残留分析" },
       "tlc": { "use": "定性鉴别", "application": "快速检测" },
-      "ea": { "use": "C/H/N/S分析", "application": "组成分析" }
+      "ea": { "use": "C/H/N/S分析", "application": "组成分析" },
+      "viewDetails": "查看详情 →"
     },
     "metrics": {
       "title": "技术实力",

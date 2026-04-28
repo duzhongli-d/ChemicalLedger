@@ -28,47 +28,79 @@ const instruments: Instrument[] = [
 
 function InstrumentCard({ inst, t }: { inst: Instrument; t: ReturnType<typeof useTranslations> }) {
   return (
-    <div className="flex-shrink-0 w-[280px] h-[180px] relative rounded-2xl overflow-hidden group transition-all duration-500 hover:scale-105 mx-3"
+    <div
+      className="flex-shrink-0 w-[280px] h-[180px] relative rounded-2xl overflow-hidden group transition-all duration-300 mx-3 hover-lift"
       style={{ perspective: "1000px" }}
     >
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-800 via-slate-900 to-slate-800"></div>
-
-      {/* Grid pattern overlay */}
-      <div className="absolute inset-0 opacity-15" style={{
-        backgroundImage: 'linear-gradient(rgba(20, 184, 166, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(20, 184, 166, 0.3) 1px, transparent 1px)',
-        backgroundSize: '24px 24px'
-      }}></div>
-
-      {/* Glow effect */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+      <div
+        className="absolute inset-0"
         style={{
-          background: 'radial-gradient(ellipse at center, rgba(20, 184, 166, 0.15) 0%, transparent 70%)'
+          background: `linear-gradient(135deg, var(--card) 0%, var(--muted) 100%)`
         }}
-      ></div>
+      />
 
-      {/* Content */}
+      {/* Subtle glow on hover */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{
+          background: `radial-gradient(ellipse at center, var(--accent) 0%, transparent 70%)`,
+          opacity: 0.08
+        }}
+      />
+
+      {/* Default state: name + model only */}
       <div className="relative z-10 p-5 h-full flex flex-col justify-between">
         <div>
-          <div className="text-2xl font-bold text-white mb-1 tracking-wide font-mono">{inst.name}</div>
-          <div className="text-teal-400 font-mono text-[11px] opacity-80">{inst.model}</div>
+          <div
+            className="text-2xl font-bold mb-1 tracking-wide"
+            style={{ fontFamily: "'Plus Jakarta Sans', monospace", color: 'var(--foreground)' }}
+          >
+            {inst.name}
+          </div>
+          <div
+            className="font-mono text-[11px] opacity-80"
+            style={{ color: 'var(--accent)' }}
+          >
+            {inst.model}
+          </div>
         </div>
-        <div className="space-y-1">
-          <div className="text-white/70 text-xs leading-relaxed">{t("instruments." + inst.useKey)}</div>
-          <div className="text-teal-400/60 text-[10px]">{t("instruments." + inst.appKey)}</div>
-        </div>
+        {/* Bottom accent line */}
+        <div
+          className="h-[2px]"
+          style={{
+            background: `linear-gradient(90deg, transparent, var(--accent), transparent)`
+          }}
+        />
       </div>
 
-      {/* Bottom accent line */}
-      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-teal-500/50 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-
-      {/* Hover overlay */}
-      <div className="absolute inset-0 bg-slate-900/95 opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-xl flex flex-col items-center justify-center p-6 text-center backdrop-blur-sm">
-        <div className="text-3xl font-bold text-white mb-2 font-mono">{inst.name}</div>
-        <div className="text-teal-400 font-mono text-xs mb-4">{inst.model}</div>
-        <div className="w-10 h-[2px] bg-gradient-to-r from-teal-500 to-transparent mb-4"></div>
-        <div className="text-white/80 text-sm mb-1">{t("instruments." + inst.useKey)}</div>
-        <div className="text-teal-400 text-xs">{t("instruments." + inst.appKey)}</div>
+      {/* Hover overlay - clean fade without movement */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl flex flex-col items-center justify-center p-6 text-center"
+        style={{
+          background: 'var(--card)',
+          backdropFilter: 'blur(16px)'
+        }}
+      >
+        <div
+          className="text-2xl font-bold mb-1"
+          style={{ fontFamily: "'Plus Jakarta Sans', monospace", color: 'var(--foreground)' }}
+        >
+          {inst.name}
+        </div>
+        <div
+          className="font-mono text-[11px] mb-3"
+          style={{ color: 'var(--accent)' }}
+        >
+          {inst.model}
+        </div>
+        <div className="w-10 h-[2px] mb-3" style={{ background: 'var(--accent)' }} />
+        <div className="text-sm mb-1" style={{ color: 'var(--foreground)' }}>
+          {t("instruments." + inst.useKey)}
+        </div>
+        <div className="text-xs" style={{ color: 'var(--muted-foreground)' }}>
+          {t("instruments." + inst.appKey)}
+        </div>
       </div>
     </div>
   );
@@ -81,22 +113,37 @@ export function InstrumentGallery() {
   const duplicatedInstruments = [...instruments, ...instruments];
 
   return (
-    <section className="py-20 bg-slate-900 relative overflow-hidden">
+    <section
+      className="py-20 relative overflow-hidden"
+      style={{ background: 'var(--background)' }}
+    >
       {/* Background glow effects */}
-      <div className="absolute inset-0 opacity-30"
+      <div
+        className="absolute inset-0 opacity-30"
         style={{
-          background: 'radial-gradient(ellipse at 30% 50%, rgba(20, 184, 166, 0.08) 0%, transparent 50%), radial-gradient(ellipse at 70% 50%, rgba(59, 130, 246, 0.06) 0%, transparent 50%)'
+          background: `radial-gradient(ellipse at 30% 50%, var(--accent) 0%, transparent 50%), radial-gradient(ellipse at 70% 50%, var(--primary) 0%, transparent 50%)`,
+          opacity: 0.08
         }}
-      ></div>
+      />
 
       <div className="max-w-[1400px] mx-auto px-4 relative z-10">
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold text-white font-mono tracking-wide">
+          <h2
+            className="text-2xl font-bold"
+            style={{
+              fontFamily: "'DM Serif Display', serif",
+              color: 'var(--foreground)'
+            }}
+          >
             {t("instruments.title")}
           </h2>
-          <Link href="/ledgers" className="inline-flex items-center gap-2 text-teal-400 hover:text-teal-300 text-sm font-medium transition-colors">
+          <Link
+            href="/ledgers"
+            className="inline-flex items-center gap-2 text-sm font-medium transition-colors hover-lift"
+            style={{ color: 'var(--accent)' }}
+          >
             {t("instruments.viewAll")}
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </Link>
@@ -105,15 +152,23 @@ export function InstrumentGallery() {
         {/* Infinite scroll container */}
         <div className="relative overflow-hidden group">
           {/* Fade edges */}
-          <div className="absolute left-0 top-0 bottom-0 w-20 z-20 bg-gradient-to-r from-slate-900 to-transparent pointer-events-none"></div>
-          <div className="absolute right-0 top-0 bottom-0 w-20 z-20 bg-gradient-to-l from-slate-900 to-transparent pointer-events-none"></div>
+          <div
+            className="absolute left-0 top-0 bottom-0 w-20 z-20 pointer-events-none"
+            style={{
+              background: `linear-gradient(to right, var(--background), transparent)`
+            }}
+          />
+          <div
+            className="absolute right-0 top-0 bottom-0 w-20 z-20 pointer-events-none"
+            style={{
+              background: `linear-gradient(to left, var(--background), transparent)`
+            }}
+          />
 
           {/* Scrolling track */}
           <div
             className="flex animate-scroll"
-            style={{
-              width: 'fit-content',
-            }}
+            style={{ width: 'fit-content' }}
           >
             {duplicatedInstruments.map((inst, idx) => (
               <InstrumentCard key={`${inst.name}-${idx}`} inst={inst} t={t} />

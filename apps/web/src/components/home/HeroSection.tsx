@@ -1,169 +1,217 @@
 "use client";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 export function HeroSection() {
   const t = useTranslations("home");
 
   return (
-    <section className="relative min-h-[600px] overflow-hidden bg-slate-900 text-white">
-      {/* Dot grid background */}
-      <div className="absolute inset-0 bg-dot-grid opacity-50"></div>
-
-      {/* Data flow background - animated horizontal lines */}
-      <div className="absolute inset-0 overflow-hidden">
-        {[...Array(5)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute h-px bg-gradient-to-r from-transparent via-primary-500/40 to-transparent"
-            style={{
-              top: `${20 + i * 15}%`,
-              width: "200%",
-              left: "-100%",
-              animation: `flow-data ${3 + i * 0.5}s linear infinite`,
-              animationDelay: `${i * 0.3}s`,
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Chromatogram peak SVG */}
-      <div className="absolute left-1/3 top-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-64 opacity-20">
-        <svg viewBox="0 0 400 200" className="w-full h-full">
-          <defs>
-            <linearGradient id="peakGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="rgba(11,130,232,0.8)" />
-              <stop offset="100%" stopColor="rgba(11,130,232,0)" />
-            </linearGradient>
-          </defs>
-          {/* Gaussian-like chromatogram peak */}
-          <path
-            d="M 50 200 Q 100 200 120 180 Q 140 100 160 20 Q 180 100 200 180 Q 220 200 270 200 L 270 200 L 50 200 Z"
-            fill="url(#peakGradient)"
-            className="animate-pulse-node"
-          />
-          {/* Peak line */}
-          <path
-            d="M 50 200 Q 100 200 120 180 Q 140 100 160 20 Q 180 100 200 180 Q 220 200 270 200"
-            fill="none"
-            stroke="rgba(11,130,232,0.6)"
-            strokeWidth="2"
-            className="animate-draw-line"
-          />
-        </svg>
-      </div>
-
-      {/* Decorative glow */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-teal-500/20 rounded-full blur-[120px]"></div>
+    <section className="relative min-h-[650px] overflow-hidden" style={{ background: 'var(--hero-background)' }}>
+      {/* Gradient overlay */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(135deg, var(--hero-gradient-start) 0%, var(--hero-gradient-end) 100%)`
+        }}
+      />
 
       <div className="max-w-[1320px] mx-auto px-4 relative z-10">
-        <div className="grid lg:grid-cols-5 gap-8 items-center min-h-[600px]">
-          {/* Left - Chromatogram animation (2/5 width) */}
-          <div className="lg:col-span-2 flex items-center justify-center">
-            <svg
-              viewBox="0 0 300 300"
-              className="w-full max-w-[300px] h-auto"
-              aria-hidden="true"
-            >
-              {/* Chromatogram baseline */}
-              <line x1="30" y1="250" x2="270" y2="250" stroke="rgba(11,130,232,0.3)" strokeWidth="1" />
-
-              {/* Grid lines */}
-              {[50, 100, 150, 200].map((y) => (
-                <line key={y} x1="30" y1={y} x2="270" y2={y} stroke="rgba(11,130,232,0.1)" strokeWidth="0.5" strokeDasharray="4 4" />
-              ))}
-
-              {/* Chromatogram peaks */}
-              <path
-                d="M 40 250 Q 60 250 70 240 Q 80 200 90 250"
-                fill="none"
-                stroke="rgba(11,130,232,0.5)"
-                strokeWidth="2"
-                className="animate-draw-line"
-              />
-              <path
-                d="M 100 250 Q 120 250 130 230 Q 140 150 150 250"
-                fill="none"
-                stroke="rgba(11,130,232,0.6)"
-                strokeWidth="2"
-                className="animate-draw-line"
-                style={{ animationDelay: '200ms' }}
-              />
-              <path
-                d="M 160 250 Q 180 250 190 200 Q 200 80 210 250"
-                fill="none"
-                stroke="rgba(11,130,232,0.8)"
-                strokeWidth="3"
-                className="animate-pulse-node"
-                style={{ animationDelay: '400ms' }}
-              />
-              <path
-                d="M 220 250 Q 240 250 250 220 Q 260 180 270 250"
-                fill="none"
-                stroke="rgba(11,130,232,0.5)"
-                strokeWidth="2"
-                className="animate-draw-line"
-                style={{ animationDelay: '600ms' }}
-              />
-
-              {/* Data point nodes */}
-              <circle cx="90" cy="250" r="4" className="fill-primary-500 animate-pulse-node" style={{ animationDelay: '100ms' }} />
-              <circle cx="150" cy="250" r="5" className="fill-primary-500 animate-pulse-node" style={{ animationDelay: '300ms' }} />
-              <circle cx="210" cy="80" r="6" className="fill-teal-400 animate-pulse-node" style={{ animationDelay: '500ms' }} />
-              <circle cx="270" cy="250" r="4" className="fill-primary-500 animate-pulse-node" style={{ animationDelay: '700ms' }} />
-
-              {/* Center highlight */}
-              <circle cx="210" cy="80" r="20" className="fill-none stroke-teal-300/40" strokeWidth="2">
-                <animate attributeName="r" values="20;30;20" dur="3s" repeatCount="indefinite" />
-                <animate attributeName="opacity" values="0.6;0.2;0.6" dur="3s" repeatCount="indefinite" />
-              </circle>
-            </svg>
-          </div>
-
-          {/* Right - Text content (3/5 width) */}
+        <div className="grid lg:grid-cols-5 gap-8 items-center min-h-[650px] py-12">
+          {/* Left - Text content (3/5 width) */}
           <div className="lg:col-span-3 space-y-6">
+            {/* Badge */}
+            <div
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium animate-fade-in"
+              style={{
+                background: 'var(--card)',
+                border: '1px solid var(--border-accent)',
+                color: 'var(--accent)'
+              }}
+            >
+              <span className="w-2 h-2 rounded-full animate-pulse-node" style={{ background: 'var(--accent)' }} />
+              {t("hero.badge")}
+            </div>
+
+            {/* Main headline */}
             <h1
-              className="text-4xl md:text-5xl lg:text-6xl font-bold animate-slide-up leading-tight"
-              style={{ animationDelay: '0ms' }}
+              className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight animate-slide-up stagger-1"
+              style={{ fontFamily: "'DM Serif Display', serif", color: 'var(--foreground)' }}
             >
               {t("hero.title")}
             </h1>
+
+            {/* Slogan */}
             <p
-              className="text-xl md:text-2xl text-teal-400 font-mono animate-slide-up"
-              style={{ animationDelay: '150ms' }}
+              className="text-xl md:text-2xl font-semibold animate-slide-up stagger-2"
+              style={{ color: 'var(--accent)', fontFamily: "'Plus Jakarta Sans', monospace" }}
             >
               {t("slogan")}
             </p>
+
+            {/* Chinese slogan */}
             <p
-              className="text-lg text-slate-400 animate-slide-up"
-              style={{ animationDelay: '300ms' }}
+              className="text-lg animate-slide-up stagger-3"
+              style={{ color: 'var(--secondary)' }}
             >
               {t("sloganZh")}
             </p>
+
+            {/* Description */}
             <p
-              className="text-base md:text-lg text-slate-300 max-w-2xl animate-slide-up"
-              style={{ animationDelay: '450ms' }}
+              className="text-base md:text-lg max-w-2xl animate-slide-up stagger-4"
+              style={{ color: 'var(--muted-foreground)' }}
             >
               {t("hero.subtitle")}
             </p>
 
-            {/* Bottom metrics bar */}
-            <div className="flex flex-wrap gap-8 pt-8 border-t border-slate-700/50 mt-8 animate-slide-up" style={{ animationDelay: '600ms' }}>
+            {/* CTA Buttons */}
+            <div className="flex flex-wrap gap-4 pt-4 animate-slide-up stagger-5">
+              <Link
+                href="/ledgers"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 hover-lift glow-hover"
+                style={{ background: 'var(--accent)' }}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                {t("hero.cta1")}
+              </Link>
+              <Link
+                href="/research"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover-lift"
+                style={{
+                  background: 'var(--card)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--foreground)'
+                }}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                {t("hero.cta2")}
+              </Link>
+            </div>
+
+            {/* Metrics bar */}
+            <div
+              className="flex flex-wrap gap-8 pt-8 mt-4 animate-slide-up stagger-6"
+              style={{ borderTop: '1px solid var(--border)' }}
+            >
               <div className="space-y-1">
-                <p className="text-3xl md:text-4xl font-mono font-bold text-teal-400">12,580+</p>
-                <p className="text-sm text-slate-400">{t("metrics.samples")}</p>
+                <p className="text-3xl md:text-4xl font-bold" style={{ fontFamily: "'Plus Jakarta Sans', monospace", color: 'var(--accent)' }}>
+                  12,580+
+                </p>
+                <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>{t("metrics.samples")}</p>
               </div>
               <div className="space-y-1">
-                <p className="text-3xl md:text-4xl font-mono font-bold text-teal-400">156</p>
-                <p className="text-sm text-slate-400">{t("metrics.methods")}</p>
+                <p className="text-3xl md:text-4xl font-bold" style={{ fontFamily: "'Plus Jakarta Sans', monospace", color: 'var(--accent)' }}>
+                  156
+                </p>
+                <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>{t("metrics.methods")}</p>
               </div>
               <div className="space-y-1">
-                <p className="text-3xl md:text-4xl font-mono font-bold text-teal-400">99.8%</p>
-                <p className="text-sm text-slate-400">{t("metrics.auditRate")}</p>
+                <p className="text-3xl md:text-4xl font-bold" style={{ fontFamily: "'Plus Jakarta Sans', monospace", color: 'var(--accent)' }}>
+                  99.8%
+                </p>
+                <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>{t("metrics.auditRate")}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Right - Animated visualization (2/5 width) */}
+          <div className="lg:col-span-2 flex items-center justify-center">
+            <div className="relative w-full max-w-[320px] animate-float">
+              {/* Outer ring */}
+              <div
+                className="absolute inset-0 rounded-full animate-spin-slow opacity-20"
+                style={{ border: '2px solid var(--accent)', borderStyle: 'dashed' }}
+              />
+
+              {/* Main card */}
+              <div
+                className="relative rounded-2xl p-6 glass hover-lift"
+                style={{ backdropFilter: 'blur(16px)' }}
+              >
+                {/* Hexagon grid pattern */}
+                <div className="absolute inset-0 rounded-2xl opacity-10" style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 2 L35 12 L35 28 L20 38 L5 28 L5 12 Z' fill='none' stroke='%230d9488' stroke-width='1'/%3E%3C/svg%3E")`,
+                  backgroundSize: '40px 40px'
+                }} />
+
+                <div className="relative z-10">
+                  {/* Chart title */}
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>
+                      {t("hero.chartTitle")}
+                    </h3>
+                    <span
+                      className="text-xs px-2 py-1 rounded-full"
+                      style={{ background: 'var(--accent)', color: 'white' }}
+                    >
+                      {t("hero.chartBadge")}
+                    </span>
+                  </div>
+
+                  {/* Mini chart bars */}
+                  <div className="flex items-end gap-2 h-24 mb-4">
+                    {[65, 85, 45, 90, 70, 95, 55, 80, 60, 88].map((h, i) => (
+                      <div
+                        key={i}
+                        className="flex-1 rounded-t-sm transition-all duration-300"
+                        style={{
+                          height: `${h}%`,
+                          background: `linear-gradient(180deg, var(--accent) 0%, var(--primary) 100%)`,
+                          opacity: 0.7 + (i % 3) * 0.1,
+                          animation: `slide-up 0.5s ease-out forwards`,
+                          animationDelay: `${i * 50}ms`
+                        }}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Stats row */}
+                  <div className="grid grid-cols-2 gap-4 pt-4" style={{ borderTop: '1px solid var(--border)' }}>
+                    <div>
+                      <p className="text-2xl font-bold" style={{ color: 'var(--accent)' }}>↑ 23%</p>
+                      <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>{t("hero.stat1")}</p>
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold" style={{ color: 'var(--accent)' }}>98.5%</p>
+                      <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>{t("hero.stat2")}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Floating badge */}
+              <div
+                className="absolute -right-4 top-1/4 px-3 py-2 rounded-lg glass text-xs font-medium animate-float shadow-lg"
+                style={{ animationDelay: '1s' }}
+              >
+                <span style={{ color: 'var(--accent)' }}>✓</span>{" "}
+                <span style={{ color: 'var(--foreground)' }}>{t("hero.badge1")}</span>
+              </div>
+
+              {/* Floating badge 2 */}
+              <div
+                className="absolute -left-4 bottom-1/4 px-3 py-2 rounded-lg glass text-xs font-medium animate-float shadow-lg"
+                style={{ animationDelay: '2s' }}
+              >
+                <span style={{ color: 'var(--accent)' }}>⚡</span>{" "}
+                <span style={{ color: 'var(--foreground)' }}>{t("hero.badge2")}</span>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Bottom gradient fade */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-24"
+        style={{
+          background: `linear-gradient(to bottom, transparent, var(--background))`
+        }}
+      />
     </section>
   );
 }
