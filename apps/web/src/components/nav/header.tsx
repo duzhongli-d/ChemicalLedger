@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useAuthStore } from "@/lib/auth-store";
@@ -15,6 +15,8 @@ export function Header() {
   const { user, logout, isAuthenticated, isAdmin } = useAuthStore();
   const [menuOpen, setMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
+  const [isHidden, setIsHidden] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   const navLinks = [
     { href: "/ledgers", label: t("ledgers") },
@@ -25,8 +27,35 @@ export function Header() {
     ...(isAdmin() ? [{ href: "/admin/users", label: t("admin") }] : []),
   ];
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // Always show header at top of page
+      if (currentScrollY < 50) {
+        setIsHidden(false);
+      }
+      // Hide when scrolling down past 100px
+      else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsHidden(true);
+      }
+      // Show when scrolling up
+      else if (currentScrollY < lastScrollY) {
+        setIsHidden(false);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
+
   return (
-<header className="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700 shadow-sm">
+<header className={clsx(
+    "sticky top-0 z-50 transition-transform duration-300 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700 shadow-sm",
+    isHidden ? "-translate-y-full" : "translate-y-0"
+  )}>
       <div className="max-w-[1320px] mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}

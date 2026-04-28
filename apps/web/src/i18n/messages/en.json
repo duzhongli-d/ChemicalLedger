@@ -134,7 +134,15 @@
       "gcms": { "use": "Residual Solvent Detection", "application": "Residual Analysis" },
       "nmr": { "use": "Structure Confirmation", "application": "Structure Identification" },
       "uvvis": { "use": "Content Determination", "application": "Content Analysis" },
-      "ir": { "use": "Functional Group Identification", "application": "Structure Analysis" }
+      "ir": { "use": "Functional Group Identification", "application": "Structure Analysis" },
+      "aas": { "use": "Trace Metal Detection", "application": "Metal Impurity Analysis" },
+      "titrator": { "use": "Content Titration", "application": "Volumetric Analysis" },
+      "kf": { "use": "Moisture Determination", "application": "Water Analysis" },
+      "mp": { "use": "Melting Point Measurement", "application": "Purity Identification" },
+      "polarimeter": { "use": "Optical Rotation", "application": "Chiral Analysis" },
+      "gc": { "use": "Volatility Analysis", "application": "Residual Analysis" },
+      "tlc": { "use": "Qualitative Identification", "application": "Rapid Detection" },
+      "ea": { "use": "C/H/N/S Analysis", "application": "Composition Analysis" }
     },
     "metrics": {
       "title": "Technical Capabilities",

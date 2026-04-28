@@ -134,7 +134,15 @@
       "gcms": { "use": "溶剂残留检测", "application": "残留分析" },
       "nmr": { "use": "结构确证", "application": "结构鉴定" },
       "uvvis": { "use": "含量测定", "application": "含量分析" },
-      "ir": { "use": "官能团鉴定", "application": "结构分析" }
+      "ir": { "use": "官能团鉴定", "application": "结构分析" },
+      "aas": { "use": "微量元素检测", "application": "金属杂质分析" },
+      "titrator": { "use": "含量滴定", "application": "容量分析" },
+      "kf": { "use": "水分测定", "application": "水分分析" },
+      "mp": { "use": "熔点测定", "application": "纯度鉴定" },
+      "polarimeter": { "use": "旋光度测定", "application": "手性分析" },
+      "gc": { "use": "挥发性分析", "application": "残留分析" },
+      "tlc": { "use": "定性鉴别", "application": "快速检测" },
+      "ea": { "use": "C/H/N/S分析", "application": "组成分析" }
     },
     "metrics": {
       "title": "技术实力",

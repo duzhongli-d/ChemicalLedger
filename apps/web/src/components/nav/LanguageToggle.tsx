@@ -1,12 +1,19 @@
 "use client";
 import { usePathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
+import { useState, useEffect } from "react";
 
 export function LanguageToggle() {
-  // Use window.location.pathname for initial locale detection (includes locale prefix)
   // Use usePathname() for reactive updates during in-app navigation
   const pathname = usePathname();
-  const pathnameWithLocale = window.location.pathname;
+  // Use window.location.pathname for initial locale detection (includes locale prefix)
+  // Delay window access to client-side only via useEffect to avoid SSR error
+  const [pathnameWithLocale, setPathnameWithLocale] = useState<string>("/");
+
+  useEffect(() => {
+    setPathnameWithLocale(window.location.pathname);
+  }, []);
+
   const currentLocale = routing.locales.find((l) =>
     pathnameWithLocale.startsWith(`/${l}`)
   ) || routing.defaultLocale;
