@@ -14,7 +14,10 @@ export function Header() {
 
   const navLinks = [
     { href: "/", label: t("ledgers") },
-    ...(isAuthenticated() ? [{ href: "/research", label: t("research") }] : []),
+    ...(isAuthenticated() ? [
+      { href: "/notifications", label: t("notifications") || "通知" },
+      { href: "/research", label: t("research") },
+    ] : []),
     ...(isAdmin() ? [{ href: "/admin/users", label: t("admin") }] : []),
   ];
 
@@ -68,6 +71,13 @@ export function Header() {
                       <p className="text-sm font-medium">{user?.username}</p>
                       <p className="text-xs text-gray-500">{user?.role === "admin" ? "管理员" : "用户"}</p>
                     </div>
+                    <Link
+                      href="/profile"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      {t("profile")}
+                    </Link>
                     <button
                       onClick={() => { logout(); setMenuOpen(false); }}
                       className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50"

@@ -107,13 +107,21 @@ export default function LedgerDetailPage() {
             </button>
           )}
           {canEdit && (
-            <button
+            <>
+              <Link
+                href={`/ledger/${id}/edit`}
+                className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-200"
+              >
+                {t("edit")}
+              </Link>
+              <button
               onClick={() => archiveMutation.mutate()}
               disabled={archiveMutation.isPending}
               className="inline-flex items-center gap-2 bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-100 disabled:opacity-50"
             >
-              {t("archive")}
-            </button>
+                {t("archive")}
+              </button>
+            </>
           )}
         </div>
       )}
