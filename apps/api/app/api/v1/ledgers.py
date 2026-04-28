@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from uuid import UUID
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 from app.db.session import get_db
 from app.db.models import User, Ledger, LedgerStatus
 from app.schemas.schemas import LedgerCreate, LedgerUpdate, LedgerResponse
@@ -100,7 +100,8 @@ def archive_ledger(
     if ledger.created_by_id != current_user.id and current_user.role != "admin":
         raise HTTPException(403, "Not authorized")
     ledger.status = LedgerStatus.archived
-    ledger.archived_at = datetime.utcnow()
+    ledger.archived_at = datetime.now(timezone.utc)
     ledger.archived_by_id = current_user.id
-    db.flush()
+    db.commit()
+    db.refresh(ledger)
     return ledger
