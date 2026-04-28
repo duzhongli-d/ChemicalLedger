@@ -55,7 +55,7 @@ export function HeroSection() {
       {/* Decorative glow */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-teal-500/20 rounded-full blur-[120px]"></div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="max-w-[1320px] mx-auto px-4 relative z-10">
         <div className="grid lg:grid-cols-5 gap-8 items-center min-h-[600px]">
           {/* Left - Chromatogram animation (2/5 width) */}
           <div className="lg:col-span-2 flex items-center justify-center">

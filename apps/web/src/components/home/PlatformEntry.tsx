@@ -11,7 +11,7 @@ export function PlatformEntry() {
       {/* Background dot grid */}
       <div className="absolute inset-0 bg-dot-grid opacity-30"></div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="max-w-[1320px] mx-auto px-4 relative z-10">
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {/* AI Ledger Entry - Orange accent */}
           <Link

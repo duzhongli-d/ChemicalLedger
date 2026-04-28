@@ -25,7 +25,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
           <Providers>
             <Header />
-            <main className="container mx-auto px-4 py-6">{children}</main>
+            <main>{children}</main>
           </Providers>
         </NextIntlClientProvider>
       </body>

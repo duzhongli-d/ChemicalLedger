@@ -63,7 +63,7 @@ export function TeamShowcase() {
 
   return (
     <section className="py-20 bg-gradient-to-br from-slate-50 to-slate-100">
-      <div className="container mx-auto px-4">
+      <div className="max-w-[1320px] mx-auto px-4">
         <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center font-mono">
           {t("team.title")}
         </h2>

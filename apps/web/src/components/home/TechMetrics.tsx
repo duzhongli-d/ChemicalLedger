@@ -44,7 +44,7 @@ export function TechMetrics() {
       <div className="absolute top-8 right-8 w-32 h-32 border-4 border-slate-700 rounded-full opacity-30"></div>
       <div className="absolute bottom-8 left-8 w-24 h-24 border-4 border-slate-700 rounded-full opacity-30"></div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="max-w-[1320px] mx-auto px-4 relative z-10">
         <h2 className="text-2xl font-bold mb-4 text-center font-mono">{t("metrics.title")}</h2>
         <p className="text-slate-400 text-center mb-12">{t("metrics.subtitle")}</p>
 
