@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from datetime import datetime, timezone
@@ -10,9 +10,29 @@ from app.api.deps import get_current_user_required
 
 router = APIRouter()
 
+COOKIE_NAME = "access_token"
+
+
+def _create_token_response(user: User) -> TokenResponse:
+    """Create token response for a user."""
+    token = create_access_token({"sub": str(user.id)})
+    return TokenResponse(access_token=token, user=UserResponse.model_validate(user))
+
+
+def _set_auth_cookie(response: Response, token: str) -> None:
+    """Set HTTP-only auth cookie on response."""
+    response.set_cookie(
+        key=COOKIE_NAME,
+        value=token,
+        httponly=True,
+        secure=False,  # Set to True in production with HTTPS
+        samesite="lax",
+        max_age=60 * 60 * 24 * 7,  # 7 days
+    )
+
 
 @router.post("/register", response_model=TokenResponse)
-def register(data: UserCreate, db: Session = Depends(get_db)):
+def register(data: UserCreate, db: Session = Depends(get_db), response: Response = None):
     existing = db.query(User).filter(or_(User.username == data.username, User.email == data.email)).first()
     if existing:
         if existing.username == data.username:
@@ -27,19 +47,30 @@ def register(data: UserCreate, db: Session = Depends(get_db)):
     db.add(user)
     db.commit()
     db.refresh(user)
-    token = create_access_token({"sub": str(user.id)})
-    return TokenResponse(access_token=token, user=UserResponse.model_validate(user))
+    token_response = _create_token_response(user)
+    if response:
+        _set_auth_cookie(response, token_response.access_token)
+    return token_response
 
 
 @router.post("/login", response_model=TokenResponse)
-def login(data: UserLogin, db: Session = Depends(get_db)):
+def login(data: UserLogin, db: Session = Depends(get_db), response: Response = None):
     user = db.query(User).filter(User.username == data.username).first()
     if not user or not verify_password(data.password, user.password_hash):
         raise HTTPException(401, "Invalid credentials")
     user.last_login_at = datetime.now(timezone.utc)
     db.commit()
-    token = create_access_token({"sub": str(user.id)})
-    return TokenResponse(access_token=token, user=UserResponse.model_validate(user))
+    token_response = _create_token_response(user)
+    if response:
+        _set_auth_cookie(response, token_response.access_token)
+    return token_response
+
+
+@router.post("/logout")
+def logout(response: Response):
+    """Clear auth cookie to log out user."""
+    response.delete_cookie(key=COOKIE_NAME)
+    return {"message": "Logged out successfully"}
 
 
 @router.get("/me", response_model=UserResponse)

@@ -1,30 +1,14 @@
 import axios from "axios";
-import { useAuthStore } from "./auth-store";
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1",
+  withCredentials: true, // Send cookies for auth (HttpOnly cookie set by backend)
 });
 
-api.interceptors.request.use((config) => {
-  if (typeof window !== "undefined") {
-    const token = useAuthStore.getState().token;
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-  }
-  return config;
-});
-
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401 && typeof window !== "undefined") {
-      useAuthStore.getState().logout();
-      window.location.href = "/login";
-    }
-    return Promise.reject(error);
-  }
-);
+// Note: We no longer manually inject Bearer tokens.
+// The backend sets an HttpOnly cookie on login/register.
+// Axios withCredentials=true will send cookies automatically.
+// The /me endpoint is called after login to sync user state.
 
 // ─── Auth ────────────────────────────────────────────────────────────────────
 
@@ -33,6 +17,7 @@ export const authApi = {
     api.post("/auth/login", data),
   register: (data: { username: string; email: string; password: string; phone?: string }) =>
     api.post("/auth/register", data),
+  logout: () => api.post("/auth/logout"),
   me: () => api.get("/auth/me"),
 };
 

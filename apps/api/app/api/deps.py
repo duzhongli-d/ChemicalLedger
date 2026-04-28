@@ -1,18 +1,36 @@
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Request, Cookie
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
+from typing import Optional
 from app.db.session import get_db
 from app.db.models import User, UserRole
 from app.core.security import decode_access_token
 
-security = HTTPBearer()
+security = HTTPBearer(auto_error=False)  # Don't auto-fail, we handle missing tokens
+COOKIE_NAME = "access_token"
+
+
+def _get_token_from_request(request: Request) -> Optional[str]:
+    """Extract token from cookie first, fall back to Authorization header."""
+    # Try cookie first (HttpOnly, set by login)
+    token = request.cookies.get(COOKIE_NAME)
+    if token:
+        return token
+    # Fall back to Bearer token (for legacy clients/axios)
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        return auth_header[7:]
+    return None
 
 
 def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
+    request: Request,
     db: Session = Depends(get_db),
 ) -> User | None:
-    token = credentials.credentials
+    """Get current user from cookie or Bearer token."""
+    token = _get_token_from_request(request)
+    if not token:
+        return None
     payload = decode_access_token(token)
     if payload is None:
         return None

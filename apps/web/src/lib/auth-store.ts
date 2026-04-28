@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { clearAuthToken } from "./cookie";
 
 export interface User {
   id: string;
@@ -10,31 +11,40 @@ export interface User {
 }
 
 interface AuthState {
-  token: string | null;
   user: User | null;
-  setAuth: (token: string, user: User) => void;
+  setAuth: (user: User) => void;
   logout: () => void;
   isAuthenticated: () => boolean;
   isAdmin: () => boolean;
 }
 
+/**
+ * Auth store for user data only.
+ * Token is stored in HttpOnly cookie (set by backend on login/register).
+ * We don't persist the token here - the browser handles cookie transmission.
+ */
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
-      token: null,
       user: null,
 
-      setAuth: (token: string, user: User) => {
-        set({ token, user });
+      setAuth: (user: User) => {
+        set({ user });
       },
 
       logout: () => {
-        set({ token: null, user: null });
+        set({ user: null });
+        clearAuthToken();
       },
 
-      isAuthenticated: () => !!get().token,
+      isAuthenticated: () => !!get().user,
+
       isAdmin: () => get().user?.role === "admin",
     }),
-    { name: "auth" }
+    {
+      name: "auth",
+      // Only persist user data, not token (token is in HttpOnly cookie)
+      partialize: (state) => ({ user: state.user }),
+    }
   )
 );
