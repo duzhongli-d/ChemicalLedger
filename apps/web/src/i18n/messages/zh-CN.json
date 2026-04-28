@@ -15,13 +15,21 @@
     "required": "必填"
   },
   "nav": {
+    "home": "首页",
     "ledgers": "台账管理",
     "research": "深度调研",
     "admin": "管理后台",
     "profile": "个人中心",
     "logout": "退出登录",
     "login": "登录",
-    "register": "注册"
+    "register": "注册",
+    "notifications": "通知",
+    "tech": "技术能力",
+    "instruments": "仪器设备",
+    "about": "关于我们",
+    "aiAssistant": "AI台账管家",
+    "deepResearch": "Deep Research 助手",
+    "brand": "雅本化学 QC"
   },
   "auth": {
     "login": "登录",
@@ -120,14 +128,21 @@
     },
     "instruments": {
       "title": "仪器全景图",
-      "viewAll": "查看全部"
+      "viewAll": "查看全部",
+      "hplc": { "use": "API纯度分析", "application": "药物分析" },
+      "lcms": { "use": "痕量杂质鉴定", "application": "痕量检测" },
+      "gcms": { "use": "溶剂残留检测", "application": "残留分析" },
+      "nmr": { "use": "结构确证", "application": "结构鉴定" },
+      "uvvis": { "use": "含量测定", "application": "含量分析" },
+      "ir": { "use": "官能团鉴定", "application": "结构分析" }
     },
     "metrics": {
       "title": "技术实力",
+      "subtitle": "精准数据，可信结果",
       "samples": "年检测样本量",
       "samplesLabel": "检测样本",
       "methods": "方法开发数量",
-      "methodsLabel": "方法开发数量",
+      "methodsLabel": "检测方法",
       "auditRate": "合规审计通过率",
       "auditRateLabel": "审计通过率"
     },
@@ -135,14 +150,24 @@
       "title": "团队风貌",
       "professional": "专业团队",
       "professionalDesc": "资深QC工程师领衔，硕博比例超过60%",
+      "professionalBadge": "硕博比例 >60%",
       "innovation": "创新精神",
-      "innovationDesc": "持续优化检测方法，驱动行业技术进步"
+      "innovationDesc": "持续优化检测方法，驱动行业技术进步",
+      "innovationBadge": "持续创新驱动"
     },
     "entry": {
       "aiAssistant": "AI台账管家",
       "aiAssistantDesc": "实时库存，效期预警",
       "deepResearch": "Deep Research 助手",
       "deepResearchDesc": "文献挖掘，检测方法开发，法规检索"
+    },
+    "footer": {
+      "contact": "联系我们",
+      "contactInfo": "江苏省苏州市工业园区星湖街328号",
+      "email": "qc@abachem.com",
+      "downloadCerts": "资质下载",
+      "platformEntry": "平台入口",
+      "copyright": "雅本化学 QC 技术服务平台. 保留所有权利."
     }
   }
 }

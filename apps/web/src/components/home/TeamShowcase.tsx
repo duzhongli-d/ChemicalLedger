@@ -86,7 +86,7 @@ export function TeamShowcase() {
 
               <div className="mt-4 inline-flex items-center gap-2 bg-teal-50 text-teal-700 px-3 py-1 rounded-full text-sm font-mono">
                 <span className="w-2 h-2 bg-teal-500 rounded-full animate-pulse" />
-                硕博比例 &gt;60%
+                {t("team.professionalBadge")}
               </div>
             </div>
           </div>
@@ -108,7 +108,7 @@ export function TeamShowcase() {
 
               <div className="mt-4 inline-flex items-center gap-2 bg-orange-50 text-orange-700 px-3 py-1 rounded-full text-sm font-mono">
                 <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
-                持续创新驱动
+                {t("team.innovationBadge")}
               </div>
             </div>
           </div>

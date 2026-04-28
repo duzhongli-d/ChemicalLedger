@@ -35,7 +35,7 @@ export function Header() {
               <rect width="32" height="32" rx="6" fill="currentColor" />
               <path d="M8 16h16M16 8v16" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
             </svg>
-            雅本化学 QC
+            {t("brand")}
           </Link>
 
           {/* Desktop Nav */}

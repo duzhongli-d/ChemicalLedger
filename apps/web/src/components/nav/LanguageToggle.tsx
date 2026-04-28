@@ -1,9 +1,8 @@
 "use client";
-import { useRouter, usePathname } from "@/i18n/navigation";
+import { usePathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 
 export function LanguageToggle() {
-  const router = useRouter();
   const pathname = usePathname();
   const currentLocale = routing.locales.find((l) =>
     pathname.startsWith(`/${l}`)
@@ -11,7 +10,10 @@ export function LanguageToggle() {
 
   const toggleLocale = () => {
     const newLocale = currentLocale === "zh-CN" ? "en" : "zh-CN";
-    router.replace(pathname, { locale: newLocale });
+    // Strip the current locale prefix from the full pathname
+    const pathWithoutLocale = pathname.replace(/^\/(zh-CN|en)/, "") || "/";
+    // Use hard navigation to avoid next-intl locale-aware router prepending locale
+    window.location.href = `/${newLocale}${pathWithoutLocale}`;
   };
 
   return (

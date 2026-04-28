@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 
 const metrics = [
-  { key: "samples", value: 50000, suffix: "+", label: "检测样本" },
-  { key: "methods", value: 200, suffix: "+", label: "检测方法" },
-  { key: "auditRate", value: 99.8, suffix: "%", label: "审计通过率" },
+  { key: "samples", value: 50000, suffix: "+" },
+  { key: "methods", value: 200, suffix: "+" },
+  { key: "auditRate", value: 99.8, suffix: "%" },
 ];
 
 function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
@@ -46,7 +46,7 @@ export function TechMetrics() {
 
       <div className="container mx-auto px-4 relative z-10">
         <h2 className="text-2xl font-bold mb-4 text-center font-mono">{t("metrics.title")}</h2>
-        <p className="text-slate-400 text-center mb-12">Precision Data, Trusted Results</p>
+        <p className="text-slate-400 text-center mb-12">{t("metrics.subtitle")}</p>
 
         <div className="grid md:grid-cols-3 gap-8">
           {metrics.map((m, i) => (
@@ -54,7 +54,7 @@ export function TechMetrics() {
               <div className="text-5xl font-bold font-mono mb-2">
                 <AnimatedNumber value={m.value} suffix={m.suffix} />
               </div>
-              <div className="text-teal-400 font-mono text-sm">{m.label}</div>
+              <div className="text-teal-400 font-mono text-sm">{t("metrics." + m.key + "Label")}</div>
             </div>
           ))}
         </div>

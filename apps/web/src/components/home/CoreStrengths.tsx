@@ -31,7 +31,7 @@ const strengths = [
 export function CoreStrengths() {
   const t = useTranslations("home");
   return (
-    <section className="py-20 bg-slate-50 relative overflow-hidden">
+    <section className="py-20 bg-slate-50 dark:bg-slate-900/50 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-dot-grid opacity-30" />
 
@@ -40,20 +40,23 @@ export function CoreStrengths() {
           {strengths.map((s) => (
             <div
               key={s.key}
-              className="glass rounded-2xl p-8 relative group overflow-hidden transition-all duration-300 hover:shadow-xl"
+              className="glass rounded-2xl p-8 relative group overflow-hidden transition-all duration-300 hover:shadow-xl border border-border-accent"
             >
+              {/* Metal shine effect */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+
               {/* Gradient border appears on hover */}
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-teal-500 via-blue-500 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" style={{ padding: '2px' }}>
-                <div className="w-full h-full bg-slate-50 rounded-2xl" />
+                <div className="w-full h-full bg-slate-50 dark:bg-slate-900 rounded-2xl" />
               </div>
 
               {/* Icon with gradient background */}
-              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-teal-500 to-blue-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <div className="text-white">{s.icon}</div>
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 border border-teal-500/30">
+                <div className="text-teal-400">{s.icon}</div>
               </div>
 
-              <h3 className="text-xl font-bold text-gray-900 mb-2 font-mono">{t(`strengths.${s.key}`)}</h3>
-              <p className="text-gray-600">{t(`strengths.${s.key}Desc`)}</p>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 font-mono">{t(`strengths.${s.key}`)}</h3>
+              <p className="text-gray-600 dark:text-slate-400">{t(`strengths.${s.key}Desc`)}</p>
             </div>
           ))}
         </div>

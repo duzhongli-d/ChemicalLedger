@@ -15,13 +15,21 @@
     "required": "Required"
   },
   "nav": {
+    "home": "Home",
     "ledgers": "Ledger",
     "research": "Research",
     "admin": "Admin",
     "profile": "Profile",
     "logout": "Logout",
     "login": "Login",
-    "register": "Register"
+    "register": "Register",
+    "notifications": "Notifications",
+    "tech": "Capabilities",
+    "instruments": "Instruments",
+    "about": "About Us",
+    "aiAssistant": "AI Ledger",
+    "deepResearch": "Deep Research",
+    "brand": "Abachem QC"
   },
   "auth": {
     "login": "Login",
@@ -120,29 +128,46 @@
     },
     "instruments": {
       "title": "Instrument Gallery",
-      "viewAll": "View All"
+      "viewAll": "View All",
+      "hplc": { "use": "API Purity Analysis", "application": "Pharmaceutical Analysis" },
+      "lcms": { "use": "Trace Impurity Identification", "application": "Trace Detection" },
+      "gcms": { "use": "Residual Solvent Detection", "application": "Residual Analysis" },
+      "nmr": { "use": "Structure Confirmation", "application": "Structure Identification" },
+      "uvvis": { "use": "Content Determination", "application": "Content Analysis" },
+      "ir": { "use": "Functional Group Identification", "application": "Structure Analysis" }
     },
     "metrics": {
       "title": "Technical Capabilities",
+      "subtitle": "Precision Data, Trusted Results",
       "samples": "Annual Samples Tested",
-      "methods": "Methods Developed",
-      "auditRate": "Compliance Audit Rate",
       "samplesLabel": "Samples Tested",
+      "methods": "Methods Developed",
       "methodsLabel": "Methods Developed",
+      "auditRate": "Compliance Audit Rate",
       "auditRateLabel": "Audit Pass Rate"
     },
     "team": {
       "title": "Team Showcase",
       "professional": "Professional Team",
       "professionalDesc": "Led by senior QC engineers, over 60% with master's/PhD degrees",
+      "professionalBadge": "Masters/PhDs >60%",
       "innovation": "Innovation Spirit",
-      "innovationDesc": "Continuously optimizing detection methods, driving industry advancement"
+      "innovationDesc": "Continuously optimizing detection methods, driving industry advancement",
+      "innovationBadge": "Innovation Driven"
     },
     "entry": {
       "aiAssistant": "AI Ledger Assistant",
       "aiAssistantDesc": "Real-time inventory, expiry alerts",
       "deepResearch": "Deep Research Assistant",
       "deepResearchDesc": "Literature mining, method development, regulatory search"
+    },
+    "footer": {
+      "contact": "Contact Us",
+      "contactInfo": "No. 328 Xinghu Street, Suzhou Industrial Park, Jiangsu Province",
+      "email": "qc@abachem.com",
+      "downloadCerts": "Download Certificates",
+      "platformEntry": "Platform Entry",
+      "copyright": "Abachem QC Technology Platform. All rights reserved."
     }
   }
 }

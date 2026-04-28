@@ -9,44 +9,111 @@ export function HeroSection() {
       {/* Dot grid background */}
       <div className="absolute inset-0 bg-dot-grid opacity-50"></div>
 
+      {/* Data flow background - animated horizontal lines */}
+      <div className="absolute inset-0 overflow-hidden">
+        {[...Array(5)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute h-px bg-gradient-to-r from-transparent via-primary-500/40 to-transparent"
+            style={{
+              top: `${20 + i * 15}%`,
+              width: "200%",
+              left: "-100%",
+              animation: `flow-data ${3 + i * 0.5}s linear infinite`,
+              animationDelay: `${i * 0.3}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Chromatogram peak SVG */}
+      <div className="absolute left-1/3 top-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-64 opacity-20">
+        <svg viewBox="0 0 400 200" className="w-full h-full">
+          <defs>
+            <linearGradient id="peakGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="rgba(11,130,232,0.8)" />
+              <stop offset="100%" stopColor="rgba(11,130,232,0)" />
+            </linearGradient>
+          </defs>
+          {/* Gaussian-like chromatogram peak */}
+          <path
+            d="M 50 200 Q 100 200 120 180 Q 140 100 160 20 Q 180 100 200 180 Q 220 200 270 200 L 270 200 L 50 200 Z"
+            fill="url(#peakGradient)"
+            className="animate-pulse-node"
+          />
+          {/* Peak line */}
+          <path
+            d="M 50 200 Q 100 200 120 180 Q 140 100 160 20 Q 180 100 200 180 Q 220 200 270 200"
+            fill="none"
+            stroke="rgba(11,130,232,0.6)"
+            strokeWidth="2"
+            className="animate-draw-line"
+          />
+        </svg>
+      </div>
+
       {/* Decorative glow */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-teal-500/20 rounded-full blur-[120px]"></div>
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid lg:grid-cols-5 gap-8 items-center min-h-[600px]">
-          {/* Left - Molecular animation (2/5 width) */}
+          {/* Left - Chromatogram animation (2/5 width) */}
           <div className="lg:col-span-2 flex items-center justify-center">
             <svg
               viewBox="0 0 300 300"
               className="w-full max-w-[300px] h-auto"
               aria-hidden="true"
             >
-              {/* Connection lines */}
-              <line x1="60" y1="80" x2="150" y2="100" className="stroke-teal-400/60" strokeWidth="1.5" />
-              <line x1="150" y1="100" x2="240" y2="70" className="stroke-teal-400/60" strokeWidth="1.5" />
-              <line x1="60" y1="80" x2="80" y2="180" className="stroke-teal-400/60" strokeWidth="1.5" />
-              <line x1="80" y1="180" x2="150" y2="100" className="stroke-teal-400/60" strokeWidth="1.5" />
-              <line x1="80" y1="180" x2="160" y2="240" className="stroke-teal-400/60" strokeWidth="1.5" />
-              <line x1="150" y1="100" x2="160" y2="240" className="stroke-teal-400/60" strokeWidth="1.5" />
-              <line x1="240" y1="70" x2="280" y2="160" className="stroke-teal-400/60" strokeWidth="1.5" />
-              <line x1="280" y1="160" x2="240" y2="240" className="stroke-teal-400/60" strokeWidth="1.5" />
-              <line x1="160" y1="240" x2="240" y2="240" className="stroke-teal-400/60" strokeWidth="1.5" />
-              <line x1="150" y1="100" x2="240" y2="240" className="stroke-teal-400/40" strokeWidth="1" strokeDasharray="4 4" />
-              <line x1="60" y1="80" x2="160" y2="240" className="stroke-teal-400/40" strokeWidth="1" strokeDasharray="4 4" />
-              <line x1="240" y1="70" x2="160" y2="240" className="stroke-teal-400/40" strokeWidth="1" strokeDasharray="4 4" />
+              {/* Chromatogram baseline */}
+              <line x1="30" y1="250" x2="270" y2="250" stroke="rgba(11,130,232,0.3)" strokeWidth="1" />
 
-              {/* Nodes */}
-              <circle cx="60" cy="80" r="8" className="fill-teal-400 animate-pulse-node" />
-              <circle cx="150" cy="100" r="10" className="fill-teal-300 animate-pulse-node" style={{ animationDelay: '200ms' }} />
-              <circle cx="240" cy="70" r="7" className="fill-teal-400 animate-pulse-node" style={{ animationDelay: '400ms' }} />
-              <circle cx="80" cy="180" r="6" className="fill-teal-500 animate-pulse-node" style={{ animationDelay: '600ms' }} />
-              <circle cx="160" cy="240" r="9" className="fill-teal-300 animate-pulse-node" style={{ animationDelay: '800ms' }} />
-              <circle cx="280" cy="160" r="5" className="fill-teal-400 animate-pulse-node" style={{ animationDelay: '1000ms' }} />
-              <circle cx="240" cy="240" r="6" className="fill-teal-500 animate-pulse-node" style={{ animationDelay: '1200ms' }} />
+              {/* Grid lines */}
+              {[50, 100, 150, 200].map((y) => (
+                <line key={y} x1="30" y1={y} x2="270" y2={y} stroke="rgba(11,130,232,0.1)" strokeWidth="0.5" strokeDasharray="4 4" />
+              ))}
 
-              {/* Center highlight node */}
-              <circle cx="150" cy="100" r="16" className="fill-none stroke-teal-300/40" strokeWidth="2">
-                <animate attributeName="r" values="16;24;16" dur="3s" repeatCount="indefinite" />
+              {/* Chromatogram peaks */}
+              <path
+                d="M 40 250 Q 60 250 70 240 Q 80 200 90 250"
+                fill="none"
+                stroke="rgba(11,130,232,0.5)"
+                strokeWidth="2"
+                className="animate-draw-line"
+              />
+              <path
+                d="M 100 250 Q 120 250 130 230 Q 140 150 150 250"
+                fill="none"
+                stroke="rgba(11,130,232,0.6)"
+                strokeWidth="2"
+                className="animate-draw-line"
+                style={{ animationDelay: '200ms' }}
+              />
+              <path
+                d="M 160 250 Q 180 250 190 200 Q 200 80 210 250"
+                fill="none"
+                stroke="rgba(11,130,232,0.8)"
+                strokeWidth="3"
+                className="animate-pulse-node"
+                style={{ animationDelay: '400ms' }}
+              />
+              <path
+                d="M 220 250 Q 240 250 250 220 Q 260 180 270 250"
+                fill="none"
+                stroke="rgba(11,130,232,0.5)"
+                strokeWidth="2"
+                className="animate-draw-line"
+                style={{ animationDelay: '600ms' }}
+              />
+
+              {/* Data point nodes */}
+              <circle cx="90" cy="250" r="4" className="fill-primary-500 animate-pulse-node" style={{ animationDelay: '100ms' }} />
+              <circle cx="150" cy="250" r="5" className="fill-primary-500 animate-pulse-node" style={{ animationDelay: '300ms' }} />
+              <circle cx="210" cy="80" r="6" className="fill-teal-400 animate-pulse-node" style={{ animationDelay: '500ms' }} />
+              <circle cx="270" cy="250" r="4" className="fill-primary-500 animate-pulse-node" style={{ animationDelay: '700ms' }} />
+
+              {/* Center highlight */}
+              <circle cx="210" cy="80" r="20" className="fill-none stroke-teal-300/40" strokeWidth="2">
+                <animate attributeName="r" values="20;30;20" dur="3s" repeatCount="indefinite" />
                 <animate attributeName="opacity" values="0.6;0.2;0.6" dur="3s" repeatCount="indefinite" />
               </circle>
             </svg>
