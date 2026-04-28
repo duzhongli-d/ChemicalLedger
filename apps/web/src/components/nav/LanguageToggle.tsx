@@ -3,15 +3,18 @@ import { usePathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 
 export function LanguageToggle() {
+  // Use window.location.pathname for initial locale detection (includes locale prefix)
+  // Use usePathname() for reactive updates during in-app navigation
   const pathname = usePathname();
+  const pathnameWithLocale = window.location.pathname;
   const currentLocale = routing.locales.find((l) =>
-    pathname.startsWith(`/${l}`)
+    pathnameWithLocale.startsWith(`/${l}`)
   ) || routing.defaultLocale;
 
   const toggleLocale = () => {
     const newLocale = currentLocale === "zh-CN" ? "en" : "zh-CN";
     // Strip the current locale prefix from the full pathname
-    const pathWithoutLocale = pathname.replace(/^\/(zh-CN|en)/, "") || "/";
+    const pathWithoutLocale = pathnameWithLocale.replace(/^\/(zh-CN|en)/, "") || "/";
     // Use hard navigation to avoid next-intl locale-aware router prepending locale
     window.location.href = `/${newLocale}${pathWithoutLocale}`;
   };
