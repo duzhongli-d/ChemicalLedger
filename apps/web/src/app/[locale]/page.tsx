@@ -3,7 +3,6 @@ import { CoreStrengths } from "@/components/home/CoreStrengths";
 import { InstrumentGallery } from "@/components/home/InstrumentGallery";
 import { TechMetrics } from "@/components/home/TechMetrics";
 import { TeamShowcase } from "@/components/home/TeamShowcase";
-import { PlatformEntry } from "@/components/home/PlatformEntry";
 import { Footer } from "@/components/home/Footer";
 
 export default function HomePage() {
@@ -14,7 +13,6 @@ export default function HomePage() {
       <InstrumentGallery />
       <TechMetrics />
       <TeamShowcase />
-      <PlatformEntry />
       <Footer />
     </main>
   );
