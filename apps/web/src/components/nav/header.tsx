@@ -85,12 +85,12 @@ export function Header() {
             <div className="relative">
               <div
                 className="absolute inset-0 rounded-lg blur-xl transition-all duration-300"
-                style={{ background: 'var(--accent)', opacity: 0.3 }}
+                style={{ background: 'var(--primary)', opacity: 0.4 }}
               />
               <div
-                className="relative w-10 h-10 rounded-lg flex items-center justify-center shadow-lg"
+                className="relative w-10 h-10 rounded-lg flex items-center justify-center shadow-lg transition-all duration-300 glow-hover"
                 style={{
-                  background: `linear-gradient(135deg, var(--accent) 0%, var(--teal-600) 100%)`
+                  background: 'var(--primary)'
                 }}
               >
                 <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -103,7 +103,7 @@ export function Header() {
                 className="text-lg font-bold tracking-tight"
                 style={{ color: 'var(--foreground)' }}
               >
-                雅本化学 <span style={{ color: 'var(--accent)' }}>QC</span>
+                雅本化学 <span style={{ color: 'var(--primary)' }}>QC</span>
               </span>
               <span
                 className="text-[10px] uppercase tracking-[0.2em] font-medium"
@@ -275,9 +275,9 @@ export function Header() {
                 </Link>
                 <Link
                   href="/register"
-                  className="px-5 py-2 text-sm font-semibold rounded-lg transition-all duration-300 hover-lift shadow-lg"
+                  className="px-5 py-2 text-sm font-semibold rounded-lg transition-all duration-300 hover-lift shadow-lg glow-hover"
                   style={{
-                    background: `linear-gradient(135deg, var(--accent) 0%, var(--teal-600) 100%)`,
+                    background: 'var(--primary)',
                     color: 'white'
                   }}
                 >

@@ -43,7 +43,7 @@ export function HeroSection() {
             {/* Slogan */}
             <p
               className="text-xl md:text-2xl font-semibold animate-slide-up stagger-2"
-              style={{ color: 'var(--accent)', fontFamily: "'Plus Jakarta Sans', monospace" }}
+              style={{ color: 'var(--primary)', fontFamily: "'Plus Jakarta Sans', monospace" }}
             >
               {t("slogan")}
             </p>
@@ -51,7 +51,7 @@ export function HeroSection() {
             {/* Chinese slogan */}
             <p
               className="text-lg animate-slide-up stagger-3"
-              style={{ color: 'var(--secondary)' }}
+              style={{ color: 'var(--primary)' }}
             >
               {t("sloganZh")}
             </p>
@@ -69,7 +69,7 @@ export function HeroSection() {
               <Link
                 href="/ledgers"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 hover-lift glow-hover"
-                style={{ background: 'var(--accent)' }}
+                style={{ background: 'var(--primary)' }}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />

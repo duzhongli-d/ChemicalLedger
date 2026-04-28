@@ -81,7 +81,7 @@ export function MobileMenu() {
               <div className="flex items-center gap-3">
                 <div
                   className="w-8 h-8 rounded-lg flex items-center justify-center"
-                  style={{ background: `linear-gradient(135deg, var(--accent) 0%, var(--teal-600) 100%)` }}
+                  style={{ background: 'var(--primary)' }}
                 >
                   <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2v-4M9 21H5a2 2 0 01-2-2v-4m0-6v6" strokeLinecap="round" strokeLinejoin="round"/>
@@ -186,7 +186,7 @@ export function MobileMenu() {
                       onClick={() => setOpen(false)}
                       className="px-4 py-1.5 text-sm font-semibold rounded-lg transition-all"
                       style={{
-                        background: `linear-gradient(135deg, var(--accent) 0%, var(--teal-600) 100%)`,
+                        background: 'var(--primary)',
                         color: 'white'
                       }}
                     >

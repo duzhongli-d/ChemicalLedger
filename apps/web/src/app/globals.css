@@ -9,11 +9,11 @@
   --foreground: #0f172a;
   --card: rgba(255, 255, 255, 0.85);
   --card-foreground: #0f172a;
-  --primary: #1e3a5f;
+  --primary: #f97316;
   --primary-foreground: #ffffff;
   --accent: #0d9488;
   --accent-foreground: #ffffff;
-  --secondary: #64748b;
+  --secondary: #9a3412;
   --secondary-foreground: #ffffff;
   --muted: #f1f5f9;
   --muted-foreground: #64748b;
@@ -24,6 +24,16 @@
   --success: #10b981;
   --warning: #f59e0b;
   --error: #ef4444;
+  --orange-50: #fff7ed;
+  --orange-100: #ffedd5;
+  --orange-200: #fed7aa;
+  --orange-300: #fdba74;
+  --orange-400: #fb923c;
+  --orange-500: #f97316;
+  --orange-600: #ea580c;
+  --orange-700: #c2410c;
+  --orange-800: #9a3412;
+  --orange-900: #7c2d12;
   --teal-400: #2dd4bf;
   --teal-500: #0d9488;
   --teal-600: #0f766e;
@@ -39,8 +49,8 @@
   --nav-background: rgba(250, 251, 252, 0.9);
   --nav-border: rgba(15, 23, 42, 0.08);
   --hero-background: #fafbfc;
-  --hero-gradient-start: rgba(13, 148, 136, 0.05);
-  --hero-gradient-end: rgba(30, 58, 95, 0.08);
+  --hero-gradient-start: rgba(234, 88, 12, 0.05);
+  --hero-gradient-end: rgba(154, 52, 18, 0.08);
 }
 
 [data-theme="dark"] {
@@ -49,11 +59,11 @@
   --foreground: #f8fafc;
   --card: rgba(30, 41, 59, 0.85);
   --card-foreground: #f8fafc;
-  --primary: #94a3b8;
+  --primary: #f97316;
   --primary-foreground: #0f172a;
   --accent: #2dd4bf;
   --accent-foreground: #0f172a;
-  --secondary: #475569;
+  --secondary: #c2410c;
   --secondary-foreground: #f8fafc;
   --muted: #1e293b;
   --muted-foreground: #94a3b8;
@@ -64,6 +74,16 @@
   --success: #10b981;
   --warning: #f59e0b;
   --error: #ef4444;
+  --orange-50: #fff7ed;
+  --orange-100: #ffedd5;
+  --orange-200: #fed7aa;
+  --orange-300: #fdba74;
+  --orange-400: #fb923c;
+  --orange-500: #f97316;
+  --orange-600: #ea580c;
+  --orange-700: #c2410c;
+  --orange-800: #9a3412;
+  --orange-900: #7c2d12;
   --teal-400: #2dd4bf;
   --teal-500: #14b8a6;
   --teal-600: #0d9488;
@@ -79,8 +99,8 @@
   --nav-background: rgba(15, 20, 25, 0.9);
   --nav-border: rgba(148, 163, 184, 0.1);
   --hero-background: #0f1419;
-  --hero-gradient-start: rgba(45, 212, 191, 0.08);
-  --hero-gradient-end: rgba(30, 58, 95, 0.12);
+  --hero-gradient-start: rgba(251, 146, 60, 0.08);
+  --hero-gradient-end: rgba(194, 65, 12, 0.12);
 }
 
 @theme inline {
@@ -89,10 +109,10 @@
   --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-serif: 'DM Serif Display', Georgia, serif;
   --font-mono: 'Plus Jakarta Sans', monospace;
-  --color-primary-500: #0b82e8;
-  --color-primary-600: #0052CC;
-  --color-teal-500: #00a3a3;
-  --color-teal-600: #008080;
+  --color-orange-500: #f97316;
+  --color-orange-600: #ea580c;
+  --color-teal-500: #0d9488;
+  --color-teal-600: #0f766e;
   --color-amber-500: #f59e0b;
   --color-slate-50: #f8fafc;
   --color-slate-900: #0f172a;
