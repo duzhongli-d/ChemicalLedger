@@ -102,5 +102,47 @@
     "title": "通知",
     "expiryWarning": "到期提醒",
     "markRead": "标为已读"
+  },
+  "home": {
+    "slogan": "Precision Driven, Intelligence Empowered",
+    "sloganZh": "精准驱动，智领未来",
+    "hero": {
+      "title": "雅本化学QC技术服务平台",
+      "subtitle": "融合化学严谨与数字智能，打造QC实验室一体化管理新范式"
+    },
+    "strengths": {
+      "compliance": "合规体系",
+      "complianceDesc": "GMP/ISO双体系认证，全流程合规管理",
+      "equipment": "尖端设备",
+      "equipmentDesc": "高精度分析仪器，痕量检测能力",
+      "ai": "AI赋能",
+      "aiDesc": "智能效期预警，数据驱动决策"
+    },
+    "instruments": {
+      "title": "仪器全景图",
+      "viewAll": "查看全部"
+    },
+    "metrics": {
+      "title": "技术实力",
+      "samples": "年检测样本量",
+      "samplesLabel": "检测样本",
+      "methods": "方法开发数量",
+      "methodsLabel": "方法开发数量",
+      "auditRate": "合规审计通过率",
+      "auditRateLabel": "审计通过率"
+    },
+    "team": {
+      "title": "团队风貌",
+      "professional": "专业团队",
+      "professionalDesc": "资深QC工程师领衔，硕博比例超过60%",
+      "innovation": "创新精神",
+      "innovationDesc": "持续优化检测方法，驱动行业技术进步"
+    },
+    "entry": {
+      "aiAssistant": "AI台账管家",
+      "aiAssistantDesc": "实时库存，效期预警",
+      "deepResearch": "Deep Research 助手",
+      "deepResearchDesc": "文献挖掘，检测方法开发，法规检索"
+    }
   }
 }

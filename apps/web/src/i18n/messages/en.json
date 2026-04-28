@@ -102,5 +102,47 @@
     "title": "Notifications",
     "expiryWarning": "Expiry Warning",
     "markRead": "Mark as Read"
+  },
+  "home": {
+    "slogan": "Precision Driven, Intelligence Empowered",
+    "sloganZh": "精准驱动，智领未来",
+    "hero": {
+      "title": "Abachem QC Technology Platform",
+      "subtitle": "Integrating chemical rigor with digital intelligence for next-gen QC laboratory management"
+    },
+    "strengths": {
+      "compliance": "Compliance System",
+      "complianceDesc": "GMP/ISO dual certification, full-process compliance management",
+      "equipment": "Advanced Equipment",
+      "equipmentDesc": "High-precision instruments, trace detection capabilities",
+      "ai": "AI Empowered",
+      "aiDesc": "Smart expiry alerts, data-driven decisions"
+    },
+    "instruments": {
+      "title": "Instrument Gallery",
+      "viewAll": "View All"
+    },
+    "metrics": {
+      "title": "Technical Capabilities",
+      "samples": "Annual Samples Tested",
+      "methods": "Methods Developed",
+      "auditRate": "Compliance Audit Rate",
+      "samplesLabel": "Samples Tested",
+      "methodsLabel": "Methods Developed",
+      "auditRateLabel": "Audit Pass Rate"
+    },
+    "team": {
+      "title": "Team Showcase",
+      "professional": "Professional Team",
+      "professionalDesc": "Led by senior QC engineers, over 60% with master's/PhD degrees",
+      "innovation": "Innovation Spirit",
+      "innovationDesc": "Continuously optimizing detection methods, driving industry advancement"
+    },
+    "entry": {
+      "aiAssistant": "AI Ledger Assistant",
+      "aiAssistantDesc": "Real-time inventory, expiry alerts",
+      "deepResearch": "Deep Research Assistant",
+      "deepResearchDesc": "Literature mining, method development, regulatory search"
+    }
   }
 }
