@@ -51,7 +51,7 @@ export default function AuditLogPage() {
         action: actionFilter || undefined,
         start_date: startDate || undefined,
         end_date: endDate || undefined,
-        page_size: 500, // Get more for client-side filtering
+        page_size: 100,
       }).then((r) => r.data),
     enabled: isAdmin(),
   });
