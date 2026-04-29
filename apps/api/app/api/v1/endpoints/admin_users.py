@@ -6,10 +6,10 @@ import csv
 import io
 from uuid import uuid4
 from app.db.session import get_db
-from app.api.v1.deps import get_admin_user
+from app.api.deps import get_admin_user
 from app.db.models import User
 from app.schemas.schemas import UserCreate, UserUpdate, UserResponse
-from app.core.security import get_password_hash
+from app.core.security import hash_password
 from app.services.audit_service import AuditService
 
 router = APIRouter()
@@ -46,7 +46,7 @@ def create_user(
         phone=user_data.phone,
         department=user_data.department,
         role=user_data.role,
-        password_hash=get_password_hash(str(uuid4())[:8]),  # 临时密码
+        password_hash=hash_password(str(uuid4())[:8]),  # 临时密码
     )
     db.add(user)
     db.commit()
@@ -127,7 +127,7 @@ async def import_users(
                 phone=phone,
                 department=department,
                 role=role,
-                password_hash=get_password_hash(str(uuid4())[:8]),
+                password_hash=hash_password(str(uuid4())[:8]),
             )
             db.add(user)
             success_count += 1
