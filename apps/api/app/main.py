@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1 import auth, ledgers, users, categories, notifications, research
+from app.api.v1.endpoints.admin_router import admin_router
 
 app = FastAPI(title="QC Platform API")
 
@@ -18,6 +19,7 @@ app.include_router(users.router, prefix="/api/v1/users", tags=["users"])
 app.include_router(categories.router, prefix="/api/v1/categories", tags=["categories"])
 app.include_router(notifications.router, prefix="/api/v1/notifications", tags=["notifications"])
 app.include_router(research.router, prefix="/api/v1/research", tags=["research"])
+app.include_router(admin_router, prefix="/api/v1", tags=["admin"])
 
 
 @app.get("/health")
