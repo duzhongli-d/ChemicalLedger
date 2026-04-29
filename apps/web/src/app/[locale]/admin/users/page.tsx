@@ -167,7 +167,7 @@ export default function AdminUsersPage() {
 
   const createMutation = useMutation({
     mutationFn: (data: UserForm) =>
-      fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"}/users/`, {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"}/admin/users/`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -184,7 +184,7 @@ export default function AdminUsersPage() {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<UserForm> }) =>
-      fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"}/users/${id}`, {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"}/admin/users/${id}`, {
         method: "PATCH",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -201,7 +201,7 @@ export default function AdminUsersPage() {
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) =>
-      fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"}/users/${id}`, {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"}/admin/users/${id}`, {
         method: "DELETE",
         credentials: "include",
       }).then((r) => { if (!r.ok) throw new Error("删除失败"); return r.json(); }),
@@ -218,7 +218,7 @@ export default function AdminUsersPage() {
     mutationFn: (file: File) => {
       const formData = new FormData();
       formData.append("file", file);
-      return fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"}/users/import`, {
+      return fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"}/admin/users/import`, {
         method: "POST",
         credentials: "include",
         body: formData,
