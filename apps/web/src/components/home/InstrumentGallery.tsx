@@ -86,7 +86,12 @@ function InstrumentCard({ inst, t }: InstrumentCardProps) {
       />
 
       {/* Content */}
-      <div className="relative z-10 p-5 h-full flex flex-col justify-between" style={{ transform: 'translateZ(30px)' }}>
+      <div
+        className="relative z-10 p-5 h-full flex flex-col justify-between"
+        style={{
+          transform: 'translateZ(30px)',
+        }}
+      >
         <div>
           <div className="text-2xl font-bold text-white mb-1 tracking-wide font-mono">{inst.name}</div>
           <div className="text-orange-400 font-mono text-[11px] opacity-80">{inst.model}</div>
@@ -107,12 +112,11 @@ function InstrumentCard({ inst, t }: InstrumentCardProps) {
       />
 
       {/* Hover overlay with blur */}
+      {isHovered && (
       <div
         className="absolute inset-0 bg-slate-900/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center rounded-xl transition-all duration-300"
         style={{
-          opacity: isHovered ? 1 : 0,
           transform: `translateZ(${isHovered ? 0 : -30}px)`,
-          pointerEvents: isHovered ? 'auto' : 'none',
         }}
       >
         <div
@@ -144,6 +148,7 @@ function InstrumentCard({ inst, t }: InstrumentCardProps) {
           {t("instruments." + inst.appKey)}
         </div>
       </div>
+      )}
     </div>
   );
 }
