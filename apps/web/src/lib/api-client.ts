@@ -89,4 +89,28 @@ export const userApi = {
   get: (id: string) => api.get(`/users/${id}`),
 };
 
+// ─── Admin Ledgers ───────────────────────────────────────────────────────────
+
+export const adminLedgerApi = {
+  list: (params?: { page?: number; page_size?: number; status?: string; search?: string }) =>
+    api.get("/admin/ledgers/", { params }),
+  update: (id: string, data: Record<string, unknown>) =>
+    api.patch(`/admin/ledgers/${id}`, data),
+  batchArchive: (ledgerIds: string[]) =>
+    api.post("/admin/ledgers/batch-archive", { ledger_ids: ledgerIds }),
+};
+
+// ─── Admin Audit Logs ────────────────────────────────────────────────────────
+
+export const auditLogApi = {
+  list: (params?: {
+    page?: number;
+    page_size?: number;
+    action?: string;
+    user_id?: string;
+    start_date?: string;
+    end_date?: string;
+  }) => api.get("/admin/audit-logs/", { params }),
+};
+
 export default api;

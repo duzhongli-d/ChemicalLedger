@@ -107,6 +107,8 @@
   "admin": {
     "users": "User Management",
     "categories": "Category Management",
+    "ledgers": "Ledger Management",
+    "auditLogs": "Audit Logs",
     "addUser": "Add User",
     "addCategory": "Add Category"
   },

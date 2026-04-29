@@ -107,6 +107,8 @@
   "admin": {
     "users": "用户管理",
     "categories": "品类管理",
+    "ledgers": "台账管理",
+    "auditLogs": "审计日志",
     "addUser": "添加用户",
     "addCategory": "添加品类"
   },
