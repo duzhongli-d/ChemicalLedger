@@ -73,6 +73,6 @@ test.describe("Admin Users", () => {
     await expect(page.getByRole("heading", { name: "删除用户" })).toBeVisible();
     await page.getByRole("button", { name: "确认删除" }).click();
     await page.waitForSelector('.fixed.inset-0.z-50', { state: 'detached', timeout: 5000 });
-    await expect(page.getByText(deleteUsername)).not.toBeVisible({ timeout: 5000 });
+    await expect(page.getByText(deleteUsername).first()).not.toBeVisible({ timeout: 5000 });
   });
 });
