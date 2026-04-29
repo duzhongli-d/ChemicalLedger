@@ -1,6 +1,7 @@
 import uuid as uuid_lib
 from datetime import datetime, timezone
-from sqlalchemy import Column, String, Integer, Boolean, Date, DateTime, ForeignKey, Text
+from sqlalchemy import Column, String, Integer, Boolean, Date, DateTime, ForeignKey, Text, JSON
+from sqlalchemy import func
 from sqlalchemy import Uuid
 from sqlalchemy.orm import relationship, declarative_base
 
@@ -40,6 +41,7 @@ class User(Base):
     notifications = relationship("Notification", back_populates="user")
     notebooks = relationship("ResearchNotebook", back_populates="user")
     daily_usages = relationship("DailyUsage", back_populates="user")
+    audit_logs = relationship("AuditLog", back_populates="user", order_by="desc(AuditLog.created_at)")
 
 
 class Category(Base):
@@ -122,3 +124,31 @@ class DailyUsage(Base):
     question_count = Column(Integer, default=0)
 
     user = relationship("User", back_populates="daily_usages")
+
+
+class AuditLog(Base):
+    __tablename__ = "audit_logs"
+
+    id = Column(Uuid, primary_key=True, default=uuid_lib.uuid4)
+    user_id = Column(Uuid, ForeignKey("users.id"), nullable=True)
+    action = Column(String(50), nullable=False)
+    target_type = Column(String(50), nullable=True)
+    target_id = Column(Uuid, nullable=True)
+    details = Column(JSON, nullable=True)
+    ip_address = Column(String(45), nullable=True)
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+
+    user = relationship("User", back_populates="audit_logs")
+
+
+class DailyStats(Base):
+    __tablename__ = "daily_stats"
+
+    id = Column(Uuid, primary_key=True, default=uuid_lib.uuid4)
+    date = Column(Date, nullable=False, unique=True)
+    total_ledgers = Column(Integer, nullable=False, default=0)
+    active_ledgers = Column(Integer, nullable=False, default=0)
+    expiring_ledgers = Column(Integer, nullable=False, default=0)
+    archived_ledgers = Column(Integer, nullable=False, default=0)
+    created_count = Column(Integer, nullable=False, default=0)
+    archived_count = Column(Integer, nullable=False, default=0)
