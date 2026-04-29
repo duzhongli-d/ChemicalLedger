@@ -44,7 +44,7 @@ export default function ResearchPage() {
       <aside className="w-64 flex-shrink-0 bg-white rounded-xl border border-gray-200 p-4 overflow-y-auto">
         <h2 className="font-bold text-gray-900 mb-4">{t("notebooks")}</h2>
         {notebooks.length === 0 ? (
-          <p className="text-sm text-gray-400">{t("noData")}</p>
+          <p className="text-sm text-gray-400">{t("common.noData")}</p>
         ) : (
           <ul className="space-y-2">
             {notebooks.map((nb: { id: string; name: string }) => (

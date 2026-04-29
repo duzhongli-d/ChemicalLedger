@@ -102,7 +102,10 @@
     "notebooks": "Notebooks",
     "newNotebook": "New Notebook",
     "ask": "Ask",
-    "placeholder": "Ask a question..."
+    "placeholder": "Ask a question...",
+    "common": {
+      "noData": "No data"
+    }
   },
   "admin": {
     "users": "User Management",

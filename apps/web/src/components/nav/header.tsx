@@ -16,8 +16,6 @@ export function Header() {
   const { user, logout, isAuthenticated, isAdmin } = useAuthStore();
   const [menuOpen, setMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
-  const [isHidden, setIsHidden] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const [hash, setHash] = useState("");
   const [mounted, setMounted] = useState(false);
 
@@ -56,32 +54,8 @@ export function Header() {
     return pathname.startsWith(href);
   };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-
-      if (currentScrollY < 50) {
-        setIsHidden(false);
-      }
-      else if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setIsHidden(true);
-      }
-      else if (currentScrollY < lastScrollY) {
-        setIsHidden(false);
-      }
-
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
-
   return (
-    <header className={clsx(
-      "sticky top-0 z-50 transition-transform duration-300 backdrop-blur-md bg-background/80 border-b border-border/50",
-      isHidden ? "-translate-y-full" : "translate-y-0"
-    )}>
+    <header className="sticky top-0 z-50 backdrop-blur-md bg-background/80 border-b border-border/50">
       <div className="max-w-[1320px] mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}

@@ -41,8 +41,11 @@ export default function CreateLedgerPage() {
 
   const createMutation = useMutation({
     mutationFn: () => {
-      const payload = { ...form, quantity: Number(form.quantity) };
-      if (!payload.open_date) delete payload.open_date;
+      const { open_date, ...rest } = form;
+      const payload = { ...rest, quantity: Number(form.quantity) };
+      if (open_date) {
+        return ledgerApi.create({ ...payload, open_date });
+      }
       return ledgerApi.create(payload);
     },
     onSuccess: () => router.push("/"),

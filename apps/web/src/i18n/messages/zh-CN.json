@@ -102,7 +102,10 @@
     "notebooks": "笔记本列表",
     "newNotebook": "新建笔记本",
     "ask": "提问",
-    "placeholder": "输入您的问题..."
+    "placeholder": "输入您的问题...",
+    "common": {
+      "noData": "暂无数据"
+    }
   },
   "admin": {
     "users": "用户管理",

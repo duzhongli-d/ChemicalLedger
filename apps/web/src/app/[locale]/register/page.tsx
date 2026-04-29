@@ -21,7 +21,7 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       const { data } = await authApi.register(form);
-      setAuth(data.access_token, data.user);
+      setAuth(data.user);
       router.push("/");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "注册失败");
