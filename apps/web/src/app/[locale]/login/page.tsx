@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Link } from "@/i18n/navigation";
+import { useLocale } from "next-intl";
 import { authApi } from "@/lib/api-client";
 import { useAuthStore } from "@/lib/auth-store";
 
@@ -12,7 +13,8 @@ type LoginMode = "email" | "username";
 export default function LoginPage() {
   const t = useTranslations("auth");
   const router = useRouter();
-  const { setAuth } = useAuthStore();
+  const locale = useLocale();
+  const { setAuth, isAdmin } = useAuthStore();
   const [loginMode, setLoginMode] = useState<LoginMode>("username");
   const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [rememberMe, setRememberMe] = useState(false);
@@ -29,7 +31,11 @@ export default function LoginPage() {
         : { username: form.username, password: form.password };
       const { data } = await authApi.login(payload);
       setAuth(data.user);
-      router.push("/");
+      if (isAdmin()) {
+        router.push(`/${locale}/admin/categories`);
+      } else {
+        router.push("/");
+      }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "登录失败，请检查用户名和密码");
     } finally {

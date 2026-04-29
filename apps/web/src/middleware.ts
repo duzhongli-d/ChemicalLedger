@@ -15,10 +15,8 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(redirectPath, request.url));
   }
 
-  // Get token from cookie (set by zustand persist)
-  const token = request.cookies.get("auth")?.value;
-  const parsedToken = token ? JSON.parse(token) : null;
-  const actualToken = parsedToken?.state?.token;
+  // Get token from cookie (set by backend on login)
+  const token = request.cookies.get("access_token")?.value;
 
   // Define protected paths (without locale prefix)
   const protectedPaths = ["/ledger/create", "/research", "/admin", "/profile", "/notifications"];
@@ -32,7 +30,7 @@ export function middleware(request: NextRequest) {
     const pathWithoutLocale = pathname.replace(`/${locale}`, "");
     const isProtected = protectedPaths.some((p) => pathWithoutLocale.startsWith(p));
 
-    if (isProtected && !actualToken) {
+    if (isProtected && !token) {
       return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
     }
   }
