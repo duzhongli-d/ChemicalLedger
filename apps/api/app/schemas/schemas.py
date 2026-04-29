@@ -11,6 +11,14 @@ class UserCreate(BaseModel):
     password: str
 
 
+class AdminUserCreate(BaseModel):
+    username: str
+    email: EmailStr
+    phone: Optional[str] = None
+    department: Optional[str] = None
+    role: str = "user"
+
+
 class UserLogin(BaseModel):
     username: Optional[str] = None
     email: Optional[str] = None

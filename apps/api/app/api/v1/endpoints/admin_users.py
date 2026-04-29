@@ -8,7 +8,7 @@ from uuid import uuid4
 from app.db.session import get_db
 from app.api.deps import get_admin_user
 from app.db.models import User
-from app.schemas.schemas import UserCreate, UserUpdate, UserResponse
+from app.schemas.schemas import AdminUserCreate, UserUpdate, UserResponse
 from app.core.security import hash_password
 from app.services.audit_service import AuditService
 
@@ -32,7 +32,7 @@ def list_users(
 
 @router.post("/", response_model=UserResponse)
 def create_user(
-    user_data: UserCreate,
+    user_data: AdminUserCreate,
     db: Session = Depends(get_db),
     current_user = Depends(get_admin_user),
 ):
