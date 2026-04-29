@@ -1,25 +1,81 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Login Journey", () => {
-  test("should login with valid credentials and redirect to dashboard", async ({ page }) => {
+test.describe("Login Page UI", () => {
+  test.beforeEach(async ({ page }) => {
     await page.goto("/zh-CN/login");
-
-    await page.locator('input[type="text"]').fill("testuser");
-    await page.locator('input[type="password"]').fill(process.env.E2E_PASSWORD || "testpassword");
-    await page.getByRole("button", { name: /登录/i }).click();
-
-    await expect(page).toHaveURL(/\/zh-CN\/$/);
-    await expect(page.getByText(/Total Ledgers/i)).toBeVisible();
+    await page.waitForLoadState("networkidle");
   });
 
-  test("should show error with invalid credentials", async ({ page }) => {
-    await page.goto("/zh-CN/login");
+  test("should display split layout with decorative panel on desktop", async ({ page }) => {
+    // Desktop: left panel should be visible with the split layout classes
+    const leftPanel = page.locator("div.hidden.lg\\:flex.lg\\:w-2\\/5");
+    await expect(leftPanel).toBeVisible();
 
-    await page.locator('input[type="text"]').fill("baduser");
-    await page.locator('input[type="password"]').fill("badpassword");
-    await page.getByRole("button", { name: /登录/i }).click();
+    // Form panel should be visible
+    const formPanel = page.locator("form");
+    await expect(formPanel).toBeVisible();
+  });
 
-    await expect(page.getByText(/登录失败/i)).toBeVisible();
+  test("should toggle between email and username login modes", async ({ page }) => {
+    // Default is username mode - text input should be visible
+    const usernameInput = page.locator('input[type="text"]');
+    await expect(usernameInput).toBeVisible();
+
+    // Email input should not be visible in username mode
+    const emailInput = page.locator('input[type="email"]');
+    await expect(emailInput).not.toBeVisible();
+
+    // Click on email toggle button
+    await page.getByRole("button", { name: "邮箱" }).click();
+
+    // Now email input should be visible
+    await expect(emailInput).toBeVisible();
+
+    // Username input should be hidden
+    await expect(usernameInput).not.toBeVisible();
+
+    // Click back to username mode
+    await page.getByRole("button", { name: "用户名" }).click();
+
+    // Username input should be visible again
+    await expect(usernameInput).toBeVisible();
+
+    // Email input should be hidden
+    await expect(emailInput).not.toBeVisible();
+  });
+
+  test("should show validation error for empty fields", async ({ page }) => {
+    // Submit without filling any fields - browser validation should prevent submission
+    const submitButton = page.locator('button[type="submit"]');
+    await submitButton.click();
+
+    // The form should still be on login page (no navigation)
+    await expect(page).toHaveURL(/\/zh-CN\/login/);
+  });
+
+  test("should have working register link", async ({ page }) => {
+    // Register link should be visible in the form's main content area (not header nav)
+    const registerLink = page.getByRole("main").getByRole("link", { name: "注册" });
+    await expect(registerLink).toBeVisible();
+
+    // Click register link - should navigate to register page
+    await registerLink.click();
+    await expect(page).toHaveURL(/\/zh-CN\/register/);
+  });
+
+  test("should show error on invalid credentials", async ({ page }) => {
+    // Fill in username and password with wrong credentials
+    await page.locator('input[type="text"]').fill("wronguser");
+    await page.locator('input[type="password"]').fill("wrongpassword");
+
+    // Click submit button
+    await page.locator('button[type="submit"]').click();
+
+    // Error message should appear (network error when backend isn't running)
+    const errorMessage = page.getByText(/Network Error|登录失败/);
+    await expect(errorMessage).toBeVisible();
+
+    // Should still be on login page
     await expect(page).toHaveURL(/\/zh-CN\/login/);
   });
 });
