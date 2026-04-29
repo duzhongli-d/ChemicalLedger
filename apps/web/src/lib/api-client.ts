@@ -58,6 +58,12 @@ export const categoryApi = {
     opened_shelf_months: number;
     remarks?: string;
   }) => api.post("/categories/", data),
+  update: (id: string, data: {
+    warning_threshold_days?: number;
+    unopened_shelf_months?: number;
+    opened_shelf_months?: number;
+    remarks?: string;
+  }) => api.patch(`/admin/categories/${id}`, data),
 };
 
 // ─── Notifications ───────────────────────────────────────────────────────────
