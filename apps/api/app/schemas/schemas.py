@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ConfigDict, EmailStr, model_validator
 from datetime import date, datetime
 from uuid import UUID
-from typing import Optional
+from typing import Optional, List
 
 
 class UserCreate(BaseModel):
@@ -124,3 +124,41 @@ class QuotaResponse(BaseModel):
     limit: int
     notebooks_count: int
     notebooks_limit: int
+
+
+class AuditLogBase(BaseModel):
+    action: str
+    target_type: Optional[str] = None
+    target_id: Optional[UUID] = None
+    details: Optional[dict] = None
+    ip_address: Optional[str] = None
+
+
+class AuditLogCreate(AuditLogBase):
+    user_id: UUID
+
+
+class AuditLogResponse(AuditLogBase):
+    id: UUID
+    user_id: Optional[UUID]
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class UserUpdate(BaseModel):
+    email: Optional[EmailStr] = None
+    phone: Optional[str] = None
+    department: Optional[str] = None
+    role: Optional[str] = None
+
+
+class CategoryUpdate(BaseModel):
+    warning_threshold_days: Optional[int] = None
+    unopened_shelf_months: Optional[int] = None
+    opened_shelf_months: Optional[int] = None
+    remarks: Optional[str] = None
+
+
+class BatchArchiveRequest(BaseModel):
+    ledger_ids: List[UUID]
