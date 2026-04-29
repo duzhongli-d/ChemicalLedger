@@ -71,8 +71,8 @@ test.describe("Login Page UI", () => {
     // Click submit button
     await page.locator('button[type="submit"]').click();
 
-    // Error message should appear (network error when backend isn't running)
-    const errorMessage = page.getByText(/Network Error|登录失败/);
+    // Error message should appear - matches axios 401 error or backend detail
+    const errorMessage = page.getByText(/Invalid credentials|登录失败|status code 401/i);
     await expect(errorMessage).toBeVisible();
 
     // Should still be on login page
