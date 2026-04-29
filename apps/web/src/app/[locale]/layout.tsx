@@ -2,7 +2,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { Providers } from "@/components/providers";
-import { Header } from "@/components/nav/header";
+import { HeaderConditional } from "@/components/layout/HeaderConditional";
 import "../globals.css";
 
 export function generateStaticParams() {
@@ -20,12 +20,12 @@ export default async function LocaleLayout({
   const messages = await getMessages({ locale });
 
   return (
-    <html lang={locale}>
-      <body className="min-h-screen bg-slate-950 text-slate-100 antialiased">
+    <html lang={locale} suppressHydrationWarning>
+      <body className="min-h-screen bg-background dark:bg-background" suppressHydrationWarning>
         <NextIntlClientProvider messages={messages}>
           <Providers>
-            <Header />
-            <main className="pt-20">{children}</main>
+            <HeaderConditional />
+            <main>{children}</main>
           </Providers>
         </NextIntlClientProvider>
       </body>

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useTranslations } from "next-intl";
 
 const metrics = [
@@ -8,10 +8,14 @@ const metrics = [
   { key: "auditRate", value: 99.8, suffix: "%" },
 ];
 
-function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
+// Progress ring values (0-100) for each metric
+const progressValues = [85, 72, 95];
+
+function AnimatedNumber({ value, suffix, isVisible }: { value: number; suffix: string; isVisible: boolean }) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
+    if (!isVisible) return;
     const duration = 2000;
     const steps = 60;
     const increment = value / steps;
@@ -26,60 +30,159 @@ function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
       }
     }, duration / steps);
     return () => clearInterval(timer);
-  }, [value]);
+  }, [value, isVisible]);
 
   const displayValue = value % 1 === 0 ? count.toLocaleString() : count.toFixed(1);
   return <span>{displayValue}{suffix}</span>;
 }
 
+function ProgressRing({ progress, isVisible, delay = 0 }: { progress: number; isVisible: boolean; delay?: number }) {
+  const [offset, setOffset] = useState(283); // circumference = 2 * PI * 45 = 283
+  const radius = 45;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (progress / 100) * circumference;
+
+  useEffect(() => {
+    if (isVisible) {
+      const timeout = setTimeout(() => {
+        setOffset(strokeDashoffset);
+      }, delay);
+      return () => clearTimeout(timeout);
+    } else {
+      setOffset(circumference);
+    }
+  }, [isVisible, strokeDashoffset, delay, circumference]);
+
+  return (
+    <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
+      {/* Background ring */}
+      <circle
+        cx="50"
+        cy="50"
+        r={radius}
+        fill="none"
+        stroke="rgba(249, 115, 22, 0.1)"
+        strokeWidth="3"
+      />
+      {/* Progress ring */}
+      <circle
+        cx="50"
+        cy="50"
+        r={radius}
+        fill="none"
+        stroke="url(#progressGradient)"
+        strokeWidth="4"
+        strokeLinecap="round"
+        strokeDasharray={circumference}
+        strokeDashoffset={offset}
+        style={{
+          transition: 'stroke-dashoffset 1.5s ease-out',
+          filter: 'drop-shadow(0 0 6px rgba(249, 115, 22, 0.5))'
+        }}
+      />
+      <defs>
+        <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#f97316" />
+          <stop offset="100%" stopColor="#14b8a6" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+
+function MetricCard({ metric, index, isVisible }: { metric: typeof metrics[0]; index: number; isVisible: boolean }) {
+  return (
+    <div
+      className={`
+        relative overflow-hidden
+        transform transition-all duration-700
+        ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'}
+      `}
+      style={{ transitionDelay: `${index * 150}ms` }}
+    >
+      {/* Progress ring background */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <ProgressRing progress={progressValues[index]} isVisible={isVisible} delay={index * 150} />
+      </div>
+
+      {/* Card content */}
+      <div className="relative z-10 glass rounded-2xl p-6 sm:p-8 text-center border border-orange-500/20 hover:border-orange-500/40 transition-colors">
+        {/* Inner glow */}
+        <div
+          className="absolute inset-0 rounded-2xl opacity-20 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at center, rgba(249, 115, 22, 0.15) 0%, transparent 70%)'
+          }}
+        />
+
+        <div className="relative">
+          <div className="text-4xl sm:text-5xl font-bold font-mono mb-2 text-orange-400">
+            <AnimatedNumber value={metric.value} suffix={metric.suffix} isVisible={isVisible} />
+          </div>
+          <div className="text-orange-400/80 font-mono text-sm">{metric.key}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function TechMetrics() {
   const t = useTranslations("home");
+  const [isVisible, setIsVisible] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [mounted]);
+
   return (
-    <section
-      className="py-24 relative overflow-hidden"
-      style={{ background: 'var(--slate-900)' }}
-    >
-      {/* Background glow effects */}
-      <div
-        className="absolute top-1/2 left-1/4 w-96 h-96 rounded-full blur-[120px]"
-        style={{ background: 'var(--accent)', opacity: 0.1 }}
-      />
-      <div
-        className="absolute top-1/2 right-1/4 w-80 h-80 rounded-full blur-[120px]"
-        style={{ background: 'var(--primary)', opacity: 0.08 }}
-      />
+    <section ref={sectionRef} className="py-20 sm:py-24 bg-slate-900 text-white relative overflow-hidden">
+      {/* Enhanced background effects */}
+      <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-[120px] animate-pulse" />
+      <div className="absolute top-1/2 right-1/4 w-80 h-80 bg-teal-500/8 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '0.5s' }} />
+
+      {/* Decorative circuit lines */}
+      <div className="absolute top-0 left-0 w-full h-full opacity-5">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <pattern id="circuit" width="100" height="100" patternUnits="userSpaceOnUse">
+            <path d="M0 50 H40 M60 50 H100 M50 0 V40 M50 60 V100" stroke="currentColor" strokeWidth="0.5" fill="none" />
+          </pattern>
+          <rect width="100%" height="100%" fill="url(#circuit)" />
+        </svg>
+      </div>
 
       <div className="max-w-[1320px] mx-auto px-4 relative z-10">
-        <h2
-          className="text-2xl font-bold mb-4 text-center"
-          style={{ fontFamily: "'Plus Jakarta Sans', monospace", color: 'var(--foreground)' }}
-        >
+        <h2 className={`text-xl sm:text-2xl font-bold mb-4 text-center font-mono transition-all duration-700 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
           {t("metrics.title")}
         </h2>
-        <p className="text-center mb-12" style={{ color: 'var(--muted-foreground)' }}>
+        <p className={`text-slate-400 text-center mb-12 transition-all duration-700 delay-100 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
           {t("metrics.subtitle")}
         </p>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid sm:grid-cols-3 gap-6 sm:gap-8">
           {metrics.map((m, i) => (
-            <div
-              key={m.key}
-              className="glass rounded-2xl p-8 text-center relative"
-              style={{ animationDelay: `${i * 100}ms` }}
-            >
-              <div
-                className="text-5xl font-bold mb-2"
-                style={{ fontFamily: "'Plus Jakarta Sans', monospace", color: 'var(--foreground)' }}
-              >
-                <AnimatedNumber value={m.value} suffix={m.suffix} />
-              </div>
-              <div
-                className="font-mono text-sm"
-                style={{ color: 'var(--accent)' }}
-              >
-                {t("metrics." + m.key + "Label")}
-              </div>
-            </div>
+            <MetricCard key={m.key} metric={m} index={i} isVisible={isVisible} />
           ))}
         </div>
       </div>

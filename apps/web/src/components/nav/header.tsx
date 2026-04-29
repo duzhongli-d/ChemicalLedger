@@ -19,6 +19,7 @@ export function Header() {
   const [isHidden, setIsHidden] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [hash, setHash] = useState("");
+  const [mounted, setMounted] = useState(false);
 
   // Sync hash state with window.location.hash on mount and hash change
   useEffect(() => {
@@ -29,6 +30,11 @@ export function Header() {
     setHash(window.location.hash);
     window.addEventListener("hashchange", handleHashChange);
     return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
+  // Hydration guard for auth-dependent UI
+  useEffect(() => {
+    setMounted(true);
   }, []);
 
   const publicNavLinks = [
@@ -134,7 +140,8 @@ export function Header() {
             <LanguageToggle />
             <MobileMenu />
 
-            {isAuthenticated() ? (
+            {/* During SSR/hydration, always show logged-out state */}
+            {isAuthenticated() && mounted ? (
               <div className="relative">
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
