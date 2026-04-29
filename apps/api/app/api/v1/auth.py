@@ -55,7 +55,11 @@ def register(data: UserCreate, db: Session = Depends(get_db), response: Response
 
 @router.post("/login", response_model=TokenResponse)
 def login(data: UserLogin, db: Session = Depends(get_db), response: Response = None):
-    user = db.query(User).filter(User.username == data.username).first()
+    # Query by username or email depending on what was provided
+    if data.username:
+        user = db.query(User).filter(User.username == data.username).first()
+    else:
+        user = db.query(User).filter(User.email == data.email).first()
     if not user or not verify_password(data.password, user.password_hash):
         raise HTTPException(401, "Invalid credentials")
     user.last_login_at = datetime.now(timezone.utc)

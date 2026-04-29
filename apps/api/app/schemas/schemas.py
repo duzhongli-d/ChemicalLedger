@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, model_validator
 from datetime import date, datetime
 from uuid import UUID
 from typing import Optional
@@ -12,8 +12,15 @@ class UserCreate(BaseModel):
 
 
 class UserLogin(BaseModel):
-    username: str
+    username: Optional[str] = None
+    email: Optional[str] = None
     password: str
+
+    @model_validator(mode="after")
+    def check_identity(self):
+        if not self.username and not self.email:
+            raise ValueError("Either username or email must be provided")
+        return self
 
 
 class UserResponse(BaseModel):

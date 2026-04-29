@@ -12,7 +12,12 @@
     "back": "Back",
     "next": "Next",
     "submit": "Submit",
-    "required": "Required"
+    "required": "Required",
+    "showing": "Showing",
+    "of": "of",
+    "entries": "entries",
+    "previous": "Previous",
+    "next": "Next"
   },
   "nav": {
     "home": "Home",
@@ -29,6 +34,7 @@
     "about": "About Us",
     "aiAssistant": "AI Ledger",
     "deepResearch": "Deep Research",
+    "contact": "Contact Us",
     "brand": "Abachem QC"
   },
   "auth": {
@@ -41,7 +47,12 @@
     "loginTitle": "Login to Abachem QC Platform",
     "registerTitle": "Create Account",
     "noAccount": "No account yet?",
-    "hasAccount": "Already have an account?"
+    "hasAccount": "Already have an account?",
+    "loginWithEmail": "Use email login",
+    "loginWithUsername": "Use username login",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "orContinueWith": "or continue with"
   },
   "ledger": {
     "create": "New Ledger",
@@ -117,15 +128,8 @@
     "hero": {
       "title": "Abachem QC Technology Platform",
       "subtitle": "Integrating chemical rigor with digital intelligence for next-gen QC laboratory management",
-      "badge": "GMP/ISO Certified",
-      "cta1": "Get Started",
-      "cta2": "Learn More",
-      "chartTitle": "Detection Trends",
-      "chartBadge": "Live",
-      "stat1": "Efficiency Gain",
-      "stat2": "Accuracy Rate",
-      "badge1": "Data Visualization",
-      "badge2": "Smart Alerts"
+      "cta": "Start Now",
+      "secondaryCta": "Learn More"
     },
     "strengths": {
       "compliance": "Compliance System",
@@ -151,8 +155,7 @@
       "polarimeter": { "use": "Optical Rotation", "application": "Chiral Analysis" },
       "gc": { "use": "Volatility Analysis", "application": "Residual Analysis" },
       "tlc": { "use": "Qualitative Identification", "application": "Rapid Detection" },
-      "ea": { "use": "C/H/N/S Analysis", "application": "Composition Analysis" },
-      "viewDetails": "View Details →"
+      "ea": { "use": "C/H/N/S Analysis", "application": "Composition Analysis" }
     },
     "metrics": {
       "title": "Technical Capabilities",
