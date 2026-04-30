@@ -1,16 +1,17 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname } from "@/i18n/navigation";
 import { Header } from "@/components/nav/header";
 
 export function HeaderConditional() {
   const pathname = usePathname();
-  // Check for ledger routes — use regex to avoid /ledger matching /ledgers
+  // next-intl's usePathname strips the locale prefix (e.g., /zh-CN/admin -> /admin)
   const isLedgerPage =
-    /^\/(?:zh|en)?\/ledgers?(?:\/|$)/.test(pathname) ||
-    /^\/(?:zh|en)?\/ledger\/[^/]+$/.test(pathname);
+    /^\/ledgers?(?:\/|$)/.test(pathname) ||
+    /^\/ledger\/[^/]+$/.test(pathname);
+  const isAdminPage = /^\/admin(?:\/|$)/.test(pathname);
 
-  if (isLedgerPage) return null;
+  if (isLedgerPage || isAdminPage) return null;
 
   return <Header />;
 }
