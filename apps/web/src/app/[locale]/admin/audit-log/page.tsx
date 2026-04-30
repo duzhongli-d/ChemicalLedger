@@ -1,12 +1,10 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "@/i18n/navigation";
+import { format } from "date-fns";
+import AdminLayout from "@/components/admin/AdminLayout";
 import { auditLogApi } from "@/lib/api-client";
-import { useAuthStore } from "@/lib/auth-store";
-import { Pagination } from "@/components/layout/Pagination";
 
 const PAGE_SIZE = 50;
 
@@ -19,6 +17,12 @@ interface AuditLog {
   ip_address: string | null;
   user_id: string | null;
   created_at: string;
+  user?: { username: string };
+}
+
+interface User {
+  id: string;
+  username: string;
 }
 
 const ACTION_LABELS: Record<string, string> = {
@@ -30,51 +34,60 @@ const ACTION_LABELS: Record<string, string> = {
   LEDGER_BATCH_ARCHIVE: "批量归档台账",
   CATEGORY_CREATE: "创建品类",
   CATEGORY_UPDATE: "更新品类",
+  CATEGORY_DELETE: "删除品类",
   USER_CREATE: "创建用户",
   USER_UPDATE: "更新用户",
+  USER_DELETE: "删除用户",
+  USER_IMPORT: "导入用户",
+  admin_reset_password: "重置密码",
 };
 
 export default function AuditLogPage() {
-  const t = useTranslations("admin");
-  const tCommon = useTranslations("common");
-  const { isAdmin } = useAuthStore();
-
   const [actionFilter, setActionFilter] = useState<string>("");
+  const [userFilter, setUserFilter] = useState<string>("");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Fetch users for filter dropdown
+  const { data: users = [] } = useQuery({
+    queryKey: ["admin-users-minimal"],
+    queryFn: () => {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+      return fetch(`${apiUrl}/admin/users/?page=1&page_size=100`, {
+        credentials: "include",
+      }).then((r) => r.json());
+    },
+  });
+
+  // Fetch audit logs
   const { data: auditLogs = [], isLoading } = useQuery({
-    queryKey: ["audit-logs", actionFilter, startDate, endDate],
+    queryKey: ["audit-logs", actionFilter, userFilter, startDate, endDate, currentPage],
     queryFn: () =>
       auditLogApi.list({
         action: actionFilter || undefined,
+        user_id: userFilter || undefined,
         start_date: startDate || undefined,
         end_date: endDate || undefined,
-        page_size: 100,
+        page: currentPage,
+        page_size: PAGE_SIZE,
       }).then((r) => r.data),
-    enabled: isAdmin(),
   });
 
-  // Filter by action type (client-side)
+  // Filter by action type (client-side additional filter if needed)
   const filteredLogs = useMemo(() => {
     let filtered: AuditLog[] = Array.isArray(auditLogs) ? auditLogs : [];
     if (actionFilter) {
       filtered = filtered.filter((log) => log.action === actionFilter);
     }
+    if (userFilter) {
+      filtered = filtered.filter((log) => log.user_id === userFilter);
+    }
     return filtered;
-  }, [auditLogs, actionFilter]);
+  }, [auditLogs, actionFilter, userFilter]);
 
   // Pagination
   const totalPages = Math.ceil(filteredLogs.length / PAGE_SIZE);
-  const paginatedLogs = filteredLogs.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE
-  );
-
-  if (!isAdmin()) {
-    return <div className="text-center py-12 text-red-500">需要管理员权限</div>;
-  }
 
   const getActionLabel = (action: string) => {
     return ACTION_LABELS[action] || action;
@@ -86,166 +99,265 @@ export default function AuditLogPage() {
       const parts: string[] = [];
       if (details.count !== undefined) parts.push(`数量: ${details.count}`);
       if (details.fields) parts.push(`字段: ${(details.fields as string[]).join(", ")}`);
-      if (details.errors && Array.isArray(details.errors) && details.errors.length > 0) {
+      if (details.errors && Array.isArray(details.errors) && (details.errors as string[]).length > 0) {
         parts.push(`错误: ${(details.errors as string[]).slice(0, 3).join(", ")}`);
       }
+      if (details.success !== undefined) parts.push(`成功: ${details.success}`);
+      if (details.skipped !== undefined) parts.push(`跳过: ${details.skipped}`);
+      if (details.username !== undefined) parts.push(`用户: ${details.username}`);
       return parts.length > 0 ? parts.join(", ") : JSON.stringify(details);
     }
     return String(details);
   };
 
+  const handleExportCSV = () => {
+    const headers = ["时间", "用户", "操作", "目标类型", "目标ID", "详情", "IP地址"];
+    const rows = filteredLogs.map((log) => [
+      format(new Date(log.created_at), "yyyy-MM-dd HH:mm:ss"),
+      log.user?.username || log.user_id || "-",
+      getActionLabel(log.action),
+      log.target_type || "-",
+      log.target_id || "-",
+      formatDetails(log.details),
+      log.ip_address || "-",
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row) =>
+        row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")
+      ),
+    ].join("\n");
+
+    const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `审计日志_${format(new Date(), "yyyyMMdd_HHmmss")}.csv`;
+    link.click();
+  };
+
+  const clearFilters = () => {
+    setActionFilter("");
+    setUserFilter("");
+    setStartDate("");
+    setEndDate("");
+    setCurrentPage(1);
+  };
+
+  const hasFilters = actionFilter || userFilter || startDate || endDate;
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        <Link href="/" className="text-gray-400 hover:text-gray-600">← {t("auditLogs") || "审计日志"}</Link>
-        <h1 className="text-2xl font-bold text-gray-900">{t("auditLogs") || "审计日志"}</h1>
-      </div>
-
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-4 bg-white rounded-xl border border-gray-200 shadow-sm p-4">
-        {/* Action Filter */}
-        <select
-          value={actionFilter}
-          onChange={(e) => {
-            setActionFilter(e.target.value);
-            setCurrentPage(1);
-          }}
-          className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-        >
-          <option value="">全部操作</option>
-          {Object.entries(ACTION_LABELS).map(([key, label]) => (
-            <option key={key} value={key}>{label}</option>
-          ))}
-        </select>
-
-        {/* Date Range */}
-        <div className="flex items-center gap-2">
-          <span className="text-gray-500">日期:</span>
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => {
-              setStartDate(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-          />
-          <span className="text-gray-400">至</span>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => {
-              setEndDate(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-          />
+    <AdminLayout>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-slate-900">审计日志</h1>
+          <button
+            onClick={handleExportCSV}
+            disabled={filteredLogs.length === 0}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm font-medium flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            导出CSV
+          </button>
         </div>
 
-        {/* Clear Filters */}
-        {(actionFilter || startDate || endDate) && (
-          <button
-            onClick={() => {
-              setActionFilter("");
-              setStartDate("");
-              setEndDate("");
-              setCurrentPage(1);
-            }}
-            className="px-4 py-2 text-gray-500 hover:text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-          >
-            清除筛选
-          </button>
-        )}
-      </div>
+        {/* Filters */}
+        <div className="flex flex-wrap items-center gap-4 bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+          {/* Action Filter */}
+          <div>
+            <label className="block text-xs text-slate-500 mb-1">操作类型</label>
+            <select
+              value={actionFilter}
+              onChange={(e) => {
+                setActionFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            >
+              <option value="">全部操作</option>
+              {Object.entries(ACTION_LABELS).map(([key, label]) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        {isLoading ? (
-          <div className="p-8 text-center text-gray-500">{tCommon("loading")}</div>
-        ) : paginatedLogs.length === 0 ? (
-          <div className="p-8 text-center text-gray-400">{tCommon("noData")}</div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  {[
-                    { key: "createdAt", label: "时间" },
-                    { key: "action", label: "操作" },
-                    { key: "target", label: "目标" },
-                    { key: "details", label: "详情" },
-                    { key: "ip", label: "IP" },
-                  ].map((h) => (
-                    <th key={h.key} className="text-left px-4 py-3 font-medium text-gray-600 whitespace-nowrap">
-                      {h.label}
+          {/* User Filter */}
+          <div>
+            <label className="block text-xs text-slate-500 mb-1">用户</label>
+            <select
+              value={userFilter}
+              onChange={(e) => {
+                setUserFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            >
+              <option value="">全部用户</option>
+              {(users as User[]).map((user) => (
+                <option key={user.id} value={user.id}>
+                  {user.username}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Date Range */}
+          <div>
+            <label className="block text-xs text-slate-500 mb-1">开始日期</label>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => {
+                setStartDate(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs text-slate-500 mb-1">结束日期</label>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => {
+                setEndDate(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            />
+          </div>
+
+          {/* Clear Filters */}
+          {hasFilters && (
+            <button
+              onClick={clearFilters}
+              className="px-4 py-2 text-slate-500 hover:text-slate-700 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors text-sm self-end"
+            >
+              清除筛选
+            </button>
+          )}
+        </div>
+
+        {/* Table */}
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          {isLoading ? (
+            <div className="p-8 text-center text-slate-500">加载中...</div>
+          ) : filteredLogs.length === 0 ? (
+            <div className="p-8 text-center text-slate-400">暂无数据</div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-slate-50 border-b border-slate-200">
+                  <tr>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
+                      时间
                     </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {paginatedLogs.map((log) => (
-                  <tr key={log.id} className="hover:bg-gray-50">
-                    {/* Time */}
-                    <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
-                      {new Date(log.created_at).toLocaleString("zh-CN", {
-                        year: "numeric",
-                        month: "2-digit",
-                        day: "2-digit",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit",
-                      })}
-                    </td>
-
-                    {/* Action */}
-                    <td className="px-4 py-3">
-                      <span className="inline-block px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-medium">
-                        {getActionLabel(log.action)}
-                      </span>
-                    </td>
-
-                    {/* Target */}
-                    <td className="px-4 py-3 text-gray-500">
-                      {log.target_type ? (
-                        <span className="text-gray-700">
-                          {log.target_type}
-                          {log.target_id && (
-                            <span className="ml-1 font-mono text-xs text-orange-500">
-                              {String(log.target_id).slice(0, 8)}...
-                            </span>
-                          )}
-                        </span>
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-
-                    {/* Details */}
-                    <td className="px-4 py-3 text-gray-500 max-w-xs truncate" title={formatDetails(log.details)}>
-                      {formatDetails(log.details)}
-                    </td>
-
-                    {/* IP */}
-                    <td className="px-4 py-3 text-gray-400 font-mono text-xs">
-                      {log.ip_address || "-"}
-                    </td>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
+                      用户
+                    </th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
+                      操作
+                    </th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
+                      目标
+                    </th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
+                      详情
+                    </th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
+                      IP
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredLogs.map((log) => (
+                    <tr key={log.id} className="hover:bg-slate-50">
+                      {/* Time */}
+                      <td className="px-4 py-3 text-slate-600 whitespace-nowrap text-xs">
+                        {format(new Date(log.created_at), "yyyy-MM-dd HH:mm:ss")}
+                      </td>
+
+                      {/* User */}
+                      <td className="px-4 py-3">
+                        <span className="font-medium text-slate-900">
+                          {log.user?.username || "-"}
+                        </span>
+                      </td>
+
+                      {/* Action */}
+                      <td className="px-4 py-3">
+                        <span className="inline-block px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-medium">
+                          {getActionLabel(log.action)}
+                        </span>
+                      </td>
+
+                      {/* Target */}
+                      <td className="px-4 py-3 text-slate-600">
+                        {log.target_type ? (
+                          <div>
+                            <span className="text-slate-700">{log.target_type}</span>
+                            {log.target_id && (
+                              <span className="ml-1 font-mono text-xs text-slate-400">
+                                {String(log.target_id).slice(0, 8)}
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+
+                      {/* Details */}
+                      <td className="px-4 py-3 text-slate-500 max-w-xs truncate text-xs" title={formatDetails(log.details)}>
+                        {formatDetails(log.details)}
+                      </td>
+
+                      {/* IP */}
+                      <td className="px-4 py-3 text-slate-400 font-mono text-xs">
+                        {log.ip_address || "-"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between px-4">
+            <div className="text-sm text-slate-600">
+              共 {filteredLogs.length} 条记录
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage <= 1}
+                className="px-3 py-1 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                上一页
+              </button>
+              <span className="px-3 py-1 text-sm text-slate-600">
+                第 {currentPage} / {totalPages} 页
+              </span>
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage >= totalPages}
+                className="px-3 py-1 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                下一页
+              </button>
+            </div>
           </div>
         )}
       </div>
-
-      {/* Pagination */}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        totalItems={filteredLogs.length}
-        pageSize={PAGE_SIZE}
-        onPageChange={setCurrentPage}
-      />
-    </div>
+    </AdminLayout>
   );
 }

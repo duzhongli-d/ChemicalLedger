@@ -170,3 +170,7 @@ class CategoryUpdate(BaseModel):
 
 class BatchArchiveRequest(BaseModel):
     ledger_ids: List[UUID]
+
+
+class ResetPasswordRequest(BaseModel):
+    new_password: str

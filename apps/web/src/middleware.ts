@@ -18,6 +18,9 @@ export function middleware(request: NextRequest) {
   // Get token from cookie (set by backend on login)
   const token = request.cookies.get("access_token")?.value;
 
+  // Define public paths that don't require authentication
+  const publicPaths = ["/login", "/register", "/admin/login"];
+
   // Define protected paths (without locale prefix)
   const protectedPaths = ["/ledger/create", "/research", "/admin", "/profile", "/notifications"];
 
@@ -28,9 +31,14 @@ export function middleware(request: NextRequest) {
 
   if (locale) {
     const pathWithoutLocale = pathname.replace(`/${locale}`, "");
+
+    // Check if it's a public path
+    const isPublic = publicPaths.some((p) => pathWithoutLocale.startsWith(p));
+
+    // Check if it's a protected path
     const isProtected = protectedPaths.some((p) => pathWithoutLocale.startsWith(p));
 
-    if (isProtected && !token) {
+    if (isProtected && !token && !isPublic) {
       return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
     }
   }

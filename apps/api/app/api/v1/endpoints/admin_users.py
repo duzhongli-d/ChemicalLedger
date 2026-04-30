@@ -8,7 +8,7 @@ from uuid import uuid4
 from app.db.session import get_db
 from app.api.deps import get_admin_user
 from app.db.models import User
-from app.schemas.schemas import AdminUserCreate, UserUpdate, UserResponse
+from app.schemas.schemas import AdminUserCreate, UserUpdate, UserResponse, ResetPasswordRequest
 from app.core.security import hash_password
 from app.services.audit_service import AuditService
 
@@ -140,3 +140,21 @@ async def import_users(
         {"success": success_count, "skipped": skip_count, "errors": errors}
     )
     return {"success_count": success_count, "skip_count": skip_count, "errors": errors}
+
+@router.post("/{user_id}/reset-password")
+def reset_user_password(
+    user_id,
+    password_data: ResetPasswordRequest,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_admin_user),
+):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="用户不存在")
+    user.password_hash = hash_password(password_data.new_password)
+    db.commit()
+    AuditService(db).log(
+        current_user.id, "admin_reset_password", "user", user_id,
+        {"username": user.username}
+    )
+    return {"message": "密码重置成功"}
