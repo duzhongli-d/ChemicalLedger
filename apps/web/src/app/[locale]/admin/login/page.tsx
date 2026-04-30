@@ -32,7 +32,16 @@ export default function AdminLoginPage() {
       setAuth(data.user);
       router.push("/admin/dashboard");
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "登录失败，请检查用户名和密码");
+      // Handle Axios error response
+      if (typeof err === 'object' && err !== null && 'response' in err) {
+        const axiosError = err as { response?: { data?: { detail?: string } } };
+        const detail = axiosError.response?.data?.detail;
+        if (detail) {
+          setError(detail);
+          return;
+        }
+      }
+      setError("登录失败，请检查用户名和密码");
     } finally {
       setLoading(false);
     }
