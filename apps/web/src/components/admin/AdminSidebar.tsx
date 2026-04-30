@@ -60,7 +60,9 @@ export default function AdminSidebar() {
 
   const handleLogout = () => {
     logout();
-    router.push("/login");
+    // Extract locale from pathname (e.g., "/zh/admin/dashboard" -> "zh")
+    const locale = pathname.split("/")[1] || "zh";
+    router.push(`/${locale}/admin/login`);
   };
 
   return (
