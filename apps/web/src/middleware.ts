@@ -39,7 +39,11 @@ export function middleware(request: NextRequest) {
     const isProtected = protectedPaths.some((p) => pathWithoutLocale.startsWith(p));
 
     if (isProtected && !token && !isPublic) {
-      return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
+      // Admin routes should redirect to admin login, not user login
+      const redirectPath = pathWithoutLocale.startsWith("/admin")
+        ? `/${locale}/admin/login`
+        : `/${locale}/login`;
+      return NextResponse.redirect(new URL(redirectPath, request.url));
     }
   }
 

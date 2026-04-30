@@ -5,14 +5,14 @@ test.describe("Admin Users", () => {
   const testEmail = `testuser_${Date.now()}@abachem.com`;
 
   test.beforeEach(async ({ page }) => {
-    await page.goto("/zh-CN/login");
+    await page.goto("/zh/login");
     await page.waitForLoadState("networkidle");
     await page.locator('input[type="text"]').fill(process.env.E2E_USERNAME || "admin");
     await page.locator('input[type="password"]').fill(process.env.E2E_PASSWORD || "Admin123!");
     await page.getByRole("button", { name: /登录/i }).click();
     await page.waitForLoadState("networkidle");
-    await page.waitForURL(/\/zh-CN\/admin\/categories|\/zh-CN\/$/);
-    await page.goto("/zh-CN/admin/users");
+    await page.waitForURL(/\/zh\/admin\/categories|\/zh\/$/);
+    await page.goto("/zh/admin/users");
     await page.waitForLoadState("networkidle");
     await expect(page.getByRole("button", { name: "新建用户" })).toBeVisible({ timeout: 10000 });
   });

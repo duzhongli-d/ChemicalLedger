@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Login Page UI", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/zh-CN/login");
+    await page.goto("/zh/login");
     await page.waitForLoadState("networkidle");
   });
 
@@ -50,7 +50,7 @@ test.describe("Login Page UI", () => {
     await submitButton.click();
 
     // The form should still be on login page (no navigation)
-    await expect(page).toHaveURL(/\/zh-CN\/login/);
+    await expect(page).toHaveURL(/\/zh\/login/);
   });
 
   test("should have working register link", async ({ page }) => {
@@ -60,7 +60,7 @@ test.describe("Login Page UI", () => {
 
     // Click register link - should navigate to register page
     await registerLink.click();
-    await expect(page).toHaveURL(/\/zh-CN\/register/);
+    await expect(page).toHaveURL(/\/zh\/register/);
   });
 
   test("should show error on invalid credentials", async ({ page }) => {
@@ -76,6 +76,6 @@ test.describe("Login Page UI", () => {
     await expect(errorMessage).toBeVisible();
 
     // Should still be on login page
-    await expect(page).toHaveURL(/\/zh-CN\/login/);
+    await expect(page).toHaveURL(/\/zh\/login/);
   });
 });

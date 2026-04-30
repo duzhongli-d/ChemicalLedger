@@ -14,6 +14,9 @@ interface Ledger {
   internal_batch_no: string;
   product_name: string;
   batch_no: string;
+  cas_no: string;
+  weight_capacity: string;
+  supplier: string;
   quantity: number;
   category: { level1: string; level2: string };
   cert_expiry_date: string;

@@ -3,14 +3,14 @@ import { test, expect } from "@playwright/test";
 test.describe("Ledger Dashboard Journey", () => {
   test.beforeEach(async ({ page }) => {
     // Authenticate before each test — login via UI
-    await page.goto("/zh-CN/login");
+    await page.goto("/zh/login");
     await page.waitForLoadState("networkidle");
     await page.locator('input[type="text"]').fill(process.env.E2E_USERNAME || "admin");
     await page.locator('input[type="password"]').fill(process.env.E2E_PASSWORD || "Admin123!");
     await page.getByRole("button", { name: /登录/i }).click();
     await page.waitForLoadState("networkidle");
-    await page.waitForURL(/\/zh-CN\/admin\/categories|\/zh-CN\/$/);
-    await page.goto("/zh-CN/ledgers");
+    await page.waitForURL(/\/zh\/admin\/categories|\/zh\/$/);
+    await page.goto("/zh/ledgers");
     await page.waitForLoadState("networkidle");
   });
 
@@ -30,7 +30,7 @@ test.describe("Ledger Dashboard Journey", () => {
 
   test("should navigate to create ledger page", async ({ page }) => {
     await page.getByRole("link", { name: /新建台账/i }).click();
-    await expect(page).toHaveURL("/zh-CN/ledger/create");
+    await expect(page).toHaveURL("/zh/ledger/create");
     await expect(page.getByRole("heading", { name: /手动创建/i })).toBeVisible();
   });
 });

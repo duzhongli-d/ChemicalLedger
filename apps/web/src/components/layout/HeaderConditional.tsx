@@ -5,7 +5,7 @@ import { Header } from "@/components/nav/header";
 
 export function HeaderConditional() {
   const pathname = usePathname();
-  // next-intl's usePathname strips the locale prefix (e.g., /zh-CN/admin -> /admin)
+  // next-intl's usePathname strips the locale prefix (e.g., /zh/admin -> /admin)
   const isLedgerPage =
     /^\/ledgers?(?:\/|$)/.test(pathname) ||
     /^\/ledger\/[^/]+$/.test(pathname);

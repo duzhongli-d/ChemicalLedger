@@ -2,15 +2,15 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Admin Dashboard", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/zh-CN/login");
+    await page.goto("/zh/login");
     await page.waitForLoadState("networkidle");
     await page.locator('input[type="text"]').fill(process.env.E2E_USERNAME || "admin");
     await page.locator('input[type="password"]').fill(process.env.E2E_PASSWORD || "Admin123!");
     await page.getByRole("button", { name: /登录/i }).click();
     // Wait for React to complete the redirect after login
     await page.waitForLoadState("networkidle");
-    await page.waitForURL(/\/zh-CN\/admin\/categories|\/zh-CN\/$/);
-    await page.goto("/zh-CN/admin/dashboard");
+    await page.waitForURL(/\/zh\/admin\/categories|\/zh\/$/);
+    await page.goto("/zh/admin/dashboard");
     // Wait for auth store to hydrate and admin layout to render
     await page.waitForLoadState("networkidle");
     await expect(page.getByText("管理后台").first()).toBeVisible({ timeout: 10000 });

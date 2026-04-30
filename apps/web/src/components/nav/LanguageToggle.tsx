@@ -19,9 +19,9 @@ export function LanguageToggle() {
   ) || routing.defaultLocale;
 
   const toggleLocale = () => {
-    const newLocale = currentLocale === "zh-CN" ? "en" : "zh-CN";
+    const newLocale = currentLocale === "zh" ? "en" : "zh";
     // Strip the current locale prefix from the full pathname
-    const pathWithoutLocale = pathnameWithLocale.replace(/^\/(zh-CN|en)/, "") || "/";
+    const pathWithoutLocale = pathnameWithLocale.replace(/^\/(zh|en)/, "") || "/";
     // Use hard navigation to avoid next-intl locale-aware router prepending locale
     window.location.href = `/${newLocale}${pathWithoutLocale}`;
   };
@@ -32,7 +32,7 @@ export function LanguageToggle() {
       className="px-3 py-1.5 text-xs font-medium rounded-lg bg-secondary border-border transition-colors hover:bg-secondary/80"
       aria-label="Toggle language"
     >
-      {currentLocale === "zh-CN" ? "EN" : "中文"}
+      {currentLocale === "zh" ? "EN" : "中文"}
     </button>
   );
 }
