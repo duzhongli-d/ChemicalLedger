@@ -8,25 +8,25 @@ export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
 
   return (
-    <section ref={sectionRef} className="relative min-h-[500px] md:min-h-[600px] overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 text-white">
+    <section ref={sectionRef} className="relative min-h-[500px] md:min-h-[600px] overflow-hidden bg-gradient-to-br from-teal-50 via-white to-orange-50/30 text-slate-900">
       {/* Gradient mesh background */}
       <div className="absolute inset-0">
-        {/* Primary gradient orbs */}
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-orange-500/20 via-orange-600/10 to-transparent rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-teal-500/15 via-teal-600/10 to-transparent rounded-full blur-[100px]" />
+        {/* Primary gradient orbs - reduced opacity for light theme */}
+        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-orange-500/[0.06] via-orange-600/[0.04] to-transparent rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-teal-500/[0.06] via-teal-600/[0.04] to-transparent rounded-full blur-[100px]" />
         {/* Additional mesh points */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-gradient-to-t from-orange-500/10 via-transparent to-teal-500/10 rounded-full blur-[80px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-gradient-to-t from-orange-500/[0.04] via-transparent to-teal-500/[0.04] rounded-full blur-[80px]" />
       </div>
 
       {/* Dot grid background */}
-      <div className="absolute inset-0 bg-dot-grid opacity-50" />
+      <div className="absolute inset-0 bg-dot-grid opacity-60" />
 
-      {/* Data flow background - animated horizontal lines */}
+      {/* Data flow background - animated horizontal lines - lighter color */}
       <div className="absolute inset-0 overflow-hidden">
         {[...Array(5)].map((_, i) => (
           <div
             key={i}
-            className="absolute h-px bg-gradient-to-r from-transparent via-orange-500/40 to-transparent"
+            className="absolute h-px bg-gradient-to-r from-transparent via-slate-400/20 to-transparent"
             style={{
               top: `${20 + i * 15}%`,
               width: "200%",
@@ -38,12 +38,12 @@ export function HeroSection() {
         ))}
       </div>
 
-      {/* Chromatogram peak SVG */}
-      <div className="absolute left-1/3 top-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-64 opacity-20">
+      {/* Chromatogram peak SVG - adjusted for light background */}
+      <div className="absolute left-1/3 top-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-64 opacity-[0.08]">
         <svg viewBox="0 0 400 200" className="w-full h-full">
           <defs>
             <linearGradient id="peakGradientHero" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="rgba(249,115,22,0.8)" />
+              <stop offset="0%" stopColor="rgba(249,115,22,0.5)" />
               <stop offset="100%" stopColor="rgba(249,115,22,0)" />
             </linearGradient>
           </defs>
@@ -57,16 +57,16 @@ export function HeroSection() {
           <path
             d="M 50 200 Q 100 200 120 180 Q 140 100 160 20 Q 180 100 200 180 Q 220 200 270 200"
             fill="none"
-            stroke="rgba(249,115,22,0.6)"
+            stroke="rgba(249,115,22,0.35)"
             strokeWidth="2"
             className="animate-draw-line"
           />
         </svg>
       </div>
 
-      {/* Decorative glow - layered */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-orange-500/20 rounded-full blur-[120px] animate-pulse" />
-      <div className="absolute top-1/3 right-1/3 w-64 h-64 bg-teal-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '0.5s' }} />
+      {/* Decorative glow - layered - reduced opacity */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-orange-500/[0.08] rounded-full blur-[120px] animate-pulse" />
+      <div className="absolute top-1/3 right-1/3 w-64 h-64 bg-teal-500/[0.06] rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '0.5s' }} />
 
       <div className="max-w-[1320px] mx-auto px-4 relative z-10">
         <div className="grid lg:grid-cols-5 gap-8 items-center min-h-[500px] md:min-h-[600px]">
@@ -78,25 +78,25 @@ export function HeroSection() {
               aria-hidden="true"
             >
               {/* Chromatogram baseline */}
-              <line x1="30" y1="250" x2="270" y2="250" stroke="rgba(249,115,22,0.3)" strokeWidth="1" />
+              <line x1="30" y1="250" x2="270" y2="250" stroke="rgba(249,115,22,0.2)" strokeWidth="1" />
 
               {/* Grid lines */}
               {[50, 100, 150, 200].map((y) => (
-                <line key={y} x1="30" y1={y} x2="270" y2={y} stroke="rgba(249,115,22,0.1)" strokeWidth="0.5" strokeDasharray="4 4" />
+                <line key={y} x1="30" y1={y} x2="270" y2={y} stroke="rgba(249,115,22,0.06)" strokeWidth="0.5" strokeDasharray="4 4" />
               ))}
 
               {/* Chromatogram peaks */}
               <path
                 d="M 40 250 Q 60 250 70 240 Q 80 200 90 250"
                 fill="none"
-                stroke="rgba(249,115,22,0.5)"
+                stroke="rgba(249,115,22,0.35)"
                 strokeWidth="2"
                 className="animate-draw-line"
               />
               <path
                 d="M 100 250 Q 120 250 130 230 Q 140 150 150 250"
                 fill="none"
-                stroke="rgba(249,115,22,0.6)"
+                stroke="rgba(249,115,22,0.45)"
                 strokeWidth="2"
                 className="animate-draw-line"
                 style={{ animationDelay: '200ms' }}
@@ -104,7 +104,7 @@ export function HeroSection() {
               <path
                 d="M 160 250 Q 180 250 190 200 Q 200 80 210 250"
                 fill="none"
-                stroke="rgba(249,115,22,0.8)"
+                stroke="rgba(249,115,22,0.6)"
                 strokeWidth="3"
                 className="animate-pulse-node"
                 style={{ animationDelay: '400ms' }}
@@ -112,7 +112,7 @@ export function HeroSection() {
               <path
                 d="M 220 250 Q 240 250 250 220 Q 260 180 270 250"
                 fill="none"
-                stroke="rgba(249,115,22,0.5)"
+                stroke="rgba(249,115,22,0.35)"
                 strokeWidth="2"
                 className="animate-draw-line"
                 style={{ animationDelay: '600ms' }}
@@ -121,11 +121,11 @@ export function HeroSection() {
               {/* Data point nodes */}
               <circle cx="90" cy="250" r="4" className="fill-orange-500 animate-pulse-node" style={{ animationDelay: '100ms' }} />
               <circle cx="150" cy="250" r="5" className="fill-orange-500 animate-pulse-node" style={{ animationDelay: '300ms' }} />
-              <circle cx="210" cy="80" r="6" className="fill-orange-400 animate-pulse-node" style={{ animationDelay: '500ms' }} />
+              <circle cx="210" cy="80" r="6" className="fill-orange-500 animate-pulse-node" style={{ animationDelay: '500ms' }} />
               <circle cx="270" cy="250" r="4" className="fill-orange-500 animate-pulse-node" style={{ animationDelay: '700ms' }} />
 
               {/* Center highlight */}
-              <circle cx="210" cy="80" r="20" className="fill-none stroke-orange-300/40" strokeWidth="2">
+              <circle cx="210" cy="80" r="20" className="fill-none stroke-orange-300/30" strokeWidth="2">
                 <animate attributeName="r" values="20;30;20" dur="3s" repeatCount="indefinite" />
                 <animate attributeName="opacity" values="0.6;0.2;0.6" dur="3s" repeatCount="indefinite" />
               </circle>
@@ -147,17 +147,17 @@ export function HeroSection() {
               className="space-y-2 animate-hero-subtitle-reveal"
               style={{ animationDelay: '0.2s' }}
             >
-              <p className="text-lg sm:text-xl md:text-2xl text-orange-400 font-mono">
+              <p className="text-lg sm:text-xl md:text-2xl text-orange-500 font-mono">
                 {t("slogan")}
               </p>
-              <p className="text-base md:text-lg text-slate-400">
+              <p className="text-base md:text-lg text-slate-500">
                 {t("sloganZh")}
               </p>
             </div>
 
             {/* Subtitle description */}
             <p
-              className="text-sm md:text-base lg:text-lg text-slate-300 max-w-2xl animate-hero-subtitle-reveal"
+              className="text-sm md:text-base lg:text-lg text-slate-600 max-w-2xl animate-hero-subtitle-reveal"
               style={{ animationDelay: '0.3s' }}
             >
               {t("hero.subtitle")}
@@ -179,13 +179,13 @@ export function HeroSection() {
                 <span
                   className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                   style={{
-                    background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%)',
+                    background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%)',
                     animation: 'shimmer 2s ease-in-out infinite',
                   }}
                 />
 
                 {/* Glow on hover */}
-                <span className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ boxShadow: '0 0 30px rgba(249,115,22,0.5), 0 0 60px rgba(249,115,22,0.3)' }} />
+                <span className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ boxShadow: '0 0 30px rgba(249,115,22,0.4), 0 0 60px rgba(249,115,22,0.2)' }} />
 
                 {/* Button text */}
                 <span className="relative z-10 flex items-center gap-2">
@@ -198,9 +198,9 @@ export function HeroSection() {
 
               <Link
                 href="/login"
-                className="relative inline-flex items-center gap-2 px-6 py-3 rounded-xl font-mono font-medium text-slate-300 border border-slate-600 hover:border-orange-500/50 hover:text-white transition-all duration-300 hover:scale-105 group"
+                className="relative inline-flex items-center gap-2 px-6 py-3 rounded-xl font-mono font-medium text-slate-600 border border-slate-300 hover:border-orange-500/50 hover:text-orange-600 transition-all duration-300 hover:scale-105 group"
               >
-                <span className="absolute inset-0 rounded-xl bg-slate-800/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <span className="absolute inset-0 rounded-xl bg-slate-100/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <span className="relative z-10 flex items-center gap-2">
                   {t("hero.secondaryCta")}
                 </span>
@@ -209,20 +209,20 @@ export function HeroSection() {
 
             {/* Bottom metrics bar */}
             <div
-              className="flex flex-wrap gap-8 pt-8 border-t border-slate-700/50 mt-8 animate-hero-cta-reveal"
+              className="flex flex-wrap gap-8 pt-8 border-t border-slate-200 mt-8 animate-hero-cta-reveal"
               style={{ animationDelay: '0.5s' }}
             >
               <div className="space-y-1">
-                <p className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-orange-400">12,580+</p>
-                <p className="text-sm text-slate-400">{t("metrics.samples")}</p>
+                <p className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-orange-500">12,580+</p>
+                <p className="text-sm text-slate-500">{t("metrics.samples")}</p>
               </div>
               <div className="space-y-1">
-                <p className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-orange-400">156</p>
-                <p className="text-sm text-slate-400">{t("metrics.methods")}</p>
+                <p className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-orange-500">156</p>
+                <p className="text-sm text-slate-500">{t("metrics.methods")}</p>
               </div>
               <div className="space-y-1">
-                <p className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-orange-400">99.8%</p>
-                <p className="text-sm text-slate-400">{t("metrics.auditRate")}</p>
+                <p className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-orange-500">99.8%</p>
+                <p className="text-sm text-slate-500">{t("metrics.auditRate")}</p>
               </div>
             </div>
           </div>

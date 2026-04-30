@@ -37,7 +37,7 @@ function AnimatedNumber({ value, suffix, isVisible }: { value: number; suffix: s
 }
 
 function ProgressRing({ progress, isVisible, delay = 0 }: { progress: number; isVisible: boolean; delay?: number }) {
-  const [offset, setOffset] = useState(283); // circumference = 2 * PI * 45 = 283
+  const [offset, setOffset] = useState(283);
   const radius = 45;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (progress / 100) * circumference;
@@ -55,16 +55,16 @@ function ProgressRing({ progress, isVisible, delay = 0 }: { progress: number; is
 
   return (
     <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
-      {/* Background ring */}
+      {/* Background ring - subtle for light theme */}
       <circle
         cx="50"
         cy="50"
         r={radius}
         fill="none"
-        stroke="rgba(249, 115, 22, 0.1)"
+        stroke="rgba(249, 115, 22, 0.08)"
         strokeWidth="3"
       />
-      {/* Progress ring */}
+      {/* Progress ring - decorative gradient */}
       <circle
         cx="50"
         cy="50"
@@ -77,7 +77,6 @@ function ProgressRing({ progress, isVisible, delay = 0 }: { progress: number; is
         strokeDashoffset={offset}
         style={{
           transition: 'stroke-dashoffset 1.5s ease-out',
-          filter: 'drop-shadow(0 0 6px rgba(249, 115, 22, 0.5))'
         }}
       />
       <defs>
@@ -100,26 +99,18 @@ function MetricCard({ metric, index, isVisible }: { metric: typeof metrics[0]; i
       `}
       style={{ transitionDelay: `${index * 150}ms` }}
     >
-      {/* Progress ring background */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      {/* Progress ring as decorative background */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-30">
         <ProgressRing progress={progressValues[index]} isVisible={isVisible} delay={index * 150} />
       </div>
 
       {/* Card content */}
-      <div className="relative z-10 glass rounded-2xl p-6 sm:p-8 text-center border border-orange-500/20 hover:border-orange-500/40 transition-colors">
-        {/* Inner glow */}
-        <div
-          className="absolute inset-0 rounded-2xl opacity-20 pointer-events-none"
-          style={{
-            background: 'radial-gradient(ellipse at center, rgba(249, 115, 22, 0.15) 0%, transparent 70%)'
-          }}
-        />
-
+      <div className="relative z-10 bg-white rounded-2xl p-6 sm:p-8 text-center border border-slate-200 hover:border-orange-400/50 transition-colors shadow-sm">
         <div className="relative">
-          <div className="text-4xl sm:text-5xl font-bold font-mono mb-2 text-orange-400">
+          <div className="text-4xl sm:text-5xl font-bold font-mono mb-2 text-orange-500">
             <AnimatedNumber value={metric.value} suffix={metric.suffix} isVisible={isVisible} />
           </div>
-          <div className="text-orange-400/80 font-mono text-sm">{metric.key}</div>
+          <div className="text-slate-500 font-mono text-sm">{metric.key}</div>
         </div>
       </div>
     </div>
@@ -157,26 +148,17 @@ export function TechMetrics() {
   }, [mounted]);
 
   return (
-    <section ref={sectionRef} className="py-20 sm:py-24 bg-slate-900 text-white relative overflow-hidden">
-      {/* Enhanced background effects */}
-      <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-[120px] animate-pulse" />
-      <div className="absolute top-1/2 right-1/4 w-80 h-80 bg-teal-500/8 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '0.5s' }} />
-
-      {/* Decorative circuit lines */}
-      <div className="absolute top-0 left-0 w-full h-full opacity-5">
-        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-          <pattern id="circuit" width="100" height="100" patternUnits="userSpaceOnUse">
-            <path d="M0 50 H40 M60 50 H100 M50 0 V40 M50 60 V100" stroke="currentColor" strokeWidth="0.5" fill="none" />
-          </pattern>
-          <rect width="100%" height="100%" fill="url(#circuit)" />
-        </svg>
-      </div>
+    <section ref={sectionRef} className="py-20 sm:py-24 bg-background relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 bg-dot-grid opacity-30" />
+      <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-orange-500/5 rounded-full blur-[120px]" />
+      <div className="absolute top-1/2 right-1/4 w-80 h-80 bg-teal-500/5 rounded-full blur-[120px]" />
 
       <div className="max-w-[1320px] mx-auto px-4 relative z-10">
         <h2 className={`text-xl sm:text-2xl font-bold mb-4 text-center font-mono transition-all duration-700 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
           {t("metrics.title")}
         </h2>
-        <p className={`text-slate-400 text-center mb-12 transition-all duration-700 delay-100 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
+        <p className={`text-muted-foreground text-center mb-12 transition-all duration-700 delay-100 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
           {t("metrics.subtitle")}
         </p>
 

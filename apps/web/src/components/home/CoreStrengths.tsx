@@ -37,79 +37,24 @@ interface StrengthCardProps {
 }
 
 function StrengthCard({ strength, index, isVisible, t }: StrengthCardProps) {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    setMousePosition({ x, y });
-  };
-
-  const handleMouseLeave = () => {
-    setMousePosition({ x: 0, y: 0 });
-  };
-
-  const rotateX = mousePosition.y * -8;
-  const rotateY = mousePosition.x * 8;
-
   return (
     <div
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
       className={`
-        relative group overflow-hidden rounded-2xl p-8
+        relative group overflow-hidden rounded-2xl p-8 bg-white border border-slate-200
         transition-all duration-500 ease-out
+        hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02]
         ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'}
       `}
-      style={{
-        transitionDelay: `${index * 100}ms`,
-        transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
-        transformStyle: 'preserve-3d',
-      }}
+      style={{ transitionDelay: `${index * 100}ms` }}
     >
-      {/* Glass background */}
-      <div className="absolute inset-0 glass rounded-2xl border border-border" />
-
-      {/* Metal shine effect - follows mouse */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-        style={{
-          background: `radial-gradient(circle at ${(mousePosition.x + 0.5) * 100}% ${(mousePosition.y + 0.5) * 100}%, rgba(255,255,255,0.15) 0%, transparent 60%)`,
-        }}
-      />
-
-      {/* Animated gradient border */}
-      <div
-        className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"
-        style={{ padding: '2px' }}
-      >
-        <div
-          className="w-full h-full rounded-2xl"
-          style={{
-            background: 'linear-gradient(135deg, #f97316, #14b8a6, #f97316, #14b8a6)',
-            backgroundSize: '300% 300%',
-            animation: 'gradient-shift 3s ease infinite',
-          }}
-        />
-      </div>
-
-      {/* Icon container with bounce animation */}
-      <div
-        className="relative z-10 w-16 h-16 rounded-xl bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 flex items-center justify-center mb-6 border border-orange-400/30 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
-        style={{ transform: 'translateZ(20px)' }}
-      >
-        <div className="text-white transition-transform duration-300 group-hover:scale-110">
+      {/* Icon container */}
+      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center mb-6 border border-orange-400/30 transition-transform duration-300 group-hover:scale-110">
+        <div className="text-white">
           {strength.icon}
         </div>
-        {/* Icon glow on hover */}
-        <div className="absolute inset-0 rounded-xl bg-orange-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-md" />
       </div>
 
-      <div className="relative z-10" style={{ transform: 'translateZ(10px)' }}>
+      <div>
         <h3 className="text-xl font-bold text-foreground mb-2 font-mono">{t(`strengths.${strength.key}`)}</h3>
         <p className="text-muted-foreground">{t(`strengths.${strength.key}Desc`)}</p>
       </div>
@@ -146,10 +91,15 @@ export function CoreStrengths() {
       <div className="absolute inset-0 bg-dot-grid opacity-30" />
 
       {/* Floating decorative elements */}
-      <div className="absolute top-20 left-10 w-32 h-32 bg-orange-500/5 rounded-full blur-[60px] animate-pulse" />
-      <div className="absolute bottom-20 right-10 w-40 h-40 bg-teal-500/5 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '1s' }} />
+      <div className="absolute top-20 left-10 w-32 h-32 bg-orange-500/5 rounded-full blur-[60px]" />
+      <div className="absolute bottom-20 right-10 w-40 h-40 bg-teal-500/5 rounded-full blur-[80px]" />
 
       <div className="container mx-auto px-4 relative z-10">
+        {/* Section title */}
+        <h2 className={`text-xl sm:text-2xl font-bold text-foreground mb-8 text-center font-mono transition-all duration-700 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
+          {t("strengths.title")}
+        </h2>
+
         <div className="grid md:grid-cols-3 gap-6">
           {strengths.map((s, i) => (
             <StrengthCard key={s.key} strength={s} index={i} isVisible={isVisible} t={t} />
