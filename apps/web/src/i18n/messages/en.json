@@ -127,6 +127,14 @@
     "expiryWarning": "Expiry Warning",
     "markRead": "Mark as Read"
   },
+  "ledgers": {
+    "title": "台账列表",
+    "login": "登录",
+    "logout": "登出",
+    "loginPrompt": "如需账号，请联系管理员申请",
+    "username": "用户名",
+    "password": "密码"
+  },
   "home": {
     "slogan": "Precision Driven, Intelligence Empowered",
     "sloganZh": "精准驱动，智领未来",
