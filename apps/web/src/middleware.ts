@@ -10,7 +10,9 @@ export function middleware(request: NextRequest) {
   );
 
   // If no locale in path, redirect to default
-  if (!pathnameHasLocale && !pathname.startsWith("/_next") && !pathname.startsWith("/api")) {
+  // Skip redirect for static files (images, fonts, etc.)
+  const isStaticFile = /\.(png|jpg|jpeg|gif|svg|webp|ico|woff|woff2|ttf|eot)$/i.test(pathname);
+  if (!pathnameHasLocale && !pathname.startsWith("/_next") && !pathname.startsWith("/api") && !isStaticFile) {
     const redirectPath = `/${routing.defaultLocale}${pathname === "/" ? "" : pathname}`;
     return NextResponse.redirect(new URL(redirectPath, request.url));
   }
