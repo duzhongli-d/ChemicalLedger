@@ -1,18 +1,16 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ledgerApi } from "@/lib/api-client";
-import { LedgerSidebar } from "@/components/layout/LedgerSidebar";
-import { LedgerHeader } from "@/components/layout/LedgerHeader";
+import { LedgersTopBar } from "@/components/layout/LedgersTopBar";
+import { LoginModal } from "@/components/auth/LoginModal";
 import { StatCard } from "@/components/layout/StatCard";
 import { FilterTabs, FilterTabValue } from "@/components/layout/FilterTabs";
 import { SearchCreateBar } from "@/components/layout/SearchCreateBar";
 import { LedgerDataTable } from "@/components/layout/LedgerDataTable";
 import { Pagination } from "@/components/layout/Pagination";
-import { FloatingActionButton } from "@/components/layout/FloatingActionButton";
-import { useAuthStore } from "@/lib/auth-store";
 import { getDaysLeft } from "@/lib/date-utils";
 
 const PAGE_SIZE = 10;
@@ -28,17 +26,50 @@ const mockTrends = {
 export default function LedgersPage() {
   const t = useTranslations("ledger");
   const tDash = useTranslations("dashboard");
-  const { isAuthenticated } = useAuthStore();
   const queryClient = useQueryClient();
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState("");
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [activeTab, setActiveTab] = useState<FilterTabValue>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Check auth status on mount
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
+
+  const checkAuthStatus = async () => {
+    try {
+      const res = await fetch("/api/v1/auth/me");
+      if (res.ok) {
+        const data = await res.json();
+        setIsLoggedIn(true);
+        setUsername(data.username);
+      }
+    } catch {
+      // Not logged in
+    }
+  };
+
+  const handleLoginSuccess = (user: string) => {
+    setIsLoggedIn(true);
+    setUsername(user);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/v1/auth/logout", { method: "POST" });
+    } finally {
+      setIsLoggedIn(false);
+      setUsername("");
+    }
+  };
+
   const { data: ledgersData, isLoading } = useQuery({
     queryKey: ["ledgers"],
     queryFn: () => ledgerApi.list().then((r) => r.data),
-    enabled: isAuthenticated(),
   });
 
   // Filter and compute stats
@@ -112,81 +143,81 @@ export default function LedgersPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-100">
-      {/* Sidebar */}
-      <LedgerSidebar />
+    <div className="min-h-screen bg-slate-100">
+      <LedgersTopBar
+        isLoggedIn={isLoggedIn}
+        username={username}
+        onLoginClick={() => setShowLoginModal(true)}
+        onLogout={handleLogout}
+      />
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Top Header */}
-        <LedgerHeader />
-
-        {/* Content Area */}
-        <div className="flex-1 p-6 space-y-6">
-          {/* Stats Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatCard
-              title={tDash("totalLedgers")}
-              value={counts.all}
-              trend={mockTrends.total}
-              accentColor="orange"
-            />
-            <StatCard
-              title={tDash("activeLedgers")}
-              value={counts.active}
-              trend={mockTrends.active}
-              accentColor="teal"
-            />
-            <StatCard
-              title={tDash("expiringSoon")}
-              value={counts.expiring}
-              trend={mockTrends.expiring}
-              accentColor="amber"
-            />
-            <StatCard
-              title={tDash("archivedLedgers")}
-              value={counts.archived}
-              trend={mockTrends.archived}
-              accentColor="slate"
-            />
-          </div>
-
-          {/* Filter Tabs */}
-          <FilterTabs
-            activeTab={activeTab}
-            onTabChange={handleTabChange}
-            counts={counts}
+      <main className="pt-16 p-6 space-y-6">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard
+            title={tDash("totalLedgers")}
+            value={counts.all}
+            trend={mockTrends.total}
+            accentColor="orange"
           />
-
-          {/* Search Bar */}
-          <SearchCreateBar
-            searchValue={searchQuery}
-            onSearchChange={(v) => {
-              setSearchQuery(v);
-              setCurrentPage(1);
-            }}
+          <StatCard
+            title={tDash("activeLedgers")}
+            value={counts.active}
+            trend={mockTrends.active}
+            accentColor="teal"
           />
-
-          {/* Data Table */}
-          <LedgerDataTable
-            ledgers={paginatedLedgers}
-            isLoading={isLoading}
-            onArchive={handleArchive}
+          <StatCard
+            title={tDash("expiringSoon")}
+            value={counts.expiring}
+            trend={mockTrends.expiring}
+            accentColor="amber"
           />
-
-          {/* Pagination */}
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            totalItems={filteredLedgers.length}
-            pageSize={PAGE_SIZE}
-            onPageChange={setCurrentPage}
+          <StatCard
+            title={tDash("archivedLedgers")}
+            value={counts.archived}
+            trend={mockTrends.archived}
+            accentColor="slate"
           />
         </div>
-      </div>
 
-      {/* Floating Action Button */}
-      <FloatingActionButton />
+        {/* Filter Tabs */}
+        <FilterTabs
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+          counts={counts}
+        />
+
+        {/* Search Bar */}
+        <SearchCreateBar
+          searchValue={searchQuery}
+          onSearchChange={(v) => {
+            setSearchQuery(v);
+            setCurrentPage(1);
+          }}
+        />
+
+        {/* Data Table */}
+        <LedgerDataTable
+          ledgers={paginatedLedgers}
+          isLoading={isLoading}
+          onArchive={handleArchive}
+        />
+
+        {/* Pagination */}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredLedgers.length}
+          pageSize={PAGE_SIZE}
+          onPageChange={setCurrentPage}
+        />
+      </main>
+
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
     </div>
   );
 }
