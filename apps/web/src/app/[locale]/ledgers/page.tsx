@@ -194,6 +194,8 @@ export default function LedgersPage() {
             setSearchQuery(v);
             setCurrentPage(1);
           }}
+          isLoggedIn={isLoggedIn}
+          onProtectedAction={() => setShowLoginModal(true)}
         />
 
         {/* Data Table */}
@@ -201,6 +203,8 @@ export default function LedgersPage() {
           ledgers={paginatedLedgers}
           isLoading={isLoading}
           onArchive={handleArchive}
+          isLoggedIn={isLoggedIn}
+          onProtectedAction={() => setShowLoginModal(true)}
         />
 
         {/* Pagination */}

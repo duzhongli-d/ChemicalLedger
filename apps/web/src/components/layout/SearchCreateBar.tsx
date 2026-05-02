@@ -1,17 +1,20 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 
 interface SearchCreateBarProps {
   searchValue: string;
   onSearchChange: (value: string) => void;
+  isLoggedIn?: boolean;
+  onProtectedAction?: () => void;
   className?: string;
 }
 
 export function SearchCreateBar({
   searchValue,
   onSearchChange,
+  isLoggedIn = false,
+  onProtectedAction,
   className = "",
 }: SearchCreateBarProps) {
   const t = useTranslations("ledger");
@@ -44,8 +47,14 @@ export function SearchCreateBar({
       </div>
 
       {/* Create Button */}
-      <Link
-        href="/ledger/create"
+      <button
+        onClick={() => {
+          if (!isLoggedIn) {
+            onProtectedAction?.();
+            return;
+          }
+          window.location.href = "/ledger/create";
+        }}
         className="inline-flex items-center gap-2 bg-[#f97316] text-white px-4 py-2.5 rounded-lg font-medium text-sm hover:bg-[#ea580c] transition-colors shadow-lg shadow-orange-500/25"
       >
         <svg
@@ -58,7 +67,7 @@ export function SearchCreateBar({
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
         </svg>
         {t("create")}
-      </Link>
+      </button>
     </div>
   );
 }
