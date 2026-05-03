@@ -1,7 +1,7 @@
-from pydantic import BaseModel, ConfigDict, EmailStr, model_validator
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, model_validator
 from datetime import date, datetime
 from uuid import UUID
-from typing import Optional, List
+from typing import Optional, List, Literal
 
 
 class UserCreate(BaseModel):
@@ -174,3 +174,25 @@ class BatchArchiveRequest(BaseModel):
 
 class ResetPasswordRequest(BaseModel):
     new_password: str
+
+
+class ContactSubmissionCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=100)
+    email: EmailStr
+    subject: str = Field(..., min_length=1, max_length=255)
+    category: Literal["support", "technical", "feature", "business", "other"]
+    message: str = Field(..., min_length=10, max_length=2000)
+
+
+class ContactSubmissionResponse(BaseModel):
+    id: UUID
+    name: str
+    email: str
+    subject: str
+    category: str
+    message: str
+    is_read: bool
+    created_at: datetime
+    user_id: Optional[UUID]
+
+    model_config = ConfigDict(from_attributes=True)
