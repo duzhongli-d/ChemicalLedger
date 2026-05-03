@@ -206,6 +206,12 @@
     }
   },
   "contact": {
+    "hero": {
+      "badge": "联系我们",
+      "title": "联系雅本化学QC平台",
+      "subtitle": "QC技术支持与商务咨询",
+      "mission": "我们随时为您解答关于平台、合作伙伴关系及化学质量控制解决方案的任何问题"
+    },
     "title": "联系我们",
     "subtitle": "QC技术支持与商务咨询",
     "infoCards": {
@@ -257,6 +263,7 @@
       "team": "团队介绍"
     },
     "platformStory": {
+      "professionalBadge": "始于2020",
       "title": "构建QC管理新范式",
       "body": "雅本化学QC平台旨在解决制药和化学行业实验室质量控制操作日益复杂的挑战。我们的平台将深厚的领域专业知识与现代技术相结合，打造统一的样品追踪、仪器集成和合规管理解决方案。我们致力于帮助QC专业人员实现卓越运营，同时保持最高标准的数据完整性和合规性。",
       "milestones": {
@@ -274,6 +281,7 @@
       }
     },
     "technicalCapabilities": {
+      "professionalBadge": "15+ 高精度仪器",
       "title": "先进技术能力",
       "instrumentsIntro": "我们的实验室配备了超过15台高精度分析仪器，涵盖HPLC、LC-MS/MS、GC-MS、NMR等。这些仪器使我们能够完成从定性鉴别到痕量杂质检测（ppb级）的全面化学分析。",
       "techIntro": "除了仪器设备，我们的技术能力还包括方法开发和验证、稳定性研究、强制降解分析和标准品表征。我们的资深化学家团队应用QbD原则，确保所有方法符合ICH和监管指南要求。",
@@ -288,6 +296,7 @@
       }
     },
     "compliance": {
+      "professionalBadge": "GMP/ISO 100% 通过",
       "title": "质量保证与合规体系",
       "gmpIso": "GMP/ISO双体系认证",
       "gmpIsoDesc": "我们的质量管理体系通过GMP和ISO 17025双重认证，确保全面符合制药行业要求。",

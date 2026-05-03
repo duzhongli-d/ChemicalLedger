@@ -206,6 +206,12 @@
     }
   },
   "contact": {
+    "hero": {
+      "badge": "Contact Us",
+      "title": "Contact Abachem QC Platform",
+      "subtitle": "QC Technical Support & Business Inquiries",
+      "mission": "We are here to help with any questions about our platform, partnerships, and chemical quality control solutions"
+    },
     "title": "Contact Us",
     "subtitle": "QC Technical Support & Business Inquiries",
     "infoCards": {
@@ -257,6 +263,7 @@
       "team": "Team"
     },
     "platformStory": {
+      "professionalBadge": "Since 2020",
       "title": "Building the Future of QC Management",
       "body": "Abachem QC Platform was developed to address the growing complexity of laboratory quality control operations in the pharmaceutical and chemical industries. Our platform combines deep domain expertise with modern technology to create a unified solution for sample tracking, instrument integration, and regulatory compliance. We are committed to helping QC professionals achieve operational excellence while maintaining the highest standards of data integrity and regulatory compliance.",
       "milestones": {
@@ -274,6 +281,7 @@
       }
     },
     "technicalCapabilities": {
+      "professionalBadge": "15+ Precision Instruments",
       "title": "Advanced Technical Capabilities",
       "instrumentsIntro": "Our laboratory is equipped with over 15 high-precision analytical instruments spanning HPLC, LC-MS/MS, GC-MS, NMR, and more. These instruments enable us to perform comprehensive chemical analysis from qualitative identification to trace impurity detection at ppb levels.",
       "techIntro": "Beyond instrumentation, our technical capabilities include method development and validation, stability studies, forced degradation analysis, and reference standard characterization. Our team of senior chemists applies QbD principles to ensure all methods meet ICH and regulatory guidelines.",
@@ -288,6 +296,7 @@
       }
     },
     "compliance": {
+      "professionalBadge": "GMP/ISO 100% Pass",
       "title": "Quality Assurance & Compliance",
       "gmpIso": "GMP/ISO Dual Certification",
       "gmpIsoDesc": "Our quality management system is certified to both GMP and ISO 17025 standards, ensuring comprehensive compliance with pharmaceutical industry requirements.",
