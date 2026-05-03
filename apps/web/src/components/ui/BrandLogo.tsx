@@ -1,6 +1,6 @@
 "use client";
 
-export function BrandLogo({ className = "w-8 h-8" }: { className?: string }) {
+export function BrandLogo({ className = "w-12 h-12" }: { className?: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -8,39 +8,37 @@ export function BrandLogo({ className = "w-8 h-8" }: { className?: string }) {
       className={className}
       aria-label="Abachem QC Logo"
     >
-      <defs>
-        <linearGradient id="qcOrange" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#f97316" />
-          <stop offset="100%" stopColor="#ea580c" />
-        </linearGradient>
-        <linearGradient id="qcTeal" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#14b8a6" />
-          <stop offset="100%" stopColor="#0d9488" />
-        </linearGradient>
-      </defs>
-
-      {/* Q: Circle with diagonal tail */}
-      <circle cx="26" cy="28" r="14" fill="none" stroke="url(#qcOrange)" strokeWidth="4.5" />
+      {/* Q: Hexagon as benzene ring/molecular structure */}
       <path
-        d="M36 38 L44 46 L40 50"
+        d="M22 16 L30 16 L36 22 L36 30 L30 36 L22 36 L16 30 L16 22 Z"
         fill="none"
-        stroke="url(#qcOrange)"
-        strokeWidth="4.5"
-        strokeLinecap="round"
+        stroke="#f97316"
+        strokeWidth="2.5"
         strokeLinejoin="round"
       />
+      {/* Bond connection on Q (like chemical bond) */}
+      <line
+        x1="36" y1="30"
+        x2="42" y2="36"
+        stroke="#f97316"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+      {/* Small terminal circle for Q tail */}
+      <circle cx="44" cy="40" r="3" fill="#f97316" />
 
-      {/* C: Arc wrapping around left side */}
+      {/* C: Arc as electron orbital, wrapping from right to left */}
       <path
-        d="M14 40 C 8 40, 4 32, 6 24 C 8 16, 16 12, 26 14"
+        d="M52 24 C 48 16, 36 14, 26 18 C 16 22, 12 32, 14 40 C 16 48, 26 52, 36 50"
         fill="none"
-        stroke="url(#qcTeal)"
-        strokeWidth="4.5"
+        stroke="#14b8a6"
+        strokeWidth="2.5"
         strokeLinecap="round"
       />
 
-      {/* Center dot */}
-      <circle cx="26" cy="28" r="2.5" fill="#f97316" />
+      {/* Small accent dots to suggest molecular connections */}
+      <circle cx="22" cy="16" r="1.5" fill="#14b8a6" />
+      <circle cx="36" cy="22" r="1.5" fill="#14b8a6" />
     </svg>
   );
 }

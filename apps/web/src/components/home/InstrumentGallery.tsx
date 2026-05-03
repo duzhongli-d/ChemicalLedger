@@ -47,11 +47,11 @@ function InstrumentCard({ inst, t }: InstrumentCardProps) {
       <div className="relative z-10 p-5 h-full flex flex-col justify-between items-center text-center">
         <div>
           <div className="text-2xl font-bold text-slate-800 mb-1 tracking-wide font-mono">{inst.name}</div>
-          <div className="text-orange-500 font-mono text-[11px]">{inst.model}</div>
+          <div className="text-orange-500 font-mono text-xs">{inst.model}</div>
         </div>
         <div className="space-y-1">
-          <div className="text-slate-500 text-xs leading-relaxed">{t("instruments." + inst.useKey)}</div>
-          <div className="text-teal-500/80 text-[10px]">{t("instruments." + inst.appKey)}</div>
+          <div className="text-slate-500 text-sm leading-relaxed">{t("instruments." + inst.useKey)}</div>
+          <div className="text-teal-500/80 text-xs">{t("instruments." + inst.appKey)}</div>
         </div>
       </div>
 
@@ -116,7 +116,7 @@ export function InstrumentGallery() {
           }
         }
         .animate-scroll {
-          animation: scroll 40s linear infinite;
+          animation: scroll 80s linear infinite;
         }
         .group:hover .animate-scroll {
           animation-play-state: paused;
