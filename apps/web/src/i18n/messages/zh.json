@@ -204,5 +204,44 @@
       "platformEntry": "平台入口",
       "copyright": "雅本化学 QC 技术服务平台. 保留所有权利."
     }
+  },
+  "contact": {
+    "title": "联系我们",
+    "subtitle": "QC技术支持与商务咨询",
+    "infoCards": {
+      "address": "地址",
+      "addressValue": "江苏省苏州市工业园区星湖街328号",
+      "email": "邮箱",
+      "hours": "工作时间",
+      "hoursValue": "周一至周五 9:00-18:00"
+    },
+    "form": {
+      "name": "姓名",
+      "email": "邮箱",
+      "subject": "主题",
+      "subjectPlaceholder": "请输入咨询主题",
+      "category": "类别",
+      "categorySupport": "QC技术支持",
+      "categoryTechnical": "技术问题",
+      "categoryFeature": "功能建议",
+      "categoryBusiness": "商务咨询",
+      "categoryOther": "其他",
+      "message": "留言",
+      "messagePlaceholder": "请详细描述您的问题或建议...",
+      "submit": "提交",
+      "submitting": "提交中...",
+      "success": "提交成功！我们将在1-2个工作日内回复您。",
+      "error": "提交失败，请稍后重试。",
+      "validationError": "请填写所有必填项"
+    },
+    "quickInfo": {
+      "title": "联系方式",
+      "responseTime": "我们通常在1-2个工作日内回复",
+      "departments": "相关部门",
+      "departmentQC": "QC部门",
+      "departmentTech": "技术支持",
+      "departmentSales": "商务合作",
+      "emergency": "紧急情况请直接电话联系"
+    }
   }
 }

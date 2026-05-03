@@ -204,5 +204,44 @@
       "platformEntry": "Platform Entry",
       "copyright": "Abachem QC Technology Platform. All rights reserved."
     }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "QC Technical Support & Business Inquiries",
+    "infoCards": {
+      "address": "Address",
+      "addressValue": "No. 328 Xinghu Street, Suzhou Industrial Park, Jiangsu Province",
+      "email": "Email",
+      "hours": "Working Hours",
+      "hoursValue": "Mon-Fri 9:00-18:00"
+    },
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "subject": "Subject",
+      "subjectPlaceholder": "Enter your subject",
+      "category": "Category",
+      "categorySupport": "QC Support",
+      "categoryTechnical": "Technical Issue",
+      "categoryFeature": "Feature Request",
+      "categoryBusiness": "Business Inquiry",
+      "categoryOther": "Other",
+      "message": "Message",
+      "messagePlaceholder": "Please describe your question or suggestion in detail...",
+      "submit": "Submit",
+      "submitting": "Submitting...",
+      "success": "Submitted successfully! We will respond within 1-2 business days.",
+      "error": "Submission failed. Please try again later.",
+      "validationError": "Please fill in all required fields"
+    },
+    "quickInfo": {
+      "title": "Contact Info",
+      "responseTime": "We typically respond within 1-2 business days",
+      "departments": "Departments",
+      "departmentQC": "QC Department",
+      "departmentTech": "Technical Support",
+      "departmentSales": "Business Cooperation",
+      "emergency": "For urgent matters, please call directly"
+    }
   }
 }
