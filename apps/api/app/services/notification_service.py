@@ -73,6 +73,75 @@ def send_expiry_warning_email(
         return False
 
 
+def send_contact_email(
+    name: str,
+    email: str,
+    category: str,
+    subject: str,
+    message: str,
+) -> bool:
+    """
+    Send contact form submission email via SendGrid.
+    Returns True if sent, False if skipped (no API key or failure).
+    """
+    settings = get_settings()
+    if not settings.SENDGRID_API_KEY:
+        return False
+
+    category_labels = {
+        "support": "QC Support",
+        "technical": "Technical Issue",
+        "feature": "Feature Request",
+        "business": "Business Inquiry",
+        "other": "Other",
+    }
+
+    try:
+        from sendgrid import SendGridAPIClient
+        from sendgrid.helpers.mail import Mail
+
+        sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
+        message_obj = Mail(
+            from_email=settings.SENDGRID_FROM_EMAIL,
+            to_emails="qc@abachem.com",
+            subject=f"【Contact】{category_labels.get(category, category)}: {subject}",
+            html_content=f"""
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #ea580c;">New Contact Form Submission</h2>
+              <table style="border-collapse: collapse; width: 100%;">
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #e5e7eb; font-weight: bold;">Name</td>
+                  <td style="padding: 8px; border: 1px solid #e5e7eb;">{name}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #e5e7eb; font-weight: bold;">Email</td>
+                  <td style="padding: 8px; border: 1px solid #e5e7eb;"><a href="mailto:{email}">{email}</a></td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #e5e7eb; font-weight: bold;">Category</td>
+                  <td style="padding: 8px; border: 1px solid #e5e7eb;">{category_labels.get(category, category)}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #e5e7eb; font-weight: bold;">Subject</td>
+                  <td style="padding: 8px; border: 1px solid #e5e7eb;">{subject}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #e5e7eb; font-weight: bold;">Message</td>
+                  <td style="padding: 8px; border: 1px solid #e5e7eb;">{message.replace(chr(10), '<br>')}</td>
+                </tr>
+              </table>
+              <p style="margin-top: 16px; color: #6b7280; font-size: 12px;">
+                Reply directly to this email to respond to {name} at {email}
+              </p>
+            </div>
+            """,
+        )
+        sg.send(message_obj)
+        return True
+    except Exception:
+        return False
+
+
 def check_and_create_notifications(db: Session) -> dict:
     """
     Scan all active ledgers, create in-app notifications and send emails
