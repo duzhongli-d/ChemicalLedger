@@ -243,5 +243,107 @@
       "departmentSales": "Business Cooperation",
       "emergency": "For urgent matters, please call directly"
     }
+  },
+  "about": {
+    "hero": {
+      "title": "About Abachem QC Platform",
+      "subtitle": "A comprehensive solution for chemical quality control management, integrating laboratory operations, compliance tracking, and intelligent analytics",
+      "mission": "Our mission is to deliver rigorous, reliable QC data management that meets the highest pharmaceutical standards while enabling digital transformation in laboratory operations"
+    },
+    "tabs": {
+      "platformStory": "Platform Story",
+      "technicalCapabilities": "Technical Capabilities",
+      "compliance": "Compliance",
+      "team": "Team"
+    },
+    "platformStory": {
+      "title": "Building the Future of QC Management",
+      "body": "Abachem QC Platform was developed to address the growing complexity of laboratory quality control operations in the pharmaceutical and chemical industries. Our platform combines deep domain expertise with modern technology to create a unified solution for sample tracking, instrument integration, and regulatory compliance. We are committed to helping QC professionals achieve operational excellence while maintaining the highest standards of data integrity and regulatory compliance.",
+      "milestones": {
+        "title": "Development Milestones",
+        "established": "Platform Established",
+        "establishedYear": "2020",
+        "gmpCertified": "GMP Compliance Verified",
+        "gmpYear": "2021",
+        "isoCertified": "ISO 17025 Accredited",
+        "isoYear": "2022",
+        "cloudLaunch": "Cloud Platform Launch",
+        "cloudYear": "2023",
+        "aiIntegration": "AI Analytics Integrated",
+        "aiYear": "2024"
+      }
+    },
+    "technicalCapabilities": {
+      "title": "Advanced Technical Capabilities",
+      "instrumentsIntro": "Our laboratory is equipped with over 15 high-precision analytical instruments spanning HPLC, LC-MS/MS, GC-MS, NMR, and more. These instruments enable us to perform comprehensive chemical analysis from qualitative identification to trace impurity detection at ppb levels.",
+      "techIntro": "Beyond instrumentation, our technical capabilities include method development and validation, stability studies, forced degradation analysis, and reference standard characterization. Our team of senior chemists applies QbD principles to ensure all methods meet ICH and regulatory guidelines.",
+      "categories": {
+        "title": "Analysis Categories",
+        "identification": "Qualitative Identification",
+        "purity": "Purity Testing",
+        "impurity": "Impurity Profiling",
+        "content": "Content Determination",
+        "dissolution": "Dissolution Testing",
+        "stability": "Stability Studies"
+      }
+    },
+    "compliance": {
+      "title": "Quality Assurance & Compliance",
+      "gmpIso": "GMP/ISO Dual Certification",
+      "gmpIsoDesc": "Our quality management system is certified to both GMP and ISO 17025 standards, ensuring comprehensive compliance with pharmaceutical industry requirements.",
+      "auditRate": "Compliance Audit Rate",
+      "auditRateValue": "100%",
+      "auditRateDesc": "Consistent pass rate across all internal and external regulatory audits over the past 3 consecutive years",
+      "auditRateHighlight": "Key Metric",
+      "auditPassRate": "Audit Pass Rate",
+      "consecutiveYears": "Consecutive Years",
+      "cardTestingLab": "Testing & Calibration Laboratory",
+      "cardAccredited": "Accredited",
+      "gmpLabel": "GMP Compliance",
+      "cardGoodPractices": "Good Manufacturing Practice",
+      "cardVerified2021": "Verified 2021",
+      "cardQualityMgmt": "Quality Management System",
+      "cardCertified2020": "Certified 2020",
+      "glpLabel": "GLP Certification",
+      "cardLabPractice": "Good Laboratory Practice",
+      "cardCertified2023": "Certified 2023",
+      "tableName": "Name",
+      "tableIssueDate": "Issue Date",
+      "tableScope": "Scope",
+      "tableStatus": "Status",
+      "statusActive": "Active",
+      "statusExpired": "Expired",
+      "statusPending": "Pending",
+      "certificationsList": {
+        "title": "Certifications & Accreditations",
+        "gmp": "GMP Manufacturing License",
+        "iso17025": "ISO 17025 Testing Laboratory",
+        "iso9001": "ISO 9001 Quality Management",
+        "environmental": "Environmental Management System",
+        "glp": "GLP Certification",
+        "scopeTesting": "Testing & Calibration",
+        "scopeManufacturing": "Pharmaceutical Manufacturing",
+        "scopeQuality": "Quality Management",
+        "scopeLaboratory": "Laboratory Operations"
+      }
+    },
+    "team": {
+      "title": "Professional QC Team",
+      "professionalBadge": "60%+ Masters/PhDs",
+      "intro": "Our team comprises experienced QC professionals, senior chemists, and regulatory specialists dedicated to delivering accurate, reliable results. With over 60% holding master's or doctoral degrees and an average of 8+ years industry experience, our team brings deep expertise to every analysis.",
+      "deptStructure": {
+        "title": "Department Structure",
+        "chemistry": "Chemistry Analysis",
+        "chemistryDesc": "HPLC, GC, titration, moisture analysis",
+        "instrumental": "Instrumental Analysis",
+        "instrumentalDesc": "LC-MS, GC-MS, NMR, AAS",
+        "microbiology": "Microbiology",
+        "microbiologyDesc": "Sterility, environmental monitoring",
+        "quality": "Quality Assurance",
+        "qualityDesc": "Method validation, documentation",
+        "regulatory": "Regulatory Affairs",
+        "regulatoryDesc": "Compliance, submissions"
+      }
+    }
   }
 }

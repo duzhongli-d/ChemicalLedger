@@ -153,7 +153,7 @@ export function TeamShowcase() {
   }, []);
 
   return (
-    <section id="about" ref={sectionRef} className="py-16 sm:py-20 bg-secondary relative overflow-hidden">
+    <section ref={sectionRef} className="py-16 sm:py-20 bg-secondary relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-orange-500/30 to-transparent" />
       <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-orange-500/30 to-transparent" />

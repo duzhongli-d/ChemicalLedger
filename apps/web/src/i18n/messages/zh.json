@@ -243,5 +243,107 @@
       "departmentSales": "商务合作",
       "emergency": "紧急情况请直接电话联系"
     }
+  },
+  "about": {
+    "hero": {
+      "title": "关于雅本化学QC平台",
+      "subtitle": "面向化学质量控制管理的综合解决方案，整合实验室运营、合规追踪与智能分析",
+      "mission": "我们的使命是提供严谨、可靠的质量控制数据管理，满足最高制药标准，同时推动实验室运营的数字化转型"
+    },
+    "tabs": {
+      "platformStory": "平台历程",
+      "technicalCapabilities": "技术能力",
+      "compliance": "合规体系",
+      "team": "团队介绍"
+    },
+    "platformStory": {
+      "title": "构建QC管理新范式",
+      "body": "雅本化学QC平台旨在解决制药和化学行业实验室质量控制操作日益复杂的挑战。我们的平台将深厚的领域专业知识与现代技术相结合，打造统一的样品追踪、仪器集成和合规管理解决方案。我们致力于帮助QC专业人员实现卓越运营，同时保持最高标准的数据完整性和合规性。",
+      "milestones": {
+        "title": "发展里程碑",
+        "established": "平台建立",
+        "establishedYear": "2020",
+        "gmpCertified": "GMP合规认证",
+        "gmpYear": "2021",
+        "isoCertified": "ISO 17025认可",
+        "isoYear": "2022",
+        "cloudLaunch": "云平台上线",
+        "cloudYear": "2023",
+        "aiIntegration": "AI分析集成",
+        "aiYear": "2024"
+      }
+    },
+    "technicalCapabilities": {
+      "title": "先进技术能力",
+      "instrumentsIntro": "我们的实验室配备了超过15台高精度分析仪器，涵盖HPLC、LC-MS/MS、GC-MS、NMR等。这些仪器使我们能够完成从定性鉴别到痕量杂质检测（ppb级）的全面化学分析。",
+      "techIntro": "除了仪器设备，我们的技术能力还包括方法开发和验证、稳定性研究、强制降解分析和标准品表征。我们的资深化学家团队应用QbD原则，确保所有方法符合ICH和监管指南要求。",
+      "categories": {
+        "title": "检测类别",
+        "identification": "定性鉴别",
+        "purity": "纯度检测",
+        "impurity": "杂质剖析",
+        "content": "含量测定",
+        "dissolution": "溶出度测试",
+        "stability": "稳定性研究"
+      }
+    },
+    "compliance": {
+      "title": "质量保证与合规体系",
+      "gmpIso": "GMP/ISO双体系认证",
+      "gmpIsoDesc": "我们的质量管理体系通过GMP和ISO 17025双重认证，确保全面符合制药行业要求。",
+      "auditRate": "合规审计通过率",
+      "auditRateValue": "100%",
+      "auditRateDesc": "过去连续3年内部和外部监管审计保持全部通过",
+      "auditRateHighlight": "关键指标",
+      "auditPassRate": "审计通过率",
+      "consecutiveYears": "连续年份",
+      "cardTestingLab": "检测与校准实验室",
+      "cardAccredited": "已认可",
+      "gmpLabel": "GMP合规认证",
+      "cardGoodPractices": "良好生产规范",
+      "cardVerified2021": "2021年验证",
+      "cardQualityMgmt": "质量管理体系",
+      "cardCertified2020": "2020年认证",
+      "glpLabel": "GLP认证",
+      "cardLabPractice": "良好实验室规范",
+      "cardCertified2023": "2023年认证",
+      "tableName": "名称",
+      "tableIssueDate": "发证日期",
+      "tableScope": "范围",
+      "tableStatus": "状态",
+      "statusActive": "有效",
+      "statusExpired": "过期",
+      "statusPending": "待定",
+      "certificationsList": {
+        "title": "资质认证",
+        "gmp": "GMP生产许可证",
+        "iso17025": "ISO 17025检测实验室",
+        "iso9001": "ISO 9001质量管理",
+        "environmental": "环境管理体系",
+        "glp": "GLP认证",
+        "scopeTesting": "检测与校准",
+        "scopeManufacturing": "制药生产",
+        "scopeQuality": "质量管理",
+        "scopeLaboratory": "实验室运营"
+      }
+    },
+    "team": {
+      "title": "专业QC团队",
+      "professionalBadge": "60%+ 硕博比例",
+      "intro": "我们的团队由资深QC专业人员、资深化学家和法规专员组成，致力于提供准确、可靠的结果。团队硕博比例超过60%，平均行业经验8年以上，为每次分析带来深厚专业知识。",
+      "deptStructure": {
+        "title": "部门架构",
+        "chemistry": "化学分析部",
+        "chemistryDesc": "HPLC、GC、滴定、水分分析",
+        "instrumental": "仪器分析部",
+        "instrumentalDesc": "LC-MS、GC-MS、NMR、AAS",
+        "microbiology": "微生物部",
+        "microbiologyDesc": "无菌检测、环境监测",
+        "quality": "质量保证部",
+        "qualityDesc": "方法验证、文档管理",
+        "regulatory": "注册法规部",
+        "regulatoryDesc": "合规、申报注册"
+      }
+    }
   }
 }
