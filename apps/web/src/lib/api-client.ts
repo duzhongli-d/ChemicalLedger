@@ -113,4 +113,16 @@ export const auditLogApi = {
   }) => api.get("/admin/audit-logs/", { params }),
 };
 
+// ─── Contact ─────────────────────────────────────────────────────────────────
+
+export const contactApi = {
+  submit: (data: {
+    name: string;
+    email: string;
+    subject: string;
+    category: string;
+    message: string;
+  }) => api.post("/contact/", data),
+};
+
 export default api;
