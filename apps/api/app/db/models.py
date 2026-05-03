@@ -42,6 +42,7 @@ class User(Base):
     notebooks = relationship("ResearchNotebook", back_populates="user")
     daily_usages = relationship("DailyUsage", back_populates="user")
     audit_logs = relationship("AuditLog", back_populates="user", order_by="desc(AuditLog.created_at)")
+    contact_submissions = relationship("ContactSubmission", back_populates="user")
 
 
 class Category(Base):
@@ -139,6 +140,22 @@ class AuditLog(Base):
     created_at = Column(DateTime, nullable=False, server_default=func.now())
 
     user = relationship("User", back_populates="audit_logs")
+
+
+class ContactSubmission(Base):
+    __tablename__ = "contact_submissions"
+
+    id = Column(Uuid, primary_key=True, default=uuid_lib.uuid4)
+    user_id = Column(Uuid, ForeignKey("users.id"), nullable=True)  # null if anonymous
+    name = Column(String(100), nullable=False)
+    email = Column(String(255), nullable=False)
+    subject = Column(String(255), nullable=False)
+    category = Column(String(50), nullable=False)  # support/technical/feature/business/other
+    message = Column(Text, nullable=False)
+    is_read = Column(Boolean, default=False)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+    user = relationship("User", back_populates="contact_submissions")
 
 
 class DailyStats(Base):
