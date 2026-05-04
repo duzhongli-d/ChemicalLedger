@@ -6,10 +6,13 @@ export default function AboutHeroHeader() {
   const t = useTranslations();
 
   return (
-    <div className="relative bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border-b border-orange-500/20 overflow-hidden">
-      {/* Dot grid pattern overlay */}
+    <div className="relative bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border-b border-orange-500/20 overflow-hidden" style={{ backgroundImage: "url('/11.png')", backgroundSize: "cover", backgroundPosition: "center" }}>
+      {/* Dark overlay over background image */}
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 to-slate-950/90" />
+
+      {/* Dot grid pattern overlay (reduced opacity) */}
       <div
-        className="absolute inset-0 opacity-30"
+        className="absolute inset-0 opacity-10"
         style={{
           backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px)",
           backgroundSize: "24px 24px",

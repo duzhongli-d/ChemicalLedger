@@ -3,6 +3,57 @@
 import { useTranslations } from "next-intl";
 import { useState, useEffect, useRef } from "react";
 
+// DNA Helix Animation Component
+function DNAHelixAnimation({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 120 120" className={className}>
+      <path
+        d="M30 10 Q60 30 90 10 Q60 30 30 50 Q60 70 90 50 Q60 70 30 90 Q60 110 90 90"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M90 10 Q60 30 30 10 Q60 30 90 50 Q60 70 30 50 Q60 70 90 90 Q60 110 30 90"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+      <line x1="42" y1="22" x2="78" y2="22" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
+      <line x1="42" y1="42" x2="78" y2="42" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
+      <line x1="42" y1="62" x2="78" y2="62" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
+      <line x1="42" y1="82" x2="78" y2="82" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
+      <circle cx="30" cy="10" r="4" fill="currentColor" opacity="0.6" />
+      <circle cx="90" cy="30" r="3.5" fill="currentColor" opacity="0.6" />
+      <circle cx="30" cy="50" r="4" fill="currentColor" opacity="0.6" />
+      <circle cx="90" cy="50" r="3.5" fill="currentColor" opacity="0.6" />
+      <circle cx="30" cy="90" r="4" fill="currentColor" opacity="0.6" />
+      <circle cx="90" cy="70" r="3.5" fill="currentColor" opacity="0.6" />
+    </svg>
+  );
+}
+
+// Molecular Structure Component
+function MolecularStructure({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 120 120" className={className}>
+      <circle cx="35" cy="35" r="10" fill="currentColor" opacity="0.5" />
+      <circle cx="85" cy="30" r="7" fill="currentColor" opacity="0.5" />
+      <circle cx="60" cy="75" r="9" fill="currentColor" opacity="0.5" />
+      <circle cx="90" cy="70" r="6" fill="currentColor" opacity="0.5" />
+      <circle cx="25" cy="80" r="5" fill="currentColor" opacity="0.5" />
+      <line x1="35" y1="35" x2="85" y2="30" stroke="currentColor" strokeWidth="2" opacity="0.3" />
+      <line x1="85" y1="30" x2="60" y2="75" stroke="currentColor" strokeWidth="2" opacity="0.3" />
+      <line x1="60" y1="75" x2="90" y2="70" stroke="currentColor" strokeWidth="2" opacity="0.3" />
+      <line x1="60" y1="75" x2="25" y2="80" stroke="currentColor" strokeWidth="2" opacity="0.3" />
+      <line x1="35" y1="35" x2="25" y2="80" stroke="currentColor" strokeWidth="1.5" opacity="0.25" />
+      <line x1="85" y1="30" x2="90" y2="70" stroke="currentColor" strokeWidth="1.5" opacity="0.25" />
+    </svg>
+  );
+}
+
 interface Instrument {
   name: string;
   model: string;
@@ -146,37 +197,80 @@ export function TechnicalCapabilitiesTab() {
   }, []);
 
   return (
-    <div ref={sectionRef} className="space-y-12">
-      {/* Instrument Grid Section */}
-      <section>
-        <h3 className="text-xl sm:text-2xl font-bold text-slate-800 font-mono tracking-wide mb-6">
-          {t("technicalCapabilities.title")}
-        </h3>
-        <p className="text-slate-500 leading-relaxed mb-8">
-          {t("technicalCapabilities.instrumentsIntro")}
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {instruments.map((inst, idx) => (
-            <InstrumentCard key={`${inst.name}-${idx}`} inst={inst} />
-          ))}
-        </div>
-      </section>
+    <div ref={sectionRef} className="max-w-[1320px] mx-auto px-4 py-12 relative overflow-hidden">
+      {/* Decorative elements */}
+      <div className="absolute top-20 left-8 w-32 h-32 text-orange-500/20 animate-pulse pointer-events-none">
+        <DNAHelixAnimation className="w-full h-full" />
+      </div>
+      <div className="absolute top-40 right-12 w-28 h-28 text-orange-500/15 pointer-events-none">
+        <MolecularStructure className="w-full h-full" />
+      </div>
+      <div className="absolute bottom-32 left-16 w-24 h-24 text-orange-500/20 pointer-events-none">
+        <MolecularStructure className="w-full h-full" />
+      </div>
+      <div className="absolute bottom-20 right-20 w-36 h-36 text-orange-500/15 animate-pulse pointer-events-none">
+        <DNAHelixAnimation className="w-full h-full" />
+      </div>
 
-      {/* Tech Metrics Section */}
-      <section className="py-8 px-6 rounded-2xl bg-gradient-to-br from-slate-50 to-teal-50/30 border border-slate-100">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-          <TechMetric value={14} suffix="+" label="Analytical Instruments" isVisible={isVisible} />
-          <TechMetric value={99.9} suffix="%" label="Instrument Uptime" isVisible={isVisible} />
-          <TechMetric value={15} suffix="+" label="Years Combined Experience" isVisible={isVisible} />
-          <TechMetric value={1000} suffix="+" label="Methods Validated" isVisible={isVisible} />
+      {/* Content container */}
+      <div className="relative">
+        {/* Header Badge */}
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 border border-orange-200 mb-6">
+          <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+          <span className="text-sm font-medium text-orange-600">
+            {t("technicalCapabilities.professionalBadge")}
+          </span>
         </div>
-      </section>
 
-      {/* Platform Technology Highlights */}
-      <section>
-        <h3 className="text-xl sm:text-2xl font-bold text-slate-800 font-mono tracking-wide mb-6">
-          Platform Technology
-        </h3>
+        {/* Section Title */}
+        <div className="mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+            {t("technicalCapabilities.title")}
+          </h2>
+          <div className="flex items-center justify-center gap-4">
+            <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300" />
+            <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300" />
+          </div>
+        </div>
+
+        {/* Instrument Grid Section */}
+        <section className="mb-12">
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300" />
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-800 font-mono tracking-wide text-center">
+              Equipment
+            </h3>
+            <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300" />
+          </div>
+          <p className="text-slate-500 leading-relaxed mb-8 text-center">
+            {t("technicalCapabilities.instrumentsIntro")}
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {instruments.map((inst, idx) => (
+              <InstrumentCard key={`${inst.name}-${idx}`} inst={inst} />
+            ))}
+          </div>
+        </section>
+
+        {/* Tech Metrics Section */}
+        <section className="py-8 px-6 rounded-2xl bg-gradient-to-br from-slate-50 to-teal-50/30 border border-slate-100 mb-12">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            <TechMetric value={14} suffix="+" label="Analytical Instruments" isVisible={isVisible} />
+            <TechMetric value={99.9} suffix="%" label="Instrument Uptime" isVisible={isVisible} />
+            <TechMetric value={15} suffix="+" label="Years Combined Experience" isVisible={isVisible} />
+            <TechMetric value={1000} suffix="+" label="Methods Validated" isVisible={isVisible} />
+          </div>
+        </section>
+
+        {/* Platform Technology Highlights */}
+        <section className="mb-12">
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300" />
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-800 font-mono tracking-wide text-center">
+              Platform Technology
+            </h3>
+            <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300" />
+          </div>
         <p className="text-slate-500 leading-relaxed mb-6">
           {t("technicalCapabilities.techIntro")}
         </p>
@@ -236,40 +330,45 @@ export function TechnicalCapabilitiesTab() {
             }
           />
         </div>
-      </section>
+        </section>
 
-      {/* Analysis Categories */}
+        {/* Analysis Categories */}
       <section>
-        <h3 className="text-xl sm:text-2xl font-bold text-slate-800 font-mono tracking-wide mb-6">
-          {t("technicalCapabilities.categories.title")}
-        </h3>
+        <div className="flex items-center justify-center gap-4 mb-8">
+          <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300" />
+          <h3 className="text-xl sm:text-2xl font-bold text-slate-800 font-mono tracking-wide text-center">
+            {t("technicalCapabilities.categories.title")}
+          </h3>
+          <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300" />
+        </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <div className="text-center p-4 rounded-xl bg-white border border-slate-100 hover:border-orange-200 hover:shadow-md transition-all duration-300">
+          <div className="text-center p-4 rounded-xl bg-white border border-slate-100 hover:border-orange-200 hover:shadow-md hover:shadow-orange-500/10 transition-all duration-300">
             <div className="text-2xl mb-2">🔬</div>
             <div className="text-sm font-medium text-slate-700">{t("technicalCapabilities.categories.identification")}</div>
           </div>
-          <div className="text-center p-4 rounded-xl bg-white border border-slate-100 hover:border-orange-200 hover:shadow-md transition-all duration-300">
+          <div className="text-center p-4 rounded-xl bg-white border border-slate-100 hover:border-orange-200 hover:shadow-md hover:shadow-orange-500/10 transition-all duration-300">
             <div className="text-2xl mb-2">⚗️</div>
             <div className="text-sm font-medium text-slate-700">{t("technicalCapabilities.categories.purity")}</div>
           </div>
-          <div className="text-center p-4 rounded-xl bg-white border border-slate-100 hover:border-orange-200 hover:shadow-md transition-all duration-300">
+          <div className="text-center p-4 rounded-xl bg-white border border-slate-100 hover:border-orange-200 hover:shadow-md hover:shadow-orange-500/10 transition-all duration-300">
             <div className="text-2xl mb-2">🎯</div>
             <div className="text-sm font-medium text-slate-700">{t("technicalCapabilities.categories.impurity")}</div>
           </div>
-          <div className="text-center p-4 rounded-xl bg-white border border-slate-100 hover:border-orange-200 hover:shadow-md transition-all duration-300">
+          <div className="text-center p-4 rounded-xl bg-white border border-slate-100 hover:border-orange-200 hover:shadow-md hover:shadow-orange-500/10 transition-all duration-300">
             <div className="text-2xl mb-2">📊</div>
             <div className="text-sm font-medium text-slate-700">{t("technicalCapabilities.categories.content")}</div>
           </div>
-          <div className="text-center p-4 rounded-xl bg-white border border-slate-100 hover:border-orange-200 hover:shadow-md transition-all duration-300">
+          <div className="text-center p-4 rounded-xl bg-white border border-slate-100 hover:border-orange-200 hover:shadow-md hover:shadow-orange-500/10 transition-all duration-300">
             <div className="text-2xl mb-2">⏱️</div>
             <div className="text-sm font-medium text-slate-700">{t("technicalCapabilities.categories.dissolution")}</div>
           </div>
-          <div className="text-center p-4 rounded-xl bg-white border border-slate-100 hover:border-orange-200 hover:shadow-md transition-all duration-300">
+          <div className="text-center p-4 rounded-xl bg-white border border-slate-100 hover:border-orange-200 hover:shadow-md hover:shadow-orange-500/10 transition-all duration-300">
             <div className="text-2xl mb-2">📈</div>
             <div className="text-sm font-medium text-slate-700">{t("technicalCapabilities.categories.stability")}</div>
           </div>
         </div>
       </section>
+      </div>{/* close relative */}
     </div>
   );
 }

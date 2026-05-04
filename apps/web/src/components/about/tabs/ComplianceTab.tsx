@@ -171,12 +171,23 @@ export default function ComplianceTab() {
 
   return (
     <div ref={sectionRef} className="max-w-[1320px] mx-auto px-4 py-12">
+      {/* Header Badge */}
+      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 border border-orange-200 mb-6">
+        <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+        <span className="text-sm font-medium text-orange-600">
+          {t("about.compliance.professionalBadge")}
+        </span>
+      </div>
+
       {/* Section Title */}
       <div className="mb-10">
-        <h2 className="text-3xl font-bold text-slate-900 mb-2">
+        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
           {t("about.compliance.title")}
         </h2>
-        <div className="h-1 w-20 bg-orange-500 rounded-full" />
+        <div className="flex items-center justify-center gap-4">
+          <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300" />
+          <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300" />
+        </div>
       </div>
 
       {/* GMP/ISO Certification Cards */}
@@ -186,7 +197,7 @@ export default function ComplianceTab() {
         }`}
       >
         {/* ISO 17025 Card */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:border-teal-400/50 transition-colors">
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300">
           <div className="flex items-start justify-between mb-4">
             <div className="w-14 h-14 rounded-xl bg-teal-50 flex items-center justify-center">
               <AwardIcon className="w-8 h-8 text-teal-600" />
@@ -222,7 +233,7 @@ export default function ComplianceTab() {
 
         {/* ISO 9001 Card */}
         <div
-          className={`bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:border-blue-400/50 transition-colors transition-delay-200 ${
+          className={`bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 transition-delay-200 ${
             isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
           }`}
           style={{ transitionDelay: "200ms" }}
@@ -242,7 +253,7 @@ export default function ComplianceTab() {
 
         {/* GLP Card */}
         <div
-          className={`bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:border-purple-400/50 transition-colors transition-delay-300 ${
+          className={`bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 transition-delay-300 ${
             isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
           }`}
           style={{ transitionDelay: "300ms" }}
