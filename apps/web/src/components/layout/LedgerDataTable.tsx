@@ -18,6 +18,7 @@ interface Ledger {
 interface LedgerDataTableProps {
   ledgers: Ledger[];
   isLoading?: boolean;
+  error?: Error | null;
   onArchive?: (id: string) => void;
   onProtectedAction?: () => void;
   isLoggedIn?: boolean;
@@ -27,6 +28,7 @@ interface LedgerDataTableProps {
 export function LedgerDataTable({
   ledgers,
   isLoading,
+  error,
   onArchive,
   onProtectedAction,
   isLoggedIn = false,
@@ -44,6 +46,17 @@ export function LedgerDataTable({
     if (daysLeft <= 30) return "text-amber-600 font-medium";
     return "text-slate-600";
   };
+
+  if (error) {
+    return (
+      <div className={clsx("bg-white rounded-xl border border-red-200 shadow-sm", className)}>
+        <div className="p-8 text-center">
+          <p className="text-red-500 font-medium">{tCommon("failedToLoad")}</p>
+          <p className="text-sm mt-1 text-slate-400">{error.message}</p>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (

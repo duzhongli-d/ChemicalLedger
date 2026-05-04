@@ -7,6 +7,7 @@
     "search": "Search",
     "filter": "Filter",
     "loading": "Loading...",
+    "failedToLoad": "Failed to load data",
     "noData": "No data",
     "confirm": "Confirm",
     "back": "Back",
@@ -52,7 +53,8 @@
     "loginWithUsername": "Use username login",
     "rememberMe": "Remember me",
     "forgotPassword": "Forgot password?",
-    "orContinueWith": "or continue with"
+    "orContinueWith": "or continue with",
+    "contactAdminForAccount": "Please contact the administrator to request an account"
   },
   "ledger": {
     "create": "New Ledger",

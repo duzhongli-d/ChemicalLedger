@@ -7,6 +7,7 @@
     "search": "搜索",
     "filter": "筛选",
     "loading": "加载中...",
+    "failedToLoad": "无法加载数据",
     "noData": "暂无数据",
     "confirm": "确认",
     "back": "返回",
@@ -52,7 +53,8 @@
     "loginWithUsername": "使用用户名登录",
     "rememberMe": "记住我",
     "forgotPassword": "忘记密码？",
-    "orContinueWith": "或继续使用"
+    "orContinueWith": "或继续使用",
+    "contactAdminForAccount": "如需账号，请联系管理员申请"
   },
   "ledger": {
     "create": "新建台账",

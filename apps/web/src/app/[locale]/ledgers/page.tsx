@@ -33,7 +33,7 @@ export default function LedgersPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data: ledgersData, isLoading } = useQuery({
+  const { data: ledgersData, isLoading, isError, error: ledgerError } = useQuery({
     queryKey: ["ledgers"],
     queryFn: () => ledgerApi.list().then((r) => r.data),
   });
@@ -163,6 +163,7 @@ export default function LedgersPage() {
         <LedgerDataTable
           ledgers={paginatedLedgers}
           isLoading={isLoading}
+          error={isError ? ledgerError : null}
           onArchive={handleArchive}
           isLoggedIn={isAuthenticated()}
           onProtectedAction={() => {}}
