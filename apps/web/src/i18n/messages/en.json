@@ -70,6 +70,8 @@
     "fields": {
       "internalBatchNo": "Internal Batch No.",
       "productName": "Product Name",
+      "specification": "Specification",
+      "supplier": "Supplier",
       "batchNo": "Batch No.",
       "casNo": "CAS No.",
       "weightCapacity": "Weight/Capacity",
@@ -83,7 +85,9 @@
       "remarks": "Remarks",
       "status": "Status",
       "createdBy": "Created By",
-      "createdAt": "Created At"
+      "createdAt": "Created Date",
+      "actions": "Actions",
+      "daysLeft": "Days Left"
     },
     "filter": {
       "status": "Status",
@@ -97,6 +101,7 @@
     "clickAgain": "Please click the action again",
     "openDateConfirm": "Confirm",
     "openDateCancel": "Cancel",
+    "notOpened": "Not Opened",
     "back": "Back",
     "cancel": "Cancel",
     "confirm": "Confirm",
@@ -126,7 +131,10 @@
     "totalLedgers": "Total Ledgers",
     "expiringSoon": "Expiring Soon",
     "activeLedgers": "Active Ledgers",
-    "archivedLedgers": "Archived Ledgers"
+    "archivedLedgers": "Archived Ledgers",
+    "expiring10Days": "≤10 Days",
+    "expiring20Days": "11-20 Days",
+    "expiredNotArchived": "Expired"
   },
   "notifications": {
     "title": "Notifications",

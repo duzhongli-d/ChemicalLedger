@@ -20,7 +20,9 @@ const PAGE_SIZE = 10;
 const mockTrends = {
   total: [12, 15, 18, 14, 20, 22, 25],
   active: [8, 10, 12, 11, 14, 15, 18],
-  expiring: [2, 3, 2, 4, 3, 2, 3],
+  expiring10: [1, 2, 1, 2, 1, 1, 1],
+  expiring20: [1, 1, 1, 2, 2, 1, 2],
+  expired: [0, 0, 1, 0, 0, 0, 0],
   archived: [4, 5, 6, 3, 6, 7, 7],
 };
 
@@ -54,9 +56,17 @@ export default function LedgersPage() {
     const all = Array.isArray(ledgersData) ? ledgersData : [];
 
     const active = all.filter((l: { status: string }) => l.status === "active");
-    const expiring = active.filter((l: { effective_expiry_date: string }) => {
+    const expiring10 = active.filter((l: { effective_expiry_date: string }) => {
       const days = getDaysLeft(l.effective_expiry_date);
-      return days <= 30 && days >= 0;
+      return days <= 10 && days >= 0;
+    });
+    const expiring20 = active.filter((l: { effective_expiry_date: string }) => {
+      const days = getDaysLeft(l.effective_expiry_date);
+      return days > 10 && days <= 20;
+    });
+    const expired = active.filter((l: { effective_expiry_date: string }) => {
+      const days = getDaysLeft(l.effective_expiry_date);
+      return days < 0;
     });
     const archived = all.filter((l: { status: string }) => l.status === "archived");
 
@@ -65,8 +75,14 @@ export default function LedgersPage() {
       case "active":
         filtered = active;
         break;
-      case "expiring":
-        filtered = expiring;
+      case "expiring10":
+        filtered = expiring10;
+        break;
+      case "expiring20":
+        filtered = expiring20;
+        break;
+      case "expired":
+        filtered = expired;
         break;
       case "archived":
         filtered = archived;
@@ -89,7 +105,9 @@ export default function LedgersPage() {
       counts: {
         all: all.length,
         active: active.length,
-        expiring: expiring.length,
+        expiring10: expiring10.length,
+        expiring20: expiring20.length,
+        expired: expired.length,
         archived: archived.length,
       },
     };
@@ -104,6 +122,11 @@ export default function LedgersPage() {
 
   // Reset to page 1 when tab changes
   const handleTabChange = (tab: FilterTabValue) => {
+    setActiveTab(tab);
+    setCurrentPage(1);
+  };
+
+  const handleStatCardClick = (tab: FilterTabValue) => {
     setActiveTab(tab);
     setCurrentPage(1);
   };
@@ -136,30 +159,48 @@ export default function LedgersPage() {
         )}
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
           <StatCard
             title={tDash("totalLedgers")}
             value={counts.all}
             trend={mockTrends.total}
             accentColor="orange"
+            onClick={() => handleStatCardClick("all")}
           />
           <StatCard
             title={tDash("activeLedgers")}
             value={counts.active}
             trend={mockTrends.active}
             accentColor="teal"
+            onClick={() => handleStatCardClick("active")}
           />
           <StatCard
-            title={tDash("expiringSoon")}
-            value={counts.expiring}
-            trend={mockTrends.expiring}
+            title={tDash("expiring10Days")}
+            value={counts.expiring10}
+            trend={mockTrends.expiring10}
+            accentColor="red"
+            onClick={() => handleStatCardClick("expiring10")}
+          />
+          <StatCard
+            title={tDash("expiring20Days")}
+            value={counts.expiring20}
+            trend={mockTrends.expiring20}
             accentColor="amber"
+            onClick={() => handleStatCardClick("expiring20")}
+          />
+          <StatCard
+            title={tDash("expiredNotArchived")}
+            value={counts.expired}
+            trend={mockTrends.expired}
+            accentColor="rose"
+            onClick={() => handleStatCardClick("expired")}
           />
           <StatCard
             title={tDash("archivedLedgers")}
             value={counts.archived}
             trend={mockTrends.archived}
             accentColor="slate"
+            onClick={() => handleStatCardClick("archived")}
           />
         </div>
 

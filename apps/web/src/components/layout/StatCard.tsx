@@ -7,8 +7,9 @@ interface StatCardProps {
   title: string;
   value: number;
   trend?: number[];
-  accentColor?: "orange" | "teal" | "amber" | "slate";
+  accentColor?: "orange" | "teal" | "amber" | "slate" | "red" | "rose";
   className?: string;
+  onClick?: () => void;
 }
 
 const colorMap = {
@@ -36,6 +37,18 @@ const colorMap = {
     text: "text-slate-600",
     gradient: "sparkline-gradient-slate",
   },
+  red: {
+    bg: "bg-red-50",
+    border: "border-red-200",
+    text: "text-red-600",
+    gradient: "sparkline-gradient-red",
+  },
+  rose: {
+    bg: "bg-rose-50",
+    border: "border-rose-200",
+    text: "text-rose-600",
+    gradient: "sparkline-gradient-rose",
+  },
 };
 
 export function StatCard({
@@ -44,12 +57,14 @@ export function StatCard({
   trend,
   accentColor = "orange",
   className = "",
+  onClick,
 }: StatCardProps) {
   const colors = colorMap[accentColor];
 
   return (
     <div
-      className={`${colors.bg} ${colors.border} border rounded-xl p-4 shadow-sm ${className}`}
+      className={`${colors.bg} ${colors.border} border rounded-xl p-4 shadow-sm ${className} ${onClick ? "cursor-pointer hover:shadow-md transition-shadow" : ""}`}
+      onClick={onClick}
     >
       {/* Blueprint-style title with brackets */}
       <BlueprintBrackets title={title} className="mb-2" />

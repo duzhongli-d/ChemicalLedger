@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 
-export type FilterTabValue = "all" | "active" | "expiring" | "archived";
+export type FilterTabValue = "all" | "active" | "expiring10" | "expiring20" | "expired" | "archived";
 
 interface FilterTabsProps {
   activeTab: FilterTabValue;
@@ -10,7 +10,9 @@ interface FilterTabsProps {
   counts: {
     all: number;
     active: number;
-    expiring: number;
+    expiring10: number;
+    expiring20: number;
+    expired: number;
     archived: number;
   };
   className?: string;
@@ -19,12 +21,14 @@ interface FilterTabsProps {
 const tabLabels: Record<FilterTabValue, { zh: string; en: string }> = {
   all: { zh: "全部", en: "All" },
   active: { zh: "正常", en: "Active" },
-  expiring: { zh: "即将过期", en: "Expiring" },
+  expiring10: { zh: "10天后即将到期", en: "≤10 Days" },
+  expiring20: { zh: "20天后即将到期", en: "11-20 Days" },
+  expired: { zh: "过期未归档", en: "Expired" },
   archived: { zh: "已归档", en: "Archived" },
 };
 
 export function FilterTabs({ activeTab, onTabChange, counts, className = "" }: FilterTabsProps) {
-  const tabs: FilterTabValue[] = ["all", "active", "expiring", "archived"];
+  const tabs: FilterTabValue[] = ["all", "active", "expiring10", "expiring20", "expired", "archived"];
 
   return (
     <div className={clsx("flex gap-1 bg-slate-100 p-1 rounded-lg", className)}>
