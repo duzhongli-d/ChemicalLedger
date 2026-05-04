@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ledgerApi } from "@/lib/api-client";
-import { LedgersTopBar } from "@/components/layout/LedgersTopBar";
-import { LoginModal } from "@/components/auth/LoginModal";
+import { Header } from "@/components/nav/header";
 import { StatCard } from "@/components/layout/StatCard";
 import { FilterTabs, FilterTabValue } from "@/components/layout/FilterTabs";
 import { SearchCreateBar } from "@/components/layout/SearchCreateBar";
 import { LedgerDataTable } from "@/components/layout/LedgerDataTable";
 import { Pagination } from "@/components/layout/Pagination";
 import { getDaysLeft } from "@/lib/date-utils";
+import { useAuthStore } from "@/lib/auth-store";
 
 const PAGE_SIZE = 10;
 
@@ -27,45 +27,11 @@ export default function LedgersPage() {
   const t = useTranslations("ledger");
   const tDash = useTranslations("dashboard");
   const queryClient = useQueryClient();
+  const { isAuthenticated } = useAuthStore();
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState("");
-  const [showLoginModal, setShowLoginModal] = useState(false);
   const [activeTab, setActiveTab] = useState<FilterTabValue>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-
-  // Check auth status on mount
-  useEffect(() => {
-    checkAuthStatus();
-  }, []);
-
-  const checkAuthStatus = async () => {
-    try {
-      const res = await fetch("/api/v1/auth/me");
-      if (res.ok) {
-        const data = await res.json();
-        setIsLoggedIn(true);
-        setUsername(data.username);
-      }
-    } catch {
-      // Not logged in
-    }
-  };
-
-  const handleLoginSuccess = (user: string) => {
-    setIsLoggedIn(true);
-    setUsername(user);
-  };
-
-  const handleLogout = async () => {
-    try {
-      await fetch("/api/v1/auth/logout", { method: "POST" });
-    } finally {
-      setIsLoggedIn(false);
-      setUsername("");
-    }
-  };
 
   const { data: ledgersData, isLoading } = useQuery({
     queryKey: ["ledgers"],
@@ -144,14 +110,9 @@ export default function LedgersPage() {
 
   return (
     <div className="min-h-screen bg-slate-100">
-      <LedgersTopBar
-        isLoggedIn={isLoggedIn}
-        username={username}
-        onLoginClick={() => setShowLoginModal(true)}
-        onLogout={handleLogout}
-      />
+      <Header />
 
-      <main className="pt-16 p-6 space-y-6">
+      <main className="p-6 space-y-6">
         {/* Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
@@ -194,8 +155,8 @@ export default function LedgersPage() {
             setSearchQuery(v);
             setCurrentPage(1);
           }}
-          isLoggedIn={isLoggedIn}
-          onProtectedAction={() => setShowLoginModal(true)}
+          isLoggedIn={isAuthenticated()}
+          onProtectedAction={() => {}}
         />
 
         {/* Data Table */}
@@ -203,8 +164,8 @@ export default function LedgersPage() {
           ledgers={paginatedLedgers}
           isLoading={isLoading}
           onArchive={handleArchive}
-          isLoggedIn={isLoggedIn}
-          onProtectedAction={() => setShowLoginModal(true)}
+          isLoggedIn={isAuthenticated()}
+          onProtectedAction={() => {}}
         />
 
         {/* Pagination */}
@@ -216,12 +177,6 @@ export default function LedgersPage() {
           onPageChange={setCurrentPage}
         />
       </main>
-
-      <LoginModal
-        isOpen={showLoginModal}
-        onClose={() => setShowLoginModal(false)}
-        onLoginSuccess={handleLoginSuccess}
-      />
     </div>
   );
 }
