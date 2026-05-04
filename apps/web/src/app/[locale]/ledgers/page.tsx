@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ledgerApi } from "@/lib/api-client";
@@ -10,6 +10,7 @@ import { FilterTabs, FilterTabValue } from "@/components/layout/FilterTabs";
 import { SearchCreateBar } from "@/components/layout/SearchCreateBar";
 import { LedgerDataTable } from "@/components/layout/LedgerDataTable";
 import { Pagination } from "@/components/layout/Pagination";
+import { LoginModal } from "@/components/auth/LoginModal";
 import { getDaysLeft } from "@/lib/date-utils";
 import { useAuthStore } from "@/lib/auth-store";
 
@@ -32,6 +33,16 @@ export default function LedgersPage() {
   const [activeTab, setActiveTab] = useState<FilterTabValue>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Auto-dismiss toast after 3 seconds
+  useEffect(() => {
+    if (toastMessage) {
+      const timer = setTimeout(() => setToastMessage(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toastMessage]);
 
   const { data: ledgersData, isLoading, isError, error: ledgerError } = useQuery({
     queryKey: ["ledgers"],
@@ -108,11 +119,22 @@ export default function LedgersPage() {
     }
   };
 
+  const handleProtectedAction = () => {
+    setLoginModalOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-slate-100">
       <Header />
 
       <main className="p-6 space-y-6">
+        {/* Toast notification */}
+        {toastMessage && (
+          <div className="fixed top-4 right-4 z-50 bg-slate-800 text-white px-4 py-2 rounded-lg shadow-lg text-sm">
+            {toastMessage}
+          </div>
+        )}
+
         {/* Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
@@ -156,7 +178,7 @@ export default function LedgersPage() {
             setCurrentPage(1);
           }}
           isLoggedIn={isAuthenticated()}
-          onProtectedAction={() => {}}
+          onProtectedAction={handleProtectedAction}
         />
 
         {/* Data Table */}
@@ -166,7 +188,7 @@ export default function LedgersPage() {
           error={isError ? ledgerError : null}
           onArchive={handleArchive}
           isLoggedIn={isAuthenticated()}
-          onProtectedAction={() => {}}
+          onProtectedAction={handleProtectedAction}
         />
 
         {/* Pagination */}
@@ -178,6 +200,16 @@ export default function LedgersPage() {
           onPageChange={setCurrentPage}
         />
       </main>
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+        onLoginSuccess={() => {
+          setLoginModalOpen(false);
+          setToastMessage(t("clickAgain"));
+        }}
+      />
     </div>
   );
 }
