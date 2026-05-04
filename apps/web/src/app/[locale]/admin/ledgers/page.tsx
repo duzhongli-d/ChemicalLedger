@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@/i18n/navigation";
 import { format } from "date-fns";
+import clsx from "clsx";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { adminLedgerApi } from "@/lib/api-client";
 
@@ -25,6 +26,8 @@ interface Ledger {
   created_at: string;
   created_by_id: string;
   creator?: { username: string };
+  is_opened: boolean;
+  open_date: string | null;
 }
 
 export default function AdminLedgersPage() {
@@ -241,40 +244,26 @@ export default function AdminLedgersPage() {
                         className="rounded border-slate-300"
                       />
                     </th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
-                      内部编号
-                    </th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
-                      试剂
-                    </th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
-                      规格
-                    </th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
-                      数量
-                    </th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
-                      分类
-                    </th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
-                      状态
-                    </th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
-                      创建人
-                    </th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
-                      创建时间
-                    </th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
-                      有效期
-                    </th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
-                      操作
-                    </th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">内部编号</th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">品名</th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">规格</th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">供应商</th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">批号</th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">CAS号</th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">品类</th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">创建时间</th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">证书有效期</th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">开封日期</th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">有效期</th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">状态</th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">数量</th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">创建人</th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">操作</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {paginatedLedgers.map((ledger) => {
+                    const certDaysLeft = getDaysLeft(ledger.cert_expiry_date);
                     const effectiveDaysLeft = getDaysLeft(ledger.effective_expiry_date);
 
                     return (
@@ -311,14 +300,56 @@ export default function AdminLedgersPage() {
                           {ledger.weight_capacity}
                         </td>
 
-                        {/* Quantity */}
+                        {/* Supplier */}
                         <td className="px-4 py-3 text-slate-500">
-                          {ledger.quantity}
+                          {ledger.supplier || "-"}
                         </td>
 
-                        {/* Category */}
+                        {/* Batch No */}
+                        <td className="px-4 py-3 text-slate-500 font-mono text-xs">
+                          {ledger.batch_no || "-"}
+                        </td>
+
+                        {/* CAS No */}
+                        <td className="px-4 py-3 text-slate-500 font-mono text-xs">
+                          {ledger.cas_no || "-"}
+                        </td>
+
+                        {/* Category - Level1 / Level2 */}
                         <td className="px-4 py-3 text-slate-500">
-                          {ledger.category?.level2 || "-"}
+                          {ledger.category?.level1 && ledger.category?.level2
+                            ? `${ledger.category.level1} / ${ledger.category.level2}`
+                            : ledger.category?.level2 || "-"}
+                        </td>
+
+                        {/* Created Date */}
+                        <td className="px-4 py-3 text-slate-500 text-xs">
+                          {ledger.created_at
+                            ? format(new Date(ledger.created_at), "yyyy-MM-dd")
+                            : "-"}
+                        </td>
+
+                        {/* Cert Expiry Date */}
+                        <td className={clsx("px-4 py-3", getExpiryClass(certDaysLeft))}>
+                          {ledger.cert_expiry_date?.slice(0, 10)}
+                          {certDaysLeft <= 30 && certDaysLeft >= 0 && (
+                            <span className="ml-1 text-xs">({certDaysLeft}天)</span>
+                          )}
+                        </td>
+
+                        {/* Open Date */}
+                        <td className="px-4 py-3 text-slate-500">
+                          {ledger.is_opened && ledger.open_date
+                            ? format(new Date(ledger.open_date), "yyyy-MM-dd")
+                            : "未开封"}
+                        </td>
+
+                        {/* Effective Expiry Date */}
+                        <td className={clsx("px-4 py-3", getExpiryClass(effectiveDaysLeft))}>
+                          {ledger.effective_expiry_date?.slice(0, 10)}
+                          {effectiveDaysLeft <= 30 && effectiveDaysLeft >= 0 && (
+                            <span className="ml-1 text-xs">({effectiveDaysLeft}天)</span>
+                          )}
                         </td>
 
                         {/* Status */}
@@ -334,24 +365,14 @@ export default function AdminLedgersPage() {
                           </span>
                         </td>
 
+                        {/* Quantity */}
+                        <td className="px-4 py-3 text-slate-500">
+                          {ledger.quantity}
+                        </td>
+
                         {/* Creator */}
                         <td className="px-4 py-3 text-slate-500 text-xs">
                           {ledger.creator?.username || ledger.created_by_id?.slice(0, 8) || "-"}
-                        </td>
-
-                        {/* Created Date */}
-                        <td className="px-4 py-3 text-slate-500 text-xs">
-                          {ledger.created_at
-                            ? format(new Date(ledger.created_at), "yyyy-MM-dd")
-                            : "-"}
-                        </td>
-
-                        {/* Expiry Date */}
-                        <td className={clsx("px-4 py-3", getExpiryClass(effectiveDaysLeft))}>
-                          {ledger.effective_expiry_date?.slice(0, 10)}
-                          {effectiveDaysLeft <= 30 && effectiveDaysLeft >= 0 && (
-                            <span className="ml-1 text-xs">({effectiveDaysLeft}天)</span>
-                          )}
                         </td>
 
                         {/* Actions */}
@@ -409,8 +430,4 @@ export default function AdminLedgersPage() {
       </div>
     </AdminLayout>
   );
-}
-
-function clsx(...classes: (string | boolean | undefined | null)[]): string {
-  return classes.filter(Boolean).join(" ");
 }
