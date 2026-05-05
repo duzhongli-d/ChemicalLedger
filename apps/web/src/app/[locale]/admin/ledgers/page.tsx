@@ -387,10 +387,16 @@ export default function AdminLedgersPage() {
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2">
                             <Link
-                              href={`/ledger/${ledger.id}`}
+                              href={`/admin/ledgers/${ledger.id}`}
                               className="text-blue-600 hover:text-blue-800 text-xs font-medium"
                             >
                               查看
+                            </Link>
+                            <Link
+                              href={`/admin/ledgers/${ledger.id}/edit`}
+                              className="text-teal-600 hover:text-teal-800 text-xs font-medium"
+                            >
+                              编辑
                             </Link>
                             {ledger.status === "active" && (
                               <button

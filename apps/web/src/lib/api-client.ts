@@ -118,7 +118,7 @@ export interface Ledger {
   weight_capacity: string;
   supplier: string;
   quantity: number;
-  category: { level1: string; level2: string };
+  category: { id?: string; level1: string; level2: string };
   cert_expiry_date: string;
   effective_expiry_date: string;
   status: "active" | "archived";
@@ -127,6 +127,7 @@ export interface Ledger {
   creator?: { username: string };
   is_opened: boolean;
   open_date: string | null;
+  remarks?: string;
 }
 
 export const adminLedgerApi = {
