@@ -6,7 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { format } from "date-fns";
 import clsx from "clsx";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { adminLedgerApi, Ledger } from "@/lib/api-client";
+import { adminLedgerApi, categoryApi, Ledger, CategoryResponse } from "@/lib/api-client";
 import { FilterTabs, FilterTabValue } from "@/components/layout/FilterTabs";
 import { Pagination } from "@/components/layout/Pagination";
 import { getDaysLeft } from "@/lib/date-utils";
@@ -22,10 +22,16 @@ export default function AdminLedgersPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-  // Fetch all data for tabCounts and categories (page_size=100 to get most/all records)
+  // Fetch all data for tabCounts (page_size=100 to get most/all records)
   const { data: allLedgersData } = useQuery({
     queryKey: ["admin-ledgers-all"],
     queryFn: () => adminLedgerApi.list({ page_size: 100 }).then((r) => r.data),
+  });
+
+  // Fetch categories for filter dropdown
+  const { data: categoriesData } = useQuery({
+    queryKey: ["categories-all"],
+    queryFn: () => categoryApi.list().then((r) => r.data as CategoryResponse[]),
   });
 
   // Server-side paginated query for table data
@@ -55,14 +61,14 @@ export default function AdminLedgersPage() {
   const totalItems = paginatedData?.total ?? 0;
   const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
 
-  // Get unique categories for filter
-  const categories = useMemo(() => {
+  // Get unique level2 categories for filter
+  const categoryOptions = useMemo(() => {
     const cats = new Set<string>();
-    (allLedgersData?.items ?? []).forEach((l: Ledger) => {
-      if (l.category?.level2) cats.add(l.category.level2);
+    (categoriesData ?? []).forEach((c: CategoryResponse) => {
+      if (c.level2) cats.add(c.level2);
     });
     return Array.from(cats).sort();
-  }, [allLedgersData]);
+  }, [categoriesData]);
 
   // Calculate counts for each tab from full dataset
   const tabCounts = useMemo(() => {
@@ -199,8 +205,8 @@ export default function AdminLedgersPage() {
             }}
             className="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="">全部分类</option>
-            {categories.map((cat) => (
+            <option value="">全部品类</option>
+            {categoryOptions.map((cat) => (
               <option key={cat} value={cat}>
                 {cat}
               </option>

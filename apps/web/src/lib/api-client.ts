@@ -66,6 +66,17 @@ export const categoryApi = {
   }) => api.patch(`/admin/categories/${id}`, data),
 };
 
+export interface CategoryResponse {
+  id: string;
+  level1: string;
+  level2: string;
+  warning_threshold_days: number;
+  unopened_shelf_months: number;
+  opened_shelf_months: number;
+  remarks?: string;
+  created_at: string;
+}
+
 // ─── Notifications ───────────────────────────────────────────────────────────
 
 export const notificationApi = {
