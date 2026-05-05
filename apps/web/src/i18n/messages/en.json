@@ -221,6 +221,7 @@
     "footer": {
       "contact": "Contact Us",
       "contactInfo": "No. 328 Xinghu Street, Suzhou Industrial Park, Jiangsu Province",
+      "phone": "Phone: 021-50720006",
       "email": "qc@abachem.com",
       "downloadCerts": "Download Certificates",
       "platformEntry": "Platform Entry",
@@ -241,7 +242,9 @@
       "addressValue": "No. 328 Xinghu Street, Suzhou Industrial Park, Jiangsu Province",
       "email": "Email",
       "hours": "Working Hours",
-      "hoursValue": "Mon-Fri 9:00-18:00"
+      "hoursValue": "Mon-Fri 9:00-18:00",
+      "phone": "Phone",
+      "phoneValue": "021-50720006"
     },
     "form": {
       "name": "Name",
