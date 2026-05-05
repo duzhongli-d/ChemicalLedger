@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { adminLedgerApi } from "@/lib/api-client";
+import { adminLedgerApi, auditLogApi } from "@/lib/api-client";
 import { useAuthStore } from "@/lib/auth-store";
 import clsx from "clsx";
 import { Link } from "@/i18n/navigation";
@@ -27,6 +27,12 @@ export default function AdminLedgerDetailPage() {
       const all = await adminLedgerApi.list({ page: 1, page_size: 100 }).then((res) => res.data);
       return all.items.find((l: { id: string }) => l.id === id);
     }),
+    enabled: !!id,
+  });
+
+  const { data: auditLogs } = useQuery({
+    queryKey: ["admin-ledger-audit-logs", id],
+    queryFn: () => auditLogApi.list({ target_type: "ledger", target_id: id, page_size: 50 }).then((res) => res.data),
     enabled: !!id,
   });
 
@@ -374,6 +380,54 @@ export default function AdminLedgerDetailPage() {
             </div>
             <div className="p-4">
               <p className="text-sm text-slate-600 leading-relaxed">{ledger.remarks}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Operation Log Card */}
+        {(auditLogs && auditLogs.length > 0) && (
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center gap-2">
+              <div className="w-1 h-4 rounded-full bg-slate-400" />
+              <h3 className="text-sm font-semibold text-slate-700">{t("operationLogs")}</h3>
+            </div>
+            <div className="p-4">
+              <div className="relative">
+                {/* Timeline vertical line */}
+                <div className="absolute left-4 top-0 bottom-0 w-px bg-slate-200" />
+                <div className="space-y-4">
+                  {auditLogs.map((log: { id: string; action: string; created_at: string; user?: { username: string }; details: { fields?: string[] } | null }, index: number) => (
+                    <div key={log.id} className="relative flex items-start gap-4 pl-10">
+                      {/* Timeline dot */}
+                      <div className={clsx(
+                        "absolute left-2.5 top-1.5 w-3 h-3 rounded-full border-2 bg-white z-10",
+                        index === 0 ? "border-teal-500 ring-2 ring-teal-100" : "border-slate-300"
+                      )} />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-xs font-medium text-teal-600 bg-teal-50 px-2 py-0.5 rounded">
+                            {log.action}
+                          </span>
+                          {log.details?.fields && log.details.fields.length > 0 && (
+                            <span className="text-xs text-slate-500">
+                              {t("changedFields")}: {log.details.fields.join(", ")}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-xs text-slate-500">
+                            {log.user?.username || t("system")}
+                          </span>
+                          <span className="text-slate-300">·</span>
+                          <span className="text-xs text-slate-400">
+                            {new Date(log.created_at).toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         )}

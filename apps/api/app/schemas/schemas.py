@@ -154,6 +154,15 @@ class AuditLogResponse(AuditLogBase):
     model_config = ConfigDict(from_attributes=True)
 
 
+class AuditLogResponseWithUser(AuditLogBase):
+    id: UUID
+    user_id: Optional[UUID]
+    created_at: datetime
+    user: Optional["UserResponse"] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     phone: Optional[str] = None

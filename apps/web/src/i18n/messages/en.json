@@ -110,7 +110,10 @@
     "basicInfo": "Basic Info",
     "classification": "Classification",
     "metadata": "Metadata",
-    "effectiveExpiryInfo": "Expiry Info"
+    "effectiveExpiryInfo": "Expiry Info",
+    "operationLogs": "Operation Logs",
+    "changedFields": "Changed Fields",
+    "system": "System"
   },
   "research": {
     "title": "QC Deep Research",

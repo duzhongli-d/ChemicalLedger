@@ -149,6 +149,8 @@ export const auditLogApi = {
     user_id?: string;
     start_date?: string;
     end_date?: string;
+    target_type?: string;
+    target_id?: string;
   }) => api.get("/admin/audit-logs/", { params }),
 };
 

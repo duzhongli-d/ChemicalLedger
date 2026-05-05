@@ -110,7 +110,10 @@
     "basicInfo": "基本信息",
     "classification": "分类信息",
     "metadata": "元数据",
-    "effectiveExpiryInfo": "有效期信息"
+    "effectiveExpiryInfo": "有效期信息",
+    "operationLogs": "操作日志",
+    "changedFields": "变更字段",
+    "system": "系统"
   },
   "research": {
     "title": "QC深度调研",
