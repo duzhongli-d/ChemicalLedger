@@ -97,7 +97,7 @@ export default function AdminContactDetailPage() {
               联系详情
             </h1>
             <div className="flex items-center gap-2 mt-1">
-              <span className="w-8 h-0.5 bg-gradient-to-r from-teal-500 to-transparent rounded"></span>
+              <span className="w-8 h-0.5 bg-gradient-to-r from-blue-600 to-transparent rounded"></span>
               <span className="text-xs text-slate-500 font-mono-custom">CONTACT DETAIL</span>
             </div>
           </div>
@@ -106,12 +106,12 @@ export default function AdminContactDetailPage() {
         {/* Original Message Card */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden card-enter" style={{ animationDelay: "0.1s" }}>
           <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center gap-2">
-            <div className="w-1 h-4 rounded-full bg-orange-500" />
+            <div className="w-1 h-4 rounded-full bg-blue-500" />
             <h2 className="text-sm font-semibold text-slate-700">原始信息</h2>
             {submission.is_read ? (
               <span className="ml-auto text-xs text-slate-400">已读</span>
             ) : (
-              <span className="ml-auto text-xs text-orange-600 font-medium">未读</span>
+              <span className="ml-auto text-xs text-blue-600 font-medium">未读</span>
             )}
           </div>
           <div className="p-5 space-y-4">
@@ -190,7 +190,7 @@ export default function AdminContactDetailPage() {
         {/* Reply Form */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden card-enter" style={{ animationDelay: "0.3s" }}>
           <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center gap-2">
-            <div className="w-1 h-4 rounded-full bg-orange-500" />
+            <div className="w-1 h-4 rounded-full bg-blue-500" />
             <h2 className="text-sm font-semibold text-slate-700">发送回复</h2>
           </div>
           <div className="p-5 space-y-4">
@@ -199,7 +199,7 @@ export default function AdminContactDetailPage() {
               onChange={(e) => setReplyContent(e.target.value)}
               placeholder="输入回复内容..."
               rows={5}
-              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 resize-none transition-all"
+              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 resize-none transition-all"
             />
             <div className="flex items-center justify-between">
               {showSuccess && (
@@ -208,7 +208,7 @@ export default function AdminContactDetailPage() {
               <button
                 onClick={() => replyContent.trim() && replyMutation.mutate(replyContent)}
                 disabled={!replyContent.trim() || replyMutation.isPending}
-                className="ml-auto px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-orange-500/20"
+                className="ml-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-blue-500/20"
               >
                 {replyMutation.isPending ? "发送中..." : "发送回复"}
               </button>

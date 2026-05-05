@@ -96,8 +96,8 @@ export default function AdminContactPage() {
               联系管理
             </h1>
             <div className="flex items-center gap-2 mt-1">
-              <span className="w-8 h-0.5 bg-gradient-to-r from-orange-500 to-transparent rounded"></span>
-              <span className="text-xs text-slate-500 font-mono-custom">CONTACT MGMT</span>
+              <span className="w-8 h-0.5 bg-gradient-to-r from-blue-600 to-transparent rounded"></span>
+              <span className="text-xs text-slate-500 font-mono-custom">CONTACT MANAGEMENT</span>
             </div>
           </div>
         </div>
@@ -113,7 +113,7 @@ export default function AdminContactPage() {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all"
+              className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all"
             />
           </div>
 
@@ -126,7 +126,7 @@ export default function AdminContactPage() {
                 className={clsx(
                   "px-4 py-2 text-sm font-medium transition-colors font-mono-custom",
                   activeTab === tab
-                    ? "bg-orange-500 text-white"
+                    ? "bg-blue-600 text-white"
                     : "bg-white text-slate-600 hover:bg-slate-50"
                 )}
               >
@@ -139,7 +139,7 @@ export default function AdminContactPage() {
           <select
             value={categoryFilter}
             onChange={(e) => { setCategoryFilter(e.target.value); setCurrentPage(1); }}
-            className="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all"
+            className="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all"
           >
             <option value="">全部分类</option>
             {Object.entries(categoryLabels).map(([key, label]) => (
@@ -161,7 +161,7 @@ export default function AdminContactPage() {
                   key={submission.id}
                   className={clsx(
                     "p-4 hover:bg-slate-50 transition-colors card-enter",
-                    !submission.is_read && "border-l-4 border-orange-500"
+                    !submission.is_read && "border-l-4 border-blue-500"
                   )}
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
@@ -170,7 +170,7 @@ export default function AdminContactPage() {
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className={clsx(
                           "inline-block px-2 py-0.5 rounded text-xs font-medium",
-                          submission.is_read ? "bg-slate-100 text-slate-500" : "bg-orange-100 text-orange-700"
+                          submission.is_read ? "bg-slate-100 text-slate-500" : "bg-blue-100 text-blue-700"
                         )}>
                           {submission.is_read ? "已读" : "未读"}
                         </span>
@@ -180,7 +180,7 @@ export default function AdminContactPage() {
                       </div>
                       <Link
                         href={`/admin/contact/${submission.id}`}
-                        className="block mt-1 text-base font-medium text-slate-900 hover:text-orange-600 truncate"
+                        className="block mt-1 text-base font-medium text-slate-900 hover:text-blue-600 truncate"
                       >
                         {submission.subject}
                       </Link>
@@ -201,7 +201,7 @@ export default function AdminContactPage() {
                     {!submission.is_read && (
                       <button
                         onClick={(e) => { e.preventDefault(); markReadMutation.mutate(submission.id); }}
-                        className="text-xs text-orange-600 hover:text-orange-800 font-medium whitespace-nowrap"
+                        className="text-xs text-blue-600 hover:text-blue-800 font-medium whitespace-nowrap"
                       >
                         标记已读
                       </button>
