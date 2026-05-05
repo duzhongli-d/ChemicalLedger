@@ -142,6 +142,44 @@ def send_contact_email(
         return False
 
 
+def send_contact_reply_email(
+    user_email: str,
+    user_name: str,
+    subject: str,
+    reply_content: str,
+) -> bool:
+    """Send contact reply email via SendGrid."""
+    settings = get_settings()
+    if not settings.SENDGRID_API_KEY:
+        return False
+    try:
+        from sendgrid import SendGridAPIClient
+        from sendgrid.helpers.mail import Mail
+        sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
+        message_obj = Mail(
+            from_email=settings.SENDGRID_FROM_EMAIL,
+            to_emails=user_email,
+            subject=f"Re: 【雅本化学QC平台】{subject}",
+            html_content=f"""
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #ea580c;">收到来自雅本化学QC平台的回复</h2>
+              <p>您好 {user_name}，</p>
+              <p>感谢您的来信。以下是我们对您问题的回复：</p>
+              <div style="background: #f3f4f6; border-left: 4px solid #ea580c; padding: 16px; margin: 16px 0; border-radius: 4px;">
+                {reply_content.replace(chr(10), '<br>')}
+              </div>
+              <p style="margin-top: 16px; color: #6b7280; font-size: 12px;">
+                此邮件由雅本化学QC部门技术服务平台自动发送，请勿直接回复此邮件。
+              </p>
+            </div>
+            """,
+        )
+        sg.send(message_obj)
+        return True
+    except Exception:
+        return False
+
+
 def check_and_create_notifications(db: Session) -> dict:
     """
     Scan all active ledgers, create in-app notifications and send emails

@@ -43,6 +43,7 @@ class User(Base):
     daily_usages = relationship("DailyUsage", back_populates="user")
     audit_logs = relationship("AuditLog", back_populates="user", order_by="desc(AuditLog.created_at)")
     contact_submissions = relationship("ContactSubmission", back_populates="user")
+    contact_replies = relationship("ContactReply", back_populates="admin")
 
 
 class Category(Base):
@@ -156,6 +157,19 @@ class ContactSubmission(Base):
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     user = relationship("User", back_populates="contact_submissions")
+    replies = relationship("ContactReply", back_populates="submission", order_by="desc(ContactReply.created_at)")
+
+
+class ContactReply(Base):
+    __tablename__ = "contact_replies"
+
+    id = Column(Uuid, primary_key=True, default=uuid_lib.uuid4)
+    submission_id = Column(Uuid, ForeignKey("contact_submissions.id"), nullable=False)
+    admin_id = Column(Uuid, ForeignKey("users.id"), nullable=False)
+    content = Column(Text, nullable=False)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    submission = relationship("ContactSubmission", back_populates="replies")
+    admin = relationship("User")
 
 
 class DailyStats(Base):

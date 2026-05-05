@@ -207,6 +207,38 @@ class ContactSubmissionResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class ContactReplyResponse(BaseModel):
+    id: UUID
+    admin_id: UUID
+    content: str
+    created_at: datetime
+    admin: Optional[UserResponse] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ContactSubmissionDetailResponse(BaseModel):
+    id: UUID
+    name: str
+    email: str
+    subject: str
+    category: str
+    message: str
+    is_read: bool
+    created_at: datetime
+    user_id: Optional[UUID]
+    replies: List[ContactReplyResponse] = []
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class PaginatedContactResponse(BaseModel):
+    items: List[ContactSubmissionDetailResponse]
+    total: int
+    page: int
+    page_size: int
+
+
 class PaginatedLedgerResponse(BaseModel):
     items: list[LedgerResponse]
     total: int

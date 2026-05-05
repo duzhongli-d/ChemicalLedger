@@ -166,4 +166,40 @@ export const contactApi = {
   }) => api.post("/contact/", data),
 };
 
+// ─── Admin Contact ─────────────────────────────────────────────────────────
+
+export interface ContactSubmission {
+  id: string;
+  name: string;
+  email: string;
+  subject: string;
+  category: string;
+  message: string;
+  is_read: boolean;
+  created_at: string;
+  user_id?: string;
+  replies?: ContactReply[];
+}
+
+export interface ContactReply {
+  id: string;
+  admin_id: string;
+  content: string;
+  created_at: string;
+  admin?: { id: string; username: string };
+}
+
+export const adminContactApi = {
+  list: (params?: {
+    page?: number;
+    page_size?: number;
+    is_read?: string;
+    category?: string;
+    search?: string;
+  }) => api.get<PaginatedResponse<ContactSubmission>>("/admin/contact/", { params }),
+  get: (id: string) => api.get<ContactSubmission>(`/admin/contact/${id}`),
+  markRead: (id: string) => api.patch(`/admin/contact/${id}/read`),
+  reply: (id: string, content: string) => api.post(`/admin/contact/${id}/reply`, { content }),
+};
+
 export default api;
