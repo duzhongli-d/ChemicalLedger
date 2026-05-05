@@ -84,13 +84,13 @@ export default function AdminSidebar() {
   };
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-60 bg-slate-800 text-slate-200 flex flex-col">
+    <aside className="fixed left-0 top-0 h-screen w-60 bg-gradient-to-br from-slate-800 to-slate-900 text-slate-200 flex flex-col shadow-xl shadow-slate-950/50">
       {/* Logo */}
-      <div className="p-6 border-b border-slate-700 space-y-3">
-        <h1 className="text-lg font-bold text-white">雅本化学 QC管理后台</h1>
+      <div className="p-6 border-b border-slate-700/50 space-y-3 bg-slate-900/30">
+        <h1 className="text-lg font-bold text-white drop-shadow-sm">雅本化学 QC管理后台</h1>
         <Link
           href="/"
-          className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors"
+          className="flex items-center gap-2 text-sm text-slate-400 hover:text-blue-400 transition-all duration-200 hover:drop-shadow-sm"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -107,24 +107,24 @@ export default function AdminSidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+              className={`group flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                 isActive
-                  ? "bg-blue-600 text-white"
-                  : "text-slate-200 hover:bg-slate-700 hover:text-white"
+                  ? "bg-blue-600/20 text-blue-400 border-l-2 border-blue-400 shadow-lg shadow-blue-500/20"
+                  : "text-slate-300 hover:bg-slate-700/50 hover:text-white hover:scale-[1.02] hover:shadow-lg hover:shadow-slate-950/30"
               }`}
             >
               {item.icon}
-              <span className="font-medium">{item.label}</span>
+              <span className={`font-medium ${isActive ? "text-blue-400 drop-shadow-sm" : ""}`}>{item.label}</span>
             </Link>
           );
         })}
       </nav>
 
       {/* Logout */}
-      <div className="p-4 border-t border-slate-700">
+      <div className="p-4 border-t border-slate-700/50 bg-slate-900/20">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-slate-200 hover:bg-slate-700 hover:text-white transition-all duration-200"
+          className="group flex items-center gap-3 w-full px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-700/50 hover:text-white hover:scale-[1.02] hover:shadow-lg hover:shadow-slate-950/30 transition-all duration-200"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
