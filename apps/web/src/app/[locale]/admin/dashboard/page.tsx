@@ -280,40 +280,45 @@ function DashboardContent() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* ── 1. Dark Gradient Header ── */}
-      <div className="bg-gradient-to-r from-slate-800 via-slate-800 to-slate-700 rounded-xl p-6 relative overflow-hidden">
-        {/* Orange/teal gradient accent stripe */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-teal-500 to-transparent" />
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+        .font-mono-custom { font-family: 'JetBrains Mono', monospace; }
+        .font-body-custom { font-family: 'IBM Plex Sans', sans-serif; }
+      `}</style>
+      <div className="space-y-6">
+      {/* ── 1. Light Header with Blue Accent ── */}
+      <div className="bg-white rounded-xl border border-slate-200 p-6 relative overflow-hidden">
+        {/* Blue gradient accent bar */}
+        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-600 via-blue-400 to-transparent" />
 
-        {/* Icon badge with gradient */}
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-500 to-teal-500 flex items-center justify-center shadow-lg">
-            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <div className="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center shadow-sm">
+            <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
             </svg>
           </div>
 
           <div>
-            <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "'Outfit', sans-serif" }}>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
               仪表板
             </h1>
-            <p className="text-slate-400 text-sm mt-1">QC管理后台概览</p>
+            <p className="text-slate-500 text-sm mt-0.5" style={{ fontFamily: "'IBM Plex Sans', sans-serif" }}>QC管理后台概览</p>
           </div>
 
-          {/* Blueprint-style label */}
+          {/* Monospace label */}
           <div className="ml-auto">
             <span
-              className="text-teal-400 text-xs font-mono"
+              className="text-blue-600/70 text-xs font-mono"
               style={{ fontFamily: "'JetBrains Mono', monospace" }}
             >
-              ] .dashboard
+              DASHBOARD
             </span>
           </div>
         </div>
@@ -382,15 +387,15 @@ function DashboardContent() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* ── 3. Expiry Table Improvements ── */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
-          {/* Header with gradient accent bar */}
+          {/* Header with blue accent bar */}
           <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="h-4 w-1 bg-gradient-to-b from-orange-500 to-teal-500 rounded-full" />
-              <h2 className="text-lg font-semibold text-slate-900" style={{ fontFamily: "'Outfit', sans-serif" }}>
+              <div className="h-4 w-1 bg-gradient-to-b from-blue-600 to-blue-400 rounded-full" />
+              <h2 className="text-lg font-semibold text-slate-900 font-mono-custom tracking-tight">
                 到期提醒
               </h2>
             </div>
-            {/* Teal filter tabs */}
+            {/* Blue filter tabs */}
             <div className="flex gap-2">
               {([30, 60, 90] as ExpiryFilter[]).map((days) => (
                 <button
@@ -398,7 +403,7 @@ function DashboardContent() {
                   onClick={() => setExpiryFilter(days)}
                   className={`px-3 py-1 text-sm rounded-lg transition-all duration-200 ${
                     expiryFilter === days
-                      ? "bg-teal-500 text-white shadow-sm"
+                      ? "bg-blue-500 text-white shadow-sm"
                       : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                   }`}
                 >
@@ -465,7 +470,7 @@ function DashboardContent() {
                       <td className="px-4 py-3">
                         <Link
                           href={`/ledger/${ledger.id}`}
-                          className="text-teal-600 hover:text-teal-800 text-sm font-medium"
+                          className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                         >
                           查看
                         </Link>
@@ -482,8 +487,8 @@ function DashboardContent() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
           <div className="px-6 py-4 border-b border-slate-200">
             <div className="flex items-center gap-3">
-              <div className="h-4 w-1 bg-gradient-to-b from-orange-500 to-teal-500 rounded-full" />
-              <h2 className="text-lg font-semibold text-slate-900" style={{ fontFamily: "'Outfit', sans-serif" }}>
+              <div className="h-4 w-1 bg-gradient-to-b from-blue-600 to-blue-400 rounded-full" />
+              <h2 className="text-lg font-semibold text-slate-900 font-mono-custom tracking-tight">
                 最近操作
               </h2>
             </div>
@@ -493,16 +498,16 @@ function DashboardContent() {
               <p className="text-center text-slate-400 py-8">暂无操作记录</p>
             ) : (
               <div className="relative">
-                {/* Gradient timeline line */}
-                <div className="absolute left-4 top-0 bottom-0 w-px bg-gradient-to-b from-orange-500 via-teal-500 to-slate-300" />
+                {/* Blue gradient timeline line */}
+                <div className="absolute left-4 top-0 bottom-0 w-px bg-gradient-to-b from-blue-500 via-blue-400 to-slate-300" />
                 <div className="space-y-4">
                   {recentActivity.map((log, index) => {
                     const badge = getActionBadge(log.action);
                     return (
                       <div key={log.id} className="relative pl-8">
-                        {/* Timeline dot — first item has pulsing teal ring */}
+                        {/* Timeline dot — first item has pulsing blue ring */}
                         {index === 0 ? (
-                          <div className="absolute left-3 top-1.5 w-2.5 h-2.5 rounded-full bg-teal-500 ring-4 ring-teal-100 animate-pulse" />
+                          <div className="absolute left-3 top-1.5 w-2.5 h-2.5 rounded-full bg-blue-500 ring-4 ring-blue-100 animate-pulse" />
                         ) : (
                           <div className="absolute left-3 top-1.5 w-2 h-2 rounded-full bg-slate-300 ring-2 ring-white" />
                         )}
@@ -531,6 +536,7 @@ function DashboardContent() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 
