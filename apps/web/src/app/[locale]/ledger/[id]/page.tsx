@@ -1,23 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ledgerApi } from "@/lib/api-client";
 import { useAuthStore } from "@/lib/auth-store";
 import clsx from "clsx";
 import { Link } from "@/i18n/navigation";
+import { Header } from "@/components/nav/header";
+import { getDaysLeft, getExpiryClass } from "@/lib/date-utils";
 
 export default function LedgerDetailPage() {
   const t = useTranslations("ledger");
   const params = useParams();
-  const router = useRouter();
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
   const id = params.id as string;
   const [openDatePicker, setOpenDatePicker] = useState(false);
-  const [openDate, setOpenDate] = useState("");
+  const [openDate, setOpenDate] = useState(new Date().toISOString().split("T")[0]);
+  const [showArchiveConfirm, setShowArchiveConfirm] = useState(false);
 
   const { data: ledger, isLoading } = useQuery({
     queryKey: ["ledger", id],
@@ -30,6 +32,7 @@ export default function LedgerDetailPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ledger", id] });
       queryClient.invalidateQueries({ queryKey: ["ledgers"] });
+      setShowArchiveConfirm(false);
     },
   });
 
@@ -42,115 +45,391 @@ export default function LedgerDetailPage() {
     },
   });
 
-  if (isLoading) return <div className="text-center py-12 text-gray-500">{t("loading")}</div>;
-  if (!ledger) return <div className="text-center py-12 text-red-500">台账不存在</div>;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-100">
+        <Header />
+        <div className="flex items-center justify-center h-64">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 border-2 border-teal-500 border-t-transparent rounded-full animate-spin" />
+            <span className="text-slate-500 text-sm">{t("loading")}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!ledger) {
+    return (
+      <div className="min-h-screen bg-slate-100">
+        <Header />
+        <div className="flex flex-col items-center justify-center h-64 gap-4">
+          <div className="w-16 h-16 rounded-full bg-slate-200 flex items-center justify-center">
+            <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 12h.01M12 12h.01M12 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <p className="text-slate-600 font-medium">台账不存在</p>
+          <Link href="/ledgers" className="text-teal-600 hover:text-teal-700 text-sm font-medium">
+            ← 返回台账列表
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const canEdit = user?.id === ledger.created_by_id || user?.role === "admin";
-  const daysLeft = Math.ceil((new Date(ledger.effective_expiry_date).getTime() - Date.now()) / 86400000);
+  const certDaysLeft = getDaysLeft(ledger.cert_expiry_date);
+  const effectiveDaysLeft = getDaysLeft(ledger.effective_expiry_date);
+  const isExpired = effectiveDaysLeft < 0;
+  const isExpiringSoon = effectiveDaysLeft >= 0 && effectiveDaysLeft <= 10;
+  const isExpiring = effectiveDaysLeft > 10 && effectiveDaysLeft <= 20;
+
+  const getStatusBadgeClass = () => {
+    if (ledger.status === "archived") return "bg-slate-100 text-slate-500 border-slate-200";
+    if (isExpired) return "bg-red-100 text-red-700 border-red-200";
+    if (isExpiringSoon) return "bg-amber-100 text-amber-700 border-amber-200";
+    if (isExpiring) return "bg-yellow-100 text-yellow-700 border-yellow-200";
+    return "bg-emerald-100 text-emerald-700 border-emerald-200";
+  };
+
+  const getExpiryIndicatorClass = () => {
+    if (ledger.status === "archived") return "bg-slate-400";
+    if (isExpired) return "bg-red-500";
+    if (isExpiringSoon) return "bg-amber-500 animate-pulse";
+    if (isExpiring) return "bg-yellow-500";
+    return "bg-emerald-500";
+  };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      <div className="flex items-center gap-4">
-        <Link href="/" className="text-gray-400 hover:text-gray-600">← {t("back")}</Link>
-        <h1 className="text-2xl font-bold text-gray-900">{ledger.product_name}</h1>
-        <span className={clsx(
-          "px-2 py-0.5 rounded text-xs font-medium",
-          ledger.status === "active" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
-        )}>
-          {t(`status.${ledger.status}`)}
-        </span>
-      </div>
+    <div className="min-h-screen bg-slate-100">
+      <Header />
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-4 text-sm">
-          {[
-            [t("fields.internalBatchNo"), ledger.internal_batch_no, "font-mono"],
-            [t("fields.batchNo"), ledger.batch_no],
-            [t("fields.casNo"), ledger.cas_no],
-            [t("fields.weightCapacity"), ledger.weight_capacity],
-            [t("fields.supplier"), ledger.supplier],
-            [t("fields.quantity"), ledger.quantity],
-            [t("fields.category"), `${ledger.category.level1} / ${ledger.category.level2}`],
-            [t("fields.certExpiryDate"), ledger.cert_expiry_date?.slice(0, 10)],
-            [
-              t("fields.effectiveExpiryDate"),
-              `${ledger.effective_expiry_date?.slice(0, 10)}${daysLeft <= 30 ? ` (${daysLeft}天)` : ""}`,
-              daysLeft <= 30 ? "text-amber-600 font-medium" : "text-gray-900"
-            ],
-            [t("fields.isOpened"), ledger.is_opened ? "是" : "否"],
-            ledger.open_date && [t("fields.openDate"), ledger.open_date?.slice(0, 10)],
-          ].filter(Boolean).map(([label, value, extra]) => (
-            <div key={label as string} className="flex flex-col gap-1">
-              <span className="text-gray-500 text-xs">{label as string}</span>
-              <span className={clsx("text-gray-900", extra as string)}>{value as string}</span>
+      <main className="max-w-5xl mx-auto px-4 py-8 space-y-6">
+        {/* Page Header */}
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <Link
+              href="/ledgers"
+              className="group flex items-center gap-2 text-slate-400 hover:text-slate-600 transition-colors"
+            >
+              <div className="p-1.5 rounded-lg bg-white border border-slate-200 group-hover:border-slate-300 transition-colors">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+              </div>
+              <span className="text-sm font-medium hidden sm:inline">{t("back")}</span>
+            </Link>
+
+            <div className="flex items-center gap-3">
+              <div className="w-1 h-10 rounded-full bg-gradient-to-b from-orange-500 to-teal-500" />
+              <div>
+                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{ledger.product_name}</h1>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="font-mono text-xs text-orange-500 bg-orange-50 px-2 py-0.5 rounded">
+                    {ledger.internal_batch_no}
+                  </span>
+                  <span className="text-slate-300">·</span>
+                  <span className="text-sm text-slate-500">{ledger.batch_no}</span>
+                </div>
+              </div>
             </div>
-          ))}
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className={clsx(
+              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold border",
+              getStatusBadgeClass()
+            )}>
+              <span className={clsx("w-1.5 h-1.5 rounded-full", getExpiryIndicatorClass())} />
+              {t(`status.${ledger.status}`)}
+            </span>
+
+            {canEdit && ledger.status === "active" && (
+              <div className="flex items-center gap-2">
+                <Link
+                  href={`/ledger/${id}/edit`}
+                  className="inline-flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors shadow-lg shadow-teal-500/25"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  {t("edit")}
+                </Link>
+                <button
+                  onClick={() => setShowArchiveConfirm(true)}
+                  className="inline-flex items-center gap-2 bg-white hover:bg-red-50 text-red-600 border border-red-200 px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                  </svg>
+                  {t("archive")}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
-        {ledger.remarks && (
-          <div className="mt-4 pt-4 border-t">
-            <p className="text-xs text-gray-500 mb-1">{t("fields.remarks")}</p>
-            <p className="text-sm text-gray-700">{ledger.remarks}</p>
+        {/* Status Bar */}
+        {ledger.status === "active" && (
+          <div className={clsx(
+            "rounded-xl border px-5 py-4 flex items-center gap-6",
+            isExpired ? "bg-red-50 border-red-200" :
+            isExpiringSoon ? "bg-amber-50 border-amber-200" :
+            isExpiring ? "bg-yellow-50 border-yellow-200" :
+            "bg-emerald-50 border-emerald-200"
+          )}>
+            <div className="flex items-center gap-3">
+              <div className={clsx(
+                "w-12 h-12 rounded-xl flex items-center justify-center",
+                isExpired ? "bg-red-100" :
+                isExpiringSoon ? "bg-amber-100" :
+                isExpiring ? "bg-yellow-100" :
+                "bg-emerald-100"
+              )}>
+                <svg className={clsx(
+                  "w-6 h-6",
+                  isExpired ? "text-red-600" :
+                  isExpiringSoon ? "text-amber-600" :
+                  isExpiring ? "text-yellow-600" :
+                  "text-emerald-600"
+                )} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <p className={clsx(
+                  "text-2xl font-bold",
+                  isExpired ? "text-red-600" :
+                  isExpiringSoon ? "text-amber-600" :
+                  isExpiring ? "text-yellow-600" :
+                  "text-emerald-600"
+                )}>
+                  {effectiveDaysLeft < 0 ? Math.abs(effectiveDaysLeft) : effectiveDaysLeft}
+                </p>
+                <p className="text-xs text-slate-500">
+                  {isExpired ? t("dashboard.expiredNotArchived") : t("fields.daysLeft")}
+                </p>
+              </div>
+            </div>
+
+            <div className="h-10 w-px bg-slate-200" />
+
+            <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
+              <div>
+                <span className="text-slate-500 text-xs">{t("fields.certExpiryDate")}</span>
+                <p className={clsx("font-semibold", getExpiryClass(certDaysLeft))}>
+                  {ledger.cert_expiry_date?.slice(0, 10)}
+                </p>
+              </div>
+              <div>
+                <span className="text-slate-500 text-xs">{t("fields.effectiveExpiryDate")}</span>
+                <p className={clsx("font-semibold", getExpiryClass(effectiveDaysLeft))}>
+                  {ledger.effective_expiry_date?.slice(0, 10)}
+                </p>
+              </div>
+            </div>
+
+            {!ledger.is_opened && canEdit && (
+              <>
+                <div className="h-10 w-px bg-slate-200" />
+                <button
+                  onClick={() => setOpenDatePicker(true)}
+                  className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors shadow-lg shadow-amber-500/25"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  {t("enterOpenDate")}
+                </button>
+              </>
+            )}
+
+            {ledger.is_opened && (
+              <>
+                <div className="h-10 w-px bg-slate-200" />
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-8 h-8 rounded-lg bg-teal-100 flex items-center justify-center">
+                    <svg className="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-500">{t("fields.openDate")}</p>
+                    <p className="font-semibold text-slate-700">{ledger.open_date?.slice(0, 10)}</p>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         )}
-      </div>
 
-      {/* Actions */}
-      {ledger.status === "active" && (
-        <div className="flex flex-wrap gap-3">
-          {!ledger.is_opened && canEdit && (
-            <button
-              onClick={() => setOpenDatePicker(true)}
-              className="inline-flex items-center gap-2 bg-amber-100 text-amber-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-amber-200"
-            >
-              {t("enterOpenDate")}
-            </button>
-          )}
-          {canEdit && (
-            <>
-              <Link
-                href={`/ledger/${id}/edit`}
-                className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-200"
-              >
-                {t("edit")}
-              </Link>
-              <button
-              onClick={() => archiveMutation.mutate()}
-              disabled={archiveMutation.isPending}
-              className="inline-flex items-center gap-2 bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-100 disabled:opacity-50"
-            >
-                {t("archive")}
-              </button>
-            </>
-          )}
+        {/* Info Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Basic Info Card */}
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center gap-2">
+              <div className="w-1 h-4 rounded-full bg-orange-500" />
+              <h3 className="text-sm font-semibold text-slate-700">基本信息</h3>
+            </div>
+            <div className="p-4 space-y-3">
+              {[
+                { label: t("fields.batchNo"), value: ledger.batch_no, mono: true },
+                { label: t("fields.casNo"), value: ledger.cas_no || "-", mono: true },
+                { label: t("fields.weightCapacity"), value: ledger.weight_capacity },
+                { label: t("fields.supplier"), value: ledger.supplier },
+              ].map(({ label, value, mono }) => (
+                <div key={label} className="flex justify-between items-start gap-2">
+                  <span className="text-xs text-slate-500">{label}</span>
+                  <span className={clsx(
+                    "text-sm text-slate-900 font-medium text-right",
+                    mono && "font-mono"
+                  )}>
+                    {value}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Category & Classification Card */}
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center gap-2">
+              <div className="w-1 h-4 rounded-full bg-teal-500" />
+              <h3 className="text-sm font-semibold text-slate-700">分类信息</h3>
+            </div>
+            <div className="p-4 space-y-3">
+              <div className="flex justify-between items-start">
+                <span className="text-xs text-slate-500">{t("fields.category")}</span>
+                <div className="text-right">
+                  <span className="text-sm font-medium text-slate-900">{ledger.category?.level1}</span>
+                  {ledger.category?.level2 && (
+                    <span className="text-slate-400 mx-1">/</span>
+                  )}
+                  <span className="text-sm text-slate-700">{ledger.category?.level2}</span>
+                </div>
+              </div>
+              <div className="flex justify-between items-start">
+                <span className="text-xs text-slate-500">{t("fields.quantity")}</span>
+                <span className="text-sm font-bold text-slate-900">{ledger.quantity}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Metadata Card */}
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center gap-2">
+              <div className="w-1 h-4 rounded-full bg-slate-400" />
+              <h3 className="text-sm font-semibold text-slate-700">元数据</h3>
+            </div>
+            <div className="p-4 space-y-3">
+              <div className="flex justify-between items-start">
+                <span className="text-xs text-slate-500">{t("fields.createdBy")}</span>
+                <span className="text-sm text-slate-900">{ledger.creator?.username || "-"}</span>
+              </div>
+              <div className="flex justify-between items-start">
+                <span className="text-xs text-slate-500">{t("fields.createdAt")}</span>
+                <span className="text-sm text-slate-700">{ledger.created_at?.slice(0, 10)}</span>
+              </div>
+              <div className="flex justify-between items-start">
+                <span className="text-xs text-slate-500">{t("fields.isOpened")}</span>
+                <span className={clsx(
+                  "text-sm font-medium",
+                  ledger.is_opened ? "text-emerald-600" : "text-slate-400"
+                )}>
+                  {ledger.is_opened ? "已开封" : "未开封"}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
-      )}
+
+        {/* Remarks Card */}
+        {ledger.remarks && (
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center gap-2">
+              <div className="w-1 h-4 rounded-full bg-amber-500" />
+              <h3 className="text-sm font-semibold text-slate-700">{t("fields.remarks")}</h3>
+            </div>
+            <div className="p-4">
+              <p className="text-sm text-slate-600 leading-relaxed">{ledger.remarks}</p>
+            </div>
+          </div>
+        )}
+      </main>
 
       {/* Open Date Picker Modal */}
       {openDatePicker && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
-            <h3 className="text-lg font-bold mb-4">{t("enterOpenDate")}</h3>
-            <input
-              type="date"
-              value={openDate}
-              onChange={(e) => setOpenDate(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4"
-            />
-            <div className="flex gap-3">
-              <button
-                onClick={() => setOpenDatePicker(false)}
-                className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-50"
-              >
-                {t("cancel")}
-              </button>
-              <button
-                onClick={() => openDate && openDateMutation.mutate(openDate)}
-                disabled={!openDate || openDateMutation.isPending}
-                className="flex-1 bg-blue-700 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-800 disabled:opacity-50"
-              >
-                {openDateMutation.isPending ? "..." : t("confirm")}
-              </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setOpenDatePicker(false)} />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden">
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
+                <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-slate-900">{t("enterOpenDate")}</h3>
+                <p className="text-xs text-slate-500">{ledger.product_name}</p>
+              </div>
+            </div>
+            <div className="p-6">
+              <input
+                type="date"
+                value={openDate}
+                onChange={(e) => setOpenDate(e.target.value)}
+                max={new Date().toISOString().split("T")[0]}
+                className="w-full px-4 py-3 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow"
+              />
+              <div className="flex gap-3 mt-4">
+                <button
+                  onClick={() => setOpenDatePicker(false)}
+                  className="flex-1 px-4 py-2.5 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+                >
+                  {t("cancel")}
+                </button>
+                <button
+                  onClick={() => openDate && openDateMutation.mutate(openDate)}
+                  disabled={!openDate || openDateMutation.isPending}
+                  className="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-teal-500 hover:bg-teal-600 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {openDateMutation.isPending ? t("loading") : t("confirm")}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Archive Confirm Modal */}
+      {showArchiveConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setShowArchiveConfirm(false)} />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden">
+            <div className="p-6 text-center">
+              <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 mb-2">{t("archive")}</h3>
+              <p className="text-sm text-slate-500 mb-6">{t("confirmArchive")}</p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowArchiveConfirm(false)}
+                  className="flex-1 px-4 py-2.5 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+                >
+                  {t("cancel")}
+                </button>
+                <button
+                  onClick={() => archiveMutation.mutate()}
+                  disabled={archiveMutation.isPending}
+                  className="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-red-500 hover:bg-red-600 rounded-xl transition-colors disabled:opacity-50"
+                >
+                  {archiveMutation.isPending ? t("loading") : t("confirm")}
+                </button>
+              </div>
             </div>
           </div>
         </div>

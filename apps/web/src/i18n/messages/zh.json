@@ -105,7 +105,12 @@
     "back": "返回",
     "cancel": "取消",
     "confirm": "确认",
-    "loading": "加载中..."
+    "loading": "加载中...",
+    "view": "查看",
+    "basicInfo": "基本信息",
+    "classification": "分类信息",
+    "metadata": "元数据",
+    "effectiveExpiryInfo": "有效期信息"
   },
   "research": {
     "title": "QC深度调研",

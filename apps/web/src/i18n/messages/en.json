@@ -105,7 +105,12 @@
     "back": "Back",
     "cancel": "Cancel",
     "confirm": "Confirm",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "view": "View",
+    "basicInfo": "Basic Info",
+    "classification": "Classification",
+    "metadata": "Metadata",
+    "effectiveExpiryInfo": "Expiry Info"
   },
   "research": {
     "title": "QC Deep Research",

@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { categoryApi, ledgerApi } from "@/lib/api-client";
 import { useAuthStore } from "@/lib/auth-store";
 import { Link } from "@/i18n/navigation";
+import { Header } from "@/components/nav/header";
+import clsx from "clsx";
 
 export default function EditLedgerPage() {
   const t = useTranslations("ledger");
@@ -14,6 +16,7 @@ export default function EditLedgerPage() {
   const params = useParams();
   const router = useRouter();
   const { user, isAuthenticated } = useAuthStore();
+  const queryClient = useQueryClient();
   const id = params.id as string;
 
   const [form, setForm] = useState({
@@ -25,14 +28,16 @@ export default function EditLedgerPage() {
     quantity: "1",
     category_id: "",
     cert_expiry_date: "",
+    effective_expiry_date: "",
     remarks: "",
   });
   const [error, setError] = useState("");
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   const { data: ledger, isLoading: ledgerLoading } = useQuery({
     queryKey: ["ledger", id],
     queryFn: () => ledgerApi.get(id).then((r) => r.data),
-    enabled: !!id && isAuthenticated(),
+    enabled: !!id,
   });
 
   const { data: categories = [] } = useQuery({
@@ -42,19 +47,22 @@ export default function EditLedgerPage() {
   });
 
   // Pre-fill form when ledger loads
-  if (ledger && !form.category_id) {
-    setForm({
-      product_name: ledger.product_name || "",
-      batch_no: ledger.batch_no || "",
-      cas_no: ledger.cas_no || "",
-      weight_capacity: ledger.weight_capacity || "",
-      supplier: ledger.supplier || "",
-      quantity: String(ledger.quantity || "1"),
-      category_id: ledger.category?.id || "",
-      cert_expiry_date: ledger.cert_expiry_date?.slice(0, 10) || "",
-      remarks: ledger.remarks || "",
-    });
-  }
+  useEffect(() => {
+    if (ledger && !form.category_id) {
+      setForm({
+        product_name: ledger.product_name || "",
+        batch_no: ledger.batch_no || "",
+        cas_no: ledger.cas_no || "",
+        weight_capacity: ledger.weight_capacity || "",
+        supplier: ledger.supplier || "",
+        quantity: String(ledger.quantity || "1"),
+        category_id: ledger.category?.id || "",
+        cert_expiry_date: ledger.cert_expiry_date?.slice(0, 10) || "",
+        effective_expiry_date: ledger.effective_expiry_date?.slice(0, 10) || "",
+        remarks: ledger.remarks || "",
+      });
+    }
+  }, [ledger, form.category_id]);
 
   const grouped = (categories as { level1: string; level2: string; id: string }[]).reduce<Record<string, typeof categories>>((acc, c) => {
     (acc[c.level1] = acc[c.level1] || []).push(c);
@@ -67,7 +75,10 @@ export default function EditLedgerPage() {
       Object.keys(payload).forEach((k) => payload[k] === "" && delete payload[k]);
       return ledgerApi.update(id, payload);
     },
-    onSuccess: () => router.push(`/ledger/${id}`),
+    onSuccess: () => {
+      setSaveSuccess(true);
+      setTimeout(() => router.push(`/ledger/${id}`), 1000);
+    },
     onError: (err: unknown) => setError(err instanceof Error ? err.message : "更新失败"),
   });
 
@@ -83,104 +94,317 @@ export default function EditLedgerPage() {
 
   const set = (key: string, value: string) => setForm({ ...form, [key]: value });
 
-  if (ledgerLoading) return <div className="text-center py-12 text-gray-500">{t("loading")}</div>;
-  if (!ledger) return <div className="text-center py-12 text-red-500">台账不存在</div>;
-
   // Read-only if not owner or admin
-  const canEdit = user?.id === ledger.created_by_id || user?.role === "admin";
+  const canEdit = user?.id === ledger?.created_by_id || user?.role === "admin";
+
+  if (ledgerLoading) {
+    return (
+      <div className="min-h-screen bg-slate-100">
+        <Header />
+        <div className="flex items-center justify-center h-64">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 border-2 border-teal-500 border-t-transparent rounded-full animate-spin" />
+            <span className="text-slate-500 text-sm">{t("loading")}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!ledger) {
+    return (
+      <div className="min-h-screen bg-slate-100">
+        <Header />
+        <div className="flex flex-col items-center justify-center h-64 gap-4">
+          <div className="w-16 h-16 rounded-full bg-slate-200 flex items-center justify-center">
+            <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 12h.01M12 12h.01M12 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <p className="text-slate-600 font-medium">台账不存在</p>
+          <Link href="/ledgers" className="text-teal-600 hover:text-teal-700 text-sm font-medium">
+            ← 返回台账列表
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="flex items-center gap-4">
-        <Link href={`/ledger/${id}`} className="text-gray-400 hover:text-gray-600">← {t("back")}</Link>
-        <h1 className="text-2xl font-bold text-gray-900">{t("edit")}</h1>
-      </div>
+    <div className="min-h-screen bg-slate-100">
+      <Header />
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fields.productName")} *</label>
-              <input required type="text" value={form.product_name} onChange={(e) => set("product_name", e.target.value)}
-                disabled={!canEdit}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50" />
+      <main className="max-w-3xl mx-auto px-4 py-8 space-y-6">
+        {/* Page Header */}
+        <div className="flex items-center gap-4">
+          <Link
+            href={`/ledger/${id}`}
+            className="group flex items-center gap-2 text-slate-400 hover:text-slate-600 transition-colors"
+          >
+            <div className="p-1.5 rounded-lg bg-white border border-slate-200 group-hover:border-slate-300 transition-colors">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
             </div>
+          </Link>
+
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-10 rounded-full bg-gradient-to-b from-teal-500 to-orange-500" />
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fields.batchNo")} *</label>
-              <input required type="text" value={form.batch_no} onChange={(e) => set("batch_no", e.target.value)}
-                disabled={!canEdit}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fields.casNo")} *</label>
-              <input required type="text" value={form.cas_no} onChange={(e) => set("cas_no", e.target.value)}
-                disabled={!canEdit}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fields.weightCapacity")} *</label>
-              <input required type="text" value={form.weight_capacity} onChange={(e) => set("weight_capacity", e.target.value)}
-                disabled={!canEdit}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fields.supplier")} *</label>
-              <input required type="text" value={form.supplier} onChange={(e) => set("supplier", e.target.value)}
-                disabled={!canEdit}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fields.quantity")}</label>
-              <input type="number" min="1" value={form.quantity} onChange={(e) => set("quantity", e.target.value)}
-                disabled
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50" />
-              <p className="text-xs text-gray-400 mt-1">数量不可修改</p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fields.category")} *</label>
-              <select required value={form.category_id} onChange={(e) => set("category_id", e.target.value)}
-                disabled={!canEdit}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50">
-                <option value="">-- 选择品类 --</option>
-                {Object.entries(grouped).map(([level1, cats]) => (
-                  <optgroup key={level1} label={level1}>
-                    {cats.map((c: { id: string; level2: string }) => (
-                      <option key={c.id} value={c.id}>{c.level2}</option>
-                    ))}
-                  </optgroup>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fields.certExpiryDate")} *</label>
-              <input required type="date" value={form.cert_expiry_date} onChange={(e) => set("cert_expiry_date", e.target.value)}
-                disabled={!canEdit}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50" />
-            </div>
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fields.remarks")}</label>
-              <textarea rows={3} value={form.remarks} onChange={(e) => set("remarks", e.target.value)}
-                disabled={!canEdit}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50" />
+              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{t("edit")}</h1>
+              <p className="text-sm text-slate-500">{ledger.product_name}</p>
             </div>
           </div>
+        </div>
 
-          {error && <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-2 rounded-lg">{error}</div>}
+        {/* Form Card */}
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <form onSubmit={handleSubmit} className="p-6 space-y-6">
+            {/* Basic Info Section */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
+                <div className="w-1 h-4 rounded-full bg-orange-500" />
+                <h3 className="text-sm font-semibold text-slate-700">基本信息</h3>
+              </div>
 
-          {canEdit && (
-            <div className="flex gap-3 pt-2">
-              <button type="submit" disabled={updateMutation.isPending}
-                className="flex-1 bg-blue-700 text-white py-2 rounded-lg font-medium hover:bg-blue-800 disabled:opacity-50">
-                {updateMutation.isPending ? tCommon("loading") : tCommon("save")}
-              </button>
-              <Link href={`/ledger/${id}`}
-                className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg font-medium text-center hover:bg-gray-50">
-                {tCommon("cancel")}
-              </Link>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-medium text-slate-500 mb-1.5">
+                    {t("fields.productName")} *
+                  </label>
+                  <input
+                    required
+                    type="text"
+                    value={form.product_name}
+                    onChange={(e) => set("product_name", e.target.value)}
+                    disabled={!canEdit}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow disabled:bg-slate-50 disabled:text-slate-400"
+                    placeholder="输入产品名称"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-slate-500 mb-1.5">
+                    {t("fields.batchNo")} *
+                  </label>
+                  <input
+                    required
+                    type="text"
+                    value={form.batch_no}
+                    onChange={(e) => set("batch_no", e.target.value)}
+                    disabled={!canEdit}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 font-mono focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow disabled:bg-slate-50 disabled:text-slate-400"
+                    placeholder="批号"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-slate-500 mb-1.5">
+                    {t("fields.casNo")}
+                  </label>
+                  <input
+                    type="text"
+                    value={form.cas_no}
+                    onChange={(e) => set("cas_no", e.target.value)}
+                    disabled={!canEdit}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 font-mono focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow disabled:bg-slate-50 disabled:text-slate-400"
+                    placeholder="CAS号"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-slate-500 mb-1.5">
+                    {t("fields.weightCapacity")}
+                  </label>
+                  <input
+                    type="text"
+                    value={form.weight_capacity}
+                    onChange={(e) => set("weight_capacity", e.target.value)}
+                    disabled={!canEdit}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow disabled:bg-slate-50 disabled:text-slate-400"
+                    placeholder="规格/容量"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-slate-500 mb-1.5">
+                    {t("fields.supplier")}
+                  </label>
+                  <input
+                    type="text"
+                    value={form.supplier}
+                    onChange={(e) => set("supplier", e.target.value)}
+                    disabled={!canEdit}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow disabled:bg-slate-50 disabled:text-slate-400"
+                    placeholder="供应商"
+                  />
+                </div>
+              </div>
             </div>
-          )}
-        </form>
-      </div>
+
+            {/* Classification Section */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
+                <div className="w-1 h-4 rounded-full bg-teal-500" />
+                <h3 className="text-sm font-semibold text-slate-700">分类与库存</h3>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-slate-500 mb-1.5">
+                    {t("fields.category")} *
+                  </label>
+                  <select
+                    required
+                    value={form.category_id}
+                    onChange={(e) => set("category_id", e.target.value)}
+                    disabled={!canEdit}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow disabled:bg-slate-50 disabled:text-slate-400"
+                  >
+                    <option value="">-- 选择品类 --</option>
+                    {Object.entries(grouped).map(([level1, cats]) => (
+                      <optgroup key={level1} label={level1}>
+                        {(cats as { id: string; level2: string }[]).map((c) => (
+                          <option key={c.id} value={c.id}>{c.level2}</option>
+                        ))}
+                      </optgroup>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-slate-500 mb-1.5">
+                    {t("fields.quantity")}
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={form.quantity}
+                    onChange={(e) => set("quantity", e.target.value)}
+                    disabled
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 bg-slate-50 text-slate-400 cursor-not-allowed"
+                  />
+                  <p className="text-xs text-slate-400 mt-1">数量不可修改</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Dates Section */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
+                <div className="w-1 h-4 rounded-full bg-amber-500" />
+                <h3 className="text-sm font-semibold text-slate-700">有效期信息</h3>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-slate-500 mb-1.5">
+                    {t("fields.certExpiryDate")} *
+                  </label>
+                  <input
+                    required
+                    type="date"
+                    value={form.cert_expiry_date}
+                    onChange={(e) => set("cert_expiry_date", e.target.value)}
+                    disabled={!canEdit}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow disabled:bg-slate-50 disabled:text-slate-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-slate-500 mb-1.5">
+                    {t("fields.effectiveExpiryDate")}
+                  </label>
+                  <input
+                    type="date"
+                    value={form.effective_expiry_date}
+                    onChange={(e) => set("effective_expiry_date", e.target.value)}
+                    disabled={!canEdit}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow disabled:bg-slate-50 disabled:text-slate-400"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Remarks Section */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
+                <div className="w-1 h-4 rounded-full bg-slate-400" />
+                <h3 className="text-sm font-semibold text-slate-700">{t("fields.remarks")}</h3>
+              </div>
+
+              <div>
+                <textarea
+                  rows={3}
+                  value={form.remarks}
+                  onChange={(e) => set("remarks", e.target.value)}
+                  disabled={!canEdit}
+                  className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow resize-none disabled:bg-slate-50 disabled:text-slate-400"
+                  placeholder="添加备注信息..."
+                />
+              </div>
+            </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {error}
+              </div>
+            )}
+
+            {/* Success Message */}
+            {saveSuccess && (
+              <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                保存成功，即将跳转...
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            {canEdit && (
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="submit"
+                  disabled={updateMutation.isPending || saveSuccess}
+                  className="flex-1 inline-flex items-center justify-center gap-2 bg-teal-500 hover:bg-teal-600 text-white py-3 rounded-xl font-semibold transition-colors shadow-lg shadow-teal-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {updateMutation.isPending ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      {tCommon("loading")}
+                    </>
+                  ) : saveSuccess ? (
+                    <>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                      保存成功
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                      {tCommon("save")}
+                    </>
+                  )}
+                </button>
+                <Link
+                  href={`/ledger/${id}`}
+                  className="flex-1 inline-flex items-center justify-center gap-2 border border-slate-200 text-slate-600 py-3 rounded-xl font-semibold hover:bg-slate-50 transition-colors"
+                >
+                  {tCommon("cancel")}
+                </Link>
+              </div>
+            )}
+          </form>
+        </div>
+      </main>
     </div>
   );
 }
