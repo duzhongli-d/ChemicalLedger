@@ -148,14 +148,43 @@ export default function AuditLogPage() {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+        .font-mono-custom { font-family: 'JetBrains Mono', monospace; }
+        .font-body-custom { font-family: 'IBM Plex Sans', sans-serif; }
+        @keyframes cardEnter {
+          from { opacity: 0; transform: translateY(24px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes headerSlideIn {
+          from { opacity: 0; transform: translateX(-20px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes tableRowEnter {
+          from { opacity: 0; transform: translateX(-8px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        .card-enter { animation: cardEnter 0.5s ease-out forwards; opacity: 0; }
+        .header-slide { animation: headerSlideIn 0.4s ease-out forwards; }
+        .table-row-enter { animation: tableRowEnter 0.3s ease-out forwards; opacity: 0; }
+      `}</style>
+
+      <div className="space-y-6 font-body-custom">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-slate-900">审计日志</h1>
+        <div className="flex items-center justify-between mb-8 header-slide">
+          <div>
+            <h1 className="text-2xl font-semibold text-slate-900 font-mono-custom tracking-tight">
+              审计日志
+            </h1>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="w-8 h-0.5 bg-gradient-to-r from-blue-600 to-transparent rounded"></span>
+              <span className="text-xs text-slate-500 font-mono-custom">AUDIT LOG</span>
+            </div>
+          </div>
           <button
             onClick={handleExportCSV}
             disabled={filteredLogs.length === 0}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm font-medium flex items-center gap-2"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm font-medium flex items-center gap-2 transition-colors"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -165,17 +194,17 @@ export default function AuditLogPage() {
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap items-center gap-4 bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+        <div className="flex flex-wrap items-end gap-4 bg-white rounded-xl border border-slate-200 shadow-sm p-4 card-enter" style={{ animationDelay: "0.1s" }}>
           {/* Action Filter */}
           <div>
-            <label className="block text-xs text-slate-500 mb-1">操作类型</label>
+            <label className="block text-xs text-slate-500 mb-1 font-mono-custom">操作类型</label>
             <select
               value={actionFilter}
               onChange={(e) => {
                 setActionFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="admin-select font-mono-custom"
             >
               <option value="">全部操作</option>
               {Object.entries(ACTION_LABELS).map(([key, label]) => (
@@ -188,14 +217,14 @@ export default function AuditLogPage() {
 
           {/* User Filter */}
           <div>
-            <label className="block text-xs text-slate-500 mb-1">用户</label>
+            <label className="block text-xs text-slate-500 mb-1 font-mono-custom">用户</label>
             <select
               value={userFilter}
               onChange={(e) => {
                 setUserFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="admin-select font-mono-custom"
             >
               <option value="">全部用户</option>
               {(users as User[]).map((user) => (
@@ -208,7 +237,7 @@ export default function AuditLogPage() {
 
           {/* Date Range */}
           <div>
-            <label className="block text-xs text-slate-500 mb-1">开始日期</label>
+            <label className="block text-xs text-slate-500 mb-1 font-mono-custom">开始日期</label>
             <input
               type="date"
               value={startDate}
@@ -216,12 +245,12 @@ export default function AuditLogPage() {
                 setStartDate(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="admin-input font-mono-custom"
             />
           </div>
 
           <div>
-            <label className="block text-xs text-slate-500 mb-1">结束日期</label>
+            <label className="block text-xs text-slate-500 mb-1 font-mono-custom">结束日期</label>
             <input
               type="date"
               value={endDate}
@@ -229,7 +258,7 @@ export default function AuditLogPage() {
                 setEndDate(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="admin-input font-mono-custom"
             />
           </div>
 
@@ -237,7 +266,7 @@ export default function AuditLogPage() {
           {hasFilters && (
             <button
               onClick={clearFilters}
-              className="px-4 py-2 text-slate-500 hover:text-slate-700 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors text-sm self-end"
+              className="px-4 py-2 text-slate-500 hover:text-slate-700 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors text-sm self-end font-mono-custom"
             >
               清除筛选
             </button>
@@ -245,9 +274,12 @@ export default function AuditLogPage() {
         </div>
 
         {/* Table */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden card-enter" style={{ animationDelay: "0.2s" }}>
+          {/* Gradient accent bar */}
+          <div className="h-0.5 bg-gradient-to-r from-blue-600 via-blue-400 to-transparent"></div>
+
           {isLoading ? (
-            <div className="p-8 text-center text-slate-500">加载中...</div>
+            <div className="p-8 text-center text-slate-500 font-mono-custom">加载中...</div>
           ) : filteredLogs.length === 0 ? (
             <div className="p-8 text-center text-slate-400">暂无数据</div>
           ) : (
@@ -255,44 +287,48 @@ export default function AuditLogPage() {
               <table className="w-full text-sm">
                 <thead className="bg-slate-50 border-b border-slate-200">
                   <tr>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap font-mono-custom text-xs">
                       时间
                     </th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap font-mono-custom text-xs">
                       用户
                     </th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap font-mono-custom text-xs">
                       操作
                     </th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap font-mono-custom text-xs">
                       目标
                     </th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap font-mono-custom text-xs">
                       详情
                     </th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap font-mono-custom text-xs">
                       IP
                     </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {filteredLogs.map((log) => (
-                    <tr key={log.id} className="hover:bg-slate-50">
+                  {filteredLogs.map((log, index) => (
+                    <tr
+                      key={log.id}
+                      className="hover:bg-blue-50/50 transition-colors table-row-enter"
+                      style={{ animationDelay: `${0.3 + index * 0.03}s` }}
+                    >
                       {/* Time */}
-                      <td className="px-4 py-3 text-slate-600 whitespace-nowrap text-xs">
+                      <td className="px-4 py-3 text-slate-600 whitespace-nowrap text-xs font-mono-custom">
                         {format(new Date(log.created_at), "yyyy-MM-dd HH:mm:ss")}
                       </td>
 
                       {/* User */}
                       <td className="px-4 py-3">
-                        <span className="font-medium text-slate-900">
+                        <span className="font-medium text-slate-900 font-mono-custom">
                           {log.user?.username || "-"}
                         </span>
                       </td>
 
                       {/* Action */}
                       <td className="px-4 py-3">
-                        <span className="inline-block px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-medium">
+                        <span className="inline-block px-2 py-0.5 bg-[#f97316]/10 text-[#f97316] rounded text-xs font-medium font-mono-custom">
                           {getActionLabel(log.action)}
                         </span>
                       </td>
@@ -333,24 +369,24 @@ export default function AuditLogPage() {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-4">
-            <div className="text-sm text-slate-600">
+            <div className="text-sm text-slate-600 font-mono-custom">
               共 {filteredLogs.length} 条记录
             </div>
             <div className="flex gap-2">
               <button
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage <= 1}
-                className="px-3 py-1 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 py-1 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed font-mono-custom"
               >
                 上一页
               </button>
-              <span className="px-3 py-1 text-sm text-slate-600">
+              <span className="px-3 py-1 text-sm text-slate-600 font-mono-custom">
                 第 {currentPage} / {totalPages} 页
               </span>
               <button
                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                 disabled={currentPage >= totalPages}
-                className="px-3 py-1 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 py-1 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed font-mono-custom"
               >
                 下一页
               </button>

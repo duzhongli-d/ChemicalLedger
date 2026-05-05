@@ -157,20 +157,12 @@ export function Header() {
                 )}
               </div>
             ) : (
-              <div className="flex items-center gap-2">
-                <Link
-                  href="/login"
-                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors px-3 py-2"
-                >
-                  {t("login")}
-                </Link>
-                <Link
-                  href="/register"
-                  className="text-sm font-medium bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all shadow-lg shadow-orange-500/25"
-                >
-                  {t("register")}
-                </Link>
-              </div>
+              <Link
+                href="/login"
+                className="text-sm font-medium bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all shadow-lg shadow-orange-500/25"
+              >
+                {t("login")}
+              </Link>
             )}
           </div>
         </div>

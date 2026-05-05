@@ -29,6 +29,7 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-semibold text-foreground mb-4">{t("footer.contact")}</h3>
             <p className="text-sm text-muted-foreground mb-2">{t("footer.contactInfo")}</p>
+            <p className="text-sm text-muted-foreground mt-1">{t("footer.phone")}</p>
             <p className="text-sm text-muted-foreground mb-4">
               <a href={`mailto:${t("footer.email")}`} className="hover:text-orange-500 transition-colors">
                 {t("footer.email")}

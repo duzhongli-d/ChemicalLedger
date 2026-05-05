@@ -15,7 +15,7 @@ export default function LoginPage() {
   const router = useRouter();
   const locale = useLocale();
   const { setAuth, isAdmin } = useAuthStore();
-  const [loginMode, setLoginMode] = useState<LoginMode>("username");
+  const [loginMode, setLoginMode] = useState<LoginMode>("email");
   const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
@@ -222,6 +222,11 @@ export default function LoginPage() {
             </button>
           </div>
 
+          {/* Admin contact hint */}
+          <p className="text-sm text-slate-500 dark:text-slate-400 text-center">
+            {t("contactAdminForAccount")}
+          </p>
+
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Identity input - switches between email and username */}
@@ -333,25 +338,6 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Divider */}
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-200 dark:border-slate-700" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400">
-                {t("orContinueWith")}
-              </span>
-            </div>
-          </div>
-
-          {/* Register link */}
-          <p className="text-center text-sm text-slate-500 dark:text-slate-400">
-            {t("noAccount")}{" "}
-            <Link href="/register" className="text-orange-600 dark:text-orange-400 font-medium hover:text-orange-700 dark:hover:text-orange-300 transition-colors">
-              {t("register")}
-            </Link>
-          </p>
         </div>
       </div>
     </div>

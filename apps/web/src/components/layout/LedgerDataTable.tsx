@@ -11,8 +11,12 @@ interface Ledger {
   id: string;
   internal_batch_no: string;
   product_name: string;
+  weight_capacity: string;
+  supplier: string;
   batch_no: string;
+  cas_no: string;
   category: { level1: string; level2: string };
+  created_at: string;
   cert_expiry_date: string;
   effective_expiry_date: string;
   status: "active" | "archived";
@@ -117,6 +121,13 @@ export function LedgerDataTable({
     return "text-slate-600";
   };
 
+  const getDaysColorClass = (daysLeft: number, status: string) => {
+    if (status === "archived") return "";
+    if (daysLeft <= 10) return "text-red-600 font-medium";
+    if (daysLeft <= 20) return "text-yellow-600 font-medium";
+    return "text-slate-600";
+  };
+
   const handleOpenDateClick = (ledger: Ledger) => {
     if (!isLoggedIn) {
       onProtectedAction?.(ledger.id);
@@ -191,16 +202,21 @@ export function LedgerDataTable({
                 {[
                   { key: "internalBatchNo", label: t("fields.internalBatchNo") },
                   { key: "productName", label: t("fields.productName") },
+                  { key: "weightCapacity", label: t("fields.weightCapacity") },
+                  { key: "supplier", label: t("fields.supplier") },
                   { key: "batchNo", label: t("fields.batchNo") },
+                  { key: "casNo", label: t("fields.casNo") },
                   { key: "category", label: t("fields.category") },
-                  { key: "openDate", label: t("fields.openDate") },
+                  { key: "createdAt", label: t("fields.createdAt") },
                   { key: "certExpiryDate", label: t("fields.certExpiryDate") },
+                  { key: "openDate", label: t("fields.openDate") },
                   {
                     key: "effectiveExpiryDate",
                     label: t("fields.effectiveExpiryDate"),
                   },
+                  { key: "daysLeft", label: t("fields.daysLeft") },
                   { key: "status", label: t("fields.status") },
-                  { key: "actions", label: "" },
+                  { key: "actions", label: t("fields.actions") },
                 ].map((h) => (
                   <th
                     key={h.key}
@@ -238,9 +254,24 @@ export function LedgerDataTable({
                       {ledger.product_name}
                     </td>
 
+                    {/* Specification */}
+                    <td className="px-4 py-3 text-slate-500">
+                      {ledger.weight_capacity || "-"}
+                    </td>
+
+                    {/* Supplier */}
+                    <td className="px-4 py-3 text-slate-500">
+                      {ledger.supplier || "-"}
+                    </td>
+
                     {/* Batch No */}
                     <td className="px-4 py-3 text-slate-500 font-mono text-xs">
                       {ledger.batch_no}
+                    </td>
+
+                    {/* CAS No */}
+                    <td className="px-4 py-3 text-slate-500 font-mono text-xs">
+                      {ledger.cas_no || "-"}
                     </td>
 
                     {/* Category - Level1 / Level2 */}
@@ -250,11 +281,9 @@ export function LedgerDataTable({
                         : ledger.category?.level2 || "-"}
                     </td>
 
-                    {/* Open Date */}
+                    {/* Created At */}
                     <td className="px-4 py-3 text-slate-500">
-                      {ledger.open_date
-                        ? ledger.open_date.split("T")[0]
-                        : "-"}
+                      {ledger.created_at ? ledger.created_at.split("T")[0] : "-"}
                     </td>
 
                     {/* Cert Expiry Date */}
@@ -265,6 +294,13 @@ export function LedgerDataTable({
                       {certDaysLeft <= 30 && certDaysLeft >= 0 && (
                         <span className="ml-1 text-xs">({certDaysLeft}d)</span>
                       )}
+                    </td>
+
+                    {/* Open Date */}
+                    <td className="px-4 py-3 text-slate-500">
+                      {ledger.is_opened && ledger.open_date
+                        ? ledger.open_date.split("T")[0]
+                        : t("notOpened")}
                     </td>
 
                     {/* Effective Expiry Date */}
@@ -278,6 +314,21 @@ export function LedgerDataTable({
                       {effectiveDaysLeft <= 30 && effectiveDaysLeft >= 0 && (
                         <span className="ml-1 text-xs">
                           ({effectiveDaysLeft}d)
+                        </span>
+                      )}
+                    </td>
+
+                    {/* Days Left */}
+                    <td className="px-4 py-3">
+                      {ledger.status === "archived" ? (
+                        "-"
+                      ) : (
+                        <span
+                          className={clsx(
+                            getDaysColorClass(effectiveDaysLeft, ledger.status)
+                          )}
+                        >
+                          {effectiveDaysLeft}
                         </span>
                       )}
                     </td>

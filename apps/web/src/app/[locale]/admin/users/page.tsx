@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useAuthStore } from "@/lib/auth-store";
+import clsx from "clsx";
 
 type User = {
   id: string;
@@ -35,29 +36,212 @@ const defaultForm: UserForm = {
   password: "",
 };
 
+function RoleBadge({ role }: { role: string }) {
+  return (
+    <span
+      className={clsx(
+        "inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium font-mono-custom",
+        role === "admin"
+          ? "bg-purple-500/15 text-purple-600"
+          : "bg-blue-500/15 text-blue-600"
+      )}
+    >
+      {role === "admin" ? (
+        <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+      ) : (
+        <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+      )}
+      {role === "admin" ? "管理员" : "用户"}
+    </span>
+  );
+}
+
+function UserCardSkeleton() {
+  return (
+    <div className="bg-white rounded-xl border border-slate-200 p-5 animate-pulse">
+      <div className="flex items-center gap-4">
+        <div className="w-12 h-12 rounded-xl bg-slate-200" />
+        <div className="flex-1 space-y-2">
+          <div className="h-4 bg-slate-200 rounded w-24" />
+          <div className="h-3 bg-slate-200 rounded w-40" />
+        </div>
+        <div className="h-6 bg-slate-200 rounded w-16" />
+      </div>
+    </div>
+  );
+}
+
+function EmptyState({ onAdd }: { onAdd: () => void }) {
+  return (
+    <div className="bg-white rounded-xl border border-slate-200 p-12 text-center card-enter">
+      <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-slate-100 flex items-center justify-center">
+        <svg className="w-8 h-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      </div>
+      <h3 className="text-base font-semibold text-slate-900 mb-1">暂无用户</h3>
+      <p className="text-sm text-slate-500 mb-4">创建第一个用户开始管理您的团队</p>
+      <button
+        onClick={onAdd}
+        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium font-mono-custom transition-all"
+      >
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+        </svg>
+        新建用户
+      </button>
+    </div>
+  );
+}
+
+function UserCard({
+  user,
+  isCurrentUser,
+  onEdit,
+  onResetPassword,
+  onDelete,
+  index,
+}: {
+  user: User;
+  isCurrentUser: boolean;
+  onEdit: () => void;
+  onResetPassword: () => void;
+  onDelete: () => void;
+  index: number;
+}) {
+  return (
+    <div
+      className="bg-white rounded-xl border border-slate-200 overflow-hidden card-enter hover:border-slate-300 hover:shadow-sm transition-all group"
+      style={{ animationDelay: `${0.1 + index * 0.05}s` }}
+    >
+      <div className="p-5">
+        <div className="flex items-start gap-4">
+          {/* Avatar */}
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/10 flex items-center justify-center flex-shrink-0">
+            <span className="text-lg font-semibold text-blue-600 font-mono-custom">
+              {user.username.charAt(0).toUpperCase()}
+            </span>
+          </div>
+
+          {/* Info */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="text-base font-semibold text-slate-900 font-mono-custom truncate">
+                {user.username}
+              </h3>
+              {isCurrentUser && (
+                <span className="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 text-xs rounded font-mono-custom">
+                  当前
+                </span>
+              )}
+            </div>
+            <p className="text-sm text-slate-500 font-mono-custom truncate mb-2">{user.email}</p>
+            <div className="flex items-center gap-3">
+              <RoleBadge role={user.role} />
+              {user.department && (
+                <span className="text-xs text-slate-400 font-mono-custom flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  </svg>
+                  {user.department}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+            <button
+              onClick={onEdit}
+              className="p-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-blue-100 hover:text-blue-600 transition-all"
+              title="编辑"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+            </button>
+            <button
+              onClick={onResetPassword}
+              className="p-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-orange-100 hover:text-orange-600 transition-all"
+              title="重置密码"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+              </svg>
+            </button>
+            <button
+              onClick={onDelete}
+              disabled={isCurrentUser}
+              className="p-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-red-100 hover:text-red-600 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              title="删除"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Meta info */}
+        <div className="flex items-center gap-4 mt-4 pt-4 border-t border-slate-100">
+          <div className="flex items-center gap-1.5 text-xs text-slate-400 font-mono-custom">
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            创建于 {user.created_at ? format(new Date(user.created_at), "yyyy-MM-dd") : "-"}
+          </div>
+          {user.last_login_at && (
+            <div className="flex items-center gap-1.5 text-xs text-slate-400 font-mono-custom">
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              最近登录 {format(new Date(user.last_login_at), "MM-dd HH:mm")}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Modal({
   open,
   onClose,
   title,
+  subtitle,
   children,
 }: {
   open: boolean;
   onClose: () => void;
   title: string;
+  subtitle?: string;
   children: React.ReactNode;
 }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-          <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
-          <button
-            onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 text-xl leading-none"
-          >
-            &times;
-          </button>
+    <div className="fixed inset-0 modal-overlay flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl w-full max-w-xl mx-4 overflow-hidden modal-animate shadow-xl border border-slate-200">
+        {/* Modal Header */}
+        <div className="relative px-6 py-5 border-b border-slate-100">
+          <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-600 via-blue-400 to-transparent"></div>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-base font-semibold text-slate-900 font-mono-custom">{title}</h2>
+              {subtitle && <p className="text-xs text-slate-500 mt-0.5 font-mono-custom">{subtitle}</p>}
+            </div>
+            <button
+              onClick={onClose}
+              className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-200 transition-all"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </div>
         <div className="p-6">{children}</div>
       </div>
@@ -95,29 +279,48 @@ function UserFormModal({
     setForm({ ...form, [key]: value });
 
   return (
-    <Modal open={open} onClose={onClose} title={initial ? "编辑用户" : "新建用户"}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={initial ? "编辑用户" : "新建用户"}
+      subtitle="用户管理"
+    >
       <form
         onSubmit={(e) => {
           e.preventDefault();
           onSubmit(form);
         }}
-        className="space-y-4"
+        className="space-y-5"
       >
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
-            用户名 *
-          </label>
-          <input
-            required
-            type="text"
-            value={form.username}
-            onChange={(e) => set("username", e.target.value)}
-            disabled={!!initial}
-            className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 disabled:bg-slate-100 disabled:text-slate-500"
-          />
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">
+              用户名 *
+            </label>
+            <input
+              required
+              type="text"
+              value={form.username}
+              onChange={(e) => set("username", e.target.value)}
+              disabled={!!initial}
+              className="w-full bg-white border border-slate-200 px-3 py-2.5 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all disabled:bg-slate-100 disabled:text-slate-500 font-mono-custom"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">
+              部门
+            </label>
+            <input
+              type="text"
+              value={form.department}
+              onChange={(e) => set("department", e.target.value)}
+              className="w-full bg-white border border-slate-200 px-3 py-2.5 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-mono-custom"
+            />
+          </div>
         </div>
+
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
+          <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">
             邮箱 *
           </label>
           <input
@@ -125,47 +328,40 @@ function UserFormModal({
             type="email"
             value={form.email}
             onChange={(e) => set("email", e.target.value)}
-            className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+            className="w-full bg-white border border-slate-200 px-3 py-2.5 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-mono-custom"
           />
         </div>
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
-            电话
-          </label>
-          <input
-            type="text"
-            value={form.phone}
-            onChange={(e) => set("phone", e.target.value)}
-            className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
-          />
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">
+              电话
+            </label>
+            <input
+              type="text"
+              value={form.phone}
+              onChange={(e) => set("phone", e.target.value)}
+              className="w-full bg-white border border-slate-200 px-3 py-2.5 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-mono-custom"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">
+              角色
+            </label>
+            <select
+              value={form.role}
+              onChange={(e) => set("role", e.target.value)}
+              className="w-full bg-white border border-slate-200 px-3 py-2.5 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-mono-custom cursor-pointer"
+            >
+              <option value="user">用户</option>
+              <option value="admin">管理员</option>
+            </select>
+          </div>
         </div>
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
-            部门
-          </label>
-          <input
-            type="text"
-            value={form.department}
-            onChange={(e) => set("department", e.target.value)}
-            className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
-            角色
-          </label>
-          <select
-            value={form.role}
-            onChange={(e) => set("role", e.target.value)}
-            className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="user">用户</option>
-            <option value="admin">管理员</option>
-          </select>
-        </div>
+
         {!initial && (
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">
               初始密码
             </label>
             <input
@@ -173,22 +369,38 @@ function UserFormModal({
               value={form.password}
               onChange={(e) => set("password", e.target.value)}
               placeholder="留空则使用随机密码"
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-white border border-slate-200 px-3 py-2.5 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-mono-custom"
             />
           </div>
         )}
+
         <div className="flex gap-3 pt-2">
           <button
             type="submit"
             disabled={isPending}
-            className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50"
+            className="flex-1 bg-blue-600 text-white py-2.5 rounded-lg font-medium font-mono-custom hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
           >
-            {isPending ? "处理中..." : "确认"}
+            {isPending ? (
+              <>
+                <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                处理中...
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                确认
+              </>
+            )}
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 border border-slate-300 text-slate-700 py-2 rounded-lg font-medium hover:bg-slate-50"
+            className="flex-1 border border-slate-200 text-slate-600 py-2.5 rounded-lg font-medium hover:bg-slate-50 transition-all font-mono-custom"
           >
             取消
           </button>
@@ -212,36 +424,82 @@ function ResetPasswordModal({
   isPending: boolean;
 }) {
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <Modal open={open} onClose={onClose} title={`重置密码 - ${user?.username}`}>
-      <div className="space-y-4">
-        <p className="text-sm text-slate-600">
-          请输入新密码。密码将立即生效，用户需要使用新密码登录。
-        </p>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="重置密码"
+      subtitle={user?.username}
+    >
+      <div className="space-y-5">
+        <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 flex items-start gap-3">
+          <svg className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <p className="text-sm text-amber-800">
+            密码重置后将立即生效，用户需要使用新密码重新登录。
+          </p>
+        </div>
+
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
+          <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">
             新密码
           </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="请输入新密码"
-            className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="请输入新密码"
+              className="w-full bg-white border border-slate-200 px-3 py-2.5 pr-10 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-mono-custom"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+            >
+              {showPassword ? (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
+
         <div className="flex gap-3 pt-2">
           <button
             onClick={() => onSubmit(password)}
             disabled={isPending || !password}
-            className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50"
+            className="flex-1 bg-orange-600 text-white py-2.5 rounded-lg font-medium font-mono-custom hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
           >
-            {isPending ? "重置中..." : "确认重置"}
+            {isPending ? (
+              <>
+                <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                重置中...
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                </svg>
+                确认重置
+              </>
+            )}
           </button>
           <button
             onClick={onClose}
-            className="flex-1 border border-slate-300 text-slate-700 py-2 rounded-lg font-medium hover:bg-slate-50"
+            className="flex-1 border border-slate-200 text-slate-600 py-2.5 rounded-lg font-medium hover:bg-slate-50 transition-all font-mono-custom"
           >
             取消
           </button>
@@ -269,30 +527,65 @@ function DeleteModal({
   const isSelf = user?.id === currentUserId;
 
   return (
-    <Modal open={open} onClose={onClose} title="删除用户">
-      <div className="space-y-4">
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="删除用户"
+      subtitle="用户管理"
+    >
+      <div className="space-y-5">
         {isSelf ? (
-          <p className="text-red-600 font-medium">不能删除当前登录用户</p>
+          <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 flex items-start gap-3">
+            <svg className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="text-sm text-red-800">
+              不能删除当前登录用户
+            </p>
+          </div>
         ) : (
-          <p className="text-slate-700">
-            确定要删除用户 <strong>{user?.username}</strong> 吗？此操作不可撤销。
-          </p>
+          <>
+            <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 flex items-start gap-3">
+              <svg className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <p className="text-sm text-red-800">
+                确定要删除用户 <strong className="font-mono-custom">{user?.username}</strong> 吗？此操作不可撤销。
+              </p>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={onConfirm}
+                disabled={isPending}
+                className="flex-1 bg-red-600 text-white py-2.5 rounded-lg font-medium font-mono-custom hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+              >
+                {isPending ? (
+                  <>
+                    <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    删除中...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    确认删除
+                  </>
+                )}
+              </button>
+              <button
+                onClick={onClose}
+                className="flex-1 border border-slate-200 text-slate-600 py-2.5 rounded-lg font-medium hover:bg-slate-50 transition-all font-mono-custom"
+              >
+                取消
+              </button>
+            </div>
+          </>
         )}
-        <div className="flex gap-3 pt-2">
-          <button
-            onClick={onConfirm}
-            disabled={isPending || isSelf}
-            className="flex-1 bg-red-600 text-white py-2 rounded-lg font-medium hover:bg-red-700 disabled:opacity-50"
-          >
-            {isPending ? "删除中..." : "确认删除"}
-          </button>
-          <button
-            onClick={onClose}
-            className="flex-1 border border-slate-300 text-slate-700 py-2 rounded-lg font-medium hover:bg-slate-50"
-          >
-            取消
-          </button>
-        </div>
       </div>
     </Modal>
   );
@@ -310,32 +603,105 @@ function ImportModal({
   isPending: boolean;
 }) {
   const fileRef = useRef<HTMLInputElement>(null);
+  const [fileName, setFileName] = useState<string>("");
 
   return (
-    <Modal open={open} onClose={onClose} title="批量导入用户">
-      <div className="space-y-4">
-        <p className="text-sm text-slate-600">
-          支持 .xlsx 或 .csv 文件，格式：用户名, 邮箱, 电话, 部门, 角色（留空默认user）
-        </p>
-        <input
-          ref={fileRef}
-          type="file"
-          accept=".xlsx,.csv"
-          className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-        />
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="批量导入用户"
+      subtitle="用户管理"
+    >
+      <div className="space-y-5">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 flex items-start gap-3">
+          <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div className="text-sm text-blue-800">
+            <p className="font-medium mb-1">支持格式</p>
+            <p className="text-blue-700">.xlsx 或 .csv 文件，格式：用户名, 邮箱, 电话, 部门, 角色（留空默认user）</p>
+          </div>
+        </div>
+
+        <div
+          onClick={() => fileRef.current?.click()}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file && (file.name.endsWith(".xlsx") || file.name.endsWith(".csv"))) {
+              setFileName(file.name);
+              if (fileRef.current) fileRef.current.files = e.dataTransfer.files;
+            }
+          }}
+          className={clsx(
+            "border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all",
+            fileName
+              ? "border-blue-400 bg-blue-50"
+              : "border-slate-300 hover:border-blue-400 hover:bg-slate-50"
+          )}
+        >
+          <input
+            ref={fileRef}
+            type="file"
+            accept=".xlsx,.csv"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) setFileName(file.name);
+            }}
+          />
+          {fileName ? (
+            <>
+              <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-blue-100 flex items-center justify-center">
+                <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <p className="text-sm font-medium text-slate-900 font-mono-custom">{fileName}</p>
+              <p className="text-xs text-slate-500 mt-1">点击重新选择</p>
+            </>
+          ) : (
+            <>
+              <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-slate-100 flex items-center justify-center">
+                <svg className="w-6 h-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+              </div>
+              <p className="text-sm text-slate-600">拖放文件到此处，或点击选择文件</p>
+              <p className="text-xs text-slate-400 mt-1">支持 .xlsx, .csv</p>
+            </>
+          )}
+        </div>
+
         <div className="flex gap-3 pt-2">
           <button
             onClick={() => {
               if (fileRef.current?.files?.[0]) onImport(fileRef.current.files[0]);
             }}
-            disabled={isPending || !fileRef.current?.files?.[0]}
-            className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50"
+            disabled={isPending || !fileName}
+            className="flex-1 bg-blue-600 text-white py-2.5 rounded-lg font-medium font-mono-custom hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
           >
-            {isPending ? "导入中..." : "开始导入"}
+            {isPending ? (
+              <>
+                <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                导入中...
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                开始导入
+              </>
+            )}
           </button>
           <button
             onClick={onClose}
-            className="flex-1 border border-slate-300 text-slate-700 py-2 rounded-lg font-medium hover:bg-slate-50"
+            className="flex-1 border border-slate-200 text-slate-600 py-2.5 rounded-lg font-medium hover:bg-slate-50 transition-all font-mono-custom"
           >
             取消
           </button>
@@ -356,7 +722,10 @@ export default function AdminUsersPage() {
   const [resetPasswordTarget, setResetPasswordTarget] = useState<User | undefined>();
   const [showImport, setShowImport] = useState(false);
   const [actionMsg, setActionMsg] = useState("");
-  const pageSize = 10;
+  const [mounted, setMounted] = useState(false);
+  const pageSize = 12;
+
+  useEffect(() => { setMounted(true); }, []);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-users", page, search],
@@ -369,8 +738,8 @@ export default function AdminUsersPage() {
     },
   });
 
-  const users: User[] = Array.isArray(data) ? data : [];
-  const totalPages = Math.ceil(users.length / pageSize) || 1;
+  const users: User[] = Array.isArray(data) ? data : (data?.data ?? []);
+  const totalPages = Math.ceil((data?.total ?? users.length) / pageSize) || 1;
 
   const createMutation = useMutation({
     mutationFn: (data: UserForm) =>
@@ -493,186 +862,178 @@ export default function AdminUsersPage() {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center gap-4">
-          <h1 className="text-2xl font-bold text-slate-900">用户管理</h1>
-          <div className="ml-auto flex gap-3">
-            <button
-              onClick={() => setShowImport(true)}
-              className="px-4 py-2 text-sm border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 font-medium"
-            >
-              批量导入
-            </button>
-            <button
-              onClick={() => setShowCreate(true)}
-              className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
-            >
-              新建用户
-            </button>
-          </div>
-        </div>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+        .font-mono-custom { font-family: 'JetBrains Mono', monospace; }
+        .font-body-custom { font-family: 'IBM Plex Sans', sans-serif; }
+        @keyframes cardEnter {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes headerSlideIn {
+          from { opacity: 0; transform: translateX(-16px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        .card-enter { animation: cardEnter 0.45s ease-out forwards; opacity: 0; }
+        .header-slide { animation: headerSlideIn 0.4s ease-out forwards; }
+        .modal-overlay {
+          background: rgba(0, 0, 0, 0.5);
+          backdrop-filter: blur(4px);
+        }
+        @keyframes modalSlideUp {
+          from { opacity: 0; transform: translateY(32px) scale(0.96); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .modal-animate { animation: modalSlideUp 0.3s ease-out forwards; }
+      `}</style>
 
-        {/* Action message */}
-        {actionMsg && (
-          <div className="bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-2 rounded-lg">
-            {actionMsg}
-          </div>
-        )}
-
-        {/* Search bar */}
-        <form onSubmit={handleSearch} className="flex gap-3">
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="搜索用户名、邮箱或部门..."
-            className="flex-1 max-w-md border border-slate-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-          <button
-            type="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
-          >
-            搜索
-          </button>
-          {search && (
-            <button
-              type="button"
-              onClick={() => {
-                setSearch("");
-                setPage(1);
-              }}
-              className="px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 text-sm font-medium"
-            >
-              清除
-            </button>
-          )}
-        </form>
-
-        {/* Users table */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          {isLoading ? (
-            <div className="p-8 text-center text-slate-500">加载中...</div>
-          ) : (
-            <>
-              <table className="w-full text-sm">
-                <thead className="bg-slate-50 border-b border-slate-200">
-                  <tr>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600">
-                      用户名
-                    </th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600">
-                      邮箱
-                    </th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600">
-                      部门
-                    </th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600">
-                      角色
-                    </th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600">
-                      最后登录
-                    </th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600">
-                      创建时间
-                    </th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600">
-                      操作
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {users.length === 0 ? (
-                    <tr>
-                      <td colSpan={7} className="px-4 py-8 text-center text-slate-500">
-                        暂无用户数据
-                      </td>
-                    </tr>
-                  ) : (
-                    users.map((u) => (
-                      <tr key={u.id} className="hover:bg-slate-50">
-                        <td className="px-4 py-3 font-medium text-slate-900">
-                          {u.username}
-                        </td>
-                        <td className="px-4 py-3 text-slate-600">{u.email}</td>
-                        <td className="px-4 py-3 text-slate-600">
-                          {u.department || "-"}
-                        </td>
-                        <td className="px-4 py-3">
-                          <span
-                            className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
-                              u.role === "admin"
-                                ? "bg-purple-100 text-purple-700"
-                                : "bg-blue-100 text-blue-700"
-                            }`}
-                          >
-                            {u.role === "admin" ? "管理员" : "用户"}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-slate-600">
-                          {u.last_login_at
-                            ? format(new Date(u.last_login_at), "yyyy-MM-dd HH:mm")
-                            : "-"}
-                        </td>
-                        <td className="px-4 py-3 text-slate-600">
-                          {u.created_at
-                            ? format(new Date(u.created_at), "yyyy-MM-dd")
-                            : "-"}
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex gap-3">
-                            <button
-                              onClick={() => setEditTarget(u)}
-                              className="text-blue-600 hover:text-blue-800 text-xs font-medium"
-                            >
-                              编辑
-                            </button>
-                            <button
-                              onClick={() => setResetPasswordTarget(u)}
-                              className="text-orange-600 hover:text-orange-800 text-xs font-medium"
-                            >
-                              重置密码
-                            </button>
-                            <button
-                              onClick={() => setDeleteTarget(u)}
-                              className="text-red-600 hover:text-red-800 text-xs font-medium"
-                            >
-                              删除
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-
-              {/* Pagination */}
-              {users.length > 0 && (
-                <div className="px-4 py-3 border-t border-slate-200 flex items-center justify-between">
-                  <div className="text-sm text-slate-600">
-                    第 {page} 页
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setPage((p) => Math.max(1, p - 1))}
-                      disabled={page <= 1}
-                      className="px-3 py-1 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      上一页
-                    </button>
-                    <button
-                      onClick={() => setPage((p) => p + 1)}
-                      disabled={users.length < pageSize}
-                      className="px-3 py-1 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      下一页
-                    </button>
-                  </div>
+      <div className="min-h-screen bg-background font-body-custom">
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden relative header-slide">
+            <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-600 via-blue-400 to-transparent"></div>
+            <div className="flex items-center gap-4 px-6 py-5">
+              <div className="w-11 h-11 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h1 className="text-2xl font-semibold text-slate-900 font-mono-custom tracking-tight">用户管理</h1>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="w-6 h-0.5 bg-gradient-to-r from-blue-600 to-transparent rounded"></span>
+                  <span className="text-xs text-slate-500 font-mono-custom">USER MANAGEMENT</span>
                 </div>
-              )}
-            </>
+              </div>
+              <div className="ml-auto flex items-center gap-3">
+                <button
+                  onClick={() => setShowImport(true)}
+                  className="px-4 py-2 text-sm border border-slate-200 rounded-lg text-slate-700 hover:bg-slate-50 hover:border-slate-300 font-medium font-mono-custom transition-all flex items-center gap-2"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                  批量导入
+                </button>
+                <button
+                  onClick={() => setShowCreate(true)}
+                  className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium font-mono-custom transition-all flex items-center gap-2 shadow-sm shadow-blue-600/30"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  新建用户
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Action message */}
+          {actionMsg && (
+            <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm px-4 py-3 rounded-xl flex items-center gap-2 card-enter">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {actionMsg}
+            </div>
           )}
+
+          {/* Search bar */}
+          <form onSubmit={handleSearch} className="flex gap-3 card-enter" style={{ animationDelay: "0.1s" }}>
+            <div className="relative flex-1 max-w-md">
+              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="搜索用户名、邮箱或部门..."
+                className="w-full bg-white border border-slate-200 pl-10 pr-4 py-2.5 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-mono-custom"
+              />
+            </div>
+            <button
+              type="submit"
+              className="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium font-mono-custom transition-all shadow-sm shadow-blue-600/20"
+            >
+              搜索
+            </button>
+            {search && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearch("");
+                  setPage(1);
+                }}
+                className="px-4 py-2.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-sm font-medium transition-all font-mono-custom text-slate-600"
+              >
+                清除
+              </button>
+            )}
+          </form>
+
+          {/* User cards grid */}
+          <div className="card-enter" style={{ animationDelay: "0.15s" }}>
+            {isLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[...Array(6)].map((_, i) => (
+                  <UserCardSkeleton key={i} />
+                ))}
+              </div>
+            ) : users.length === 0 ? (
+              <EmptyState onAdd={() => setShowCreate(true)} />
+            ) : (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {users.map((user, index) => (
+                    <UserCard
+                      key={user.id}
+                      user={user}
+                      isCurrentUser={user.id === currentUser?.id}
+                      onEdit={() => setEditTarget(user)}
+                      onResetPassword={() => setResetPasswordTarget(user)}
+                      onDelete={() => setDeleteTarget(user)}
+                      index={index}
+                    />
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {users.length > 0 && (
+                  <div className="mt-6 flex items-center justify-between">
+                    <div className="text-sm text-slate-500 font-mono-custom">
+                      共 {data?.total ?? users.length} 用户
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                        disabled={page <= 1}
+                        className="px-4 py-2 text-sm border border-slate-200 rounded-lg hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed font-mono-custom transition-all bg-white"
+                      >
+                        <svg className="w-4 h-4 mr-1 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        </svg>
+                        上一页
+                      </button>
+                      <div className="px-3 py-2 bg-slate-100 rounded-lg text-sm font-mono-custom text-slate-700">
+                        第 {page} / {totalPages || 1} 页
+                      </div>
+                      <button
+                        onClick={() => setPage((p) => p + 1)}
+                        disabled={users.length < pageSize}
+                        className="px-4 py-2 text-sm border border-slate-200 rounded-lg hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed font-mono-custom transition-all bg-white"
+                      >
+                        下一页
+                        <svg className="w-4 h-4 ml-1 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
 

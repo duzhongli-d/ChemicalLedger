@@ -72,8 +72,35 @@ export default function AdminContactPage() {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-slate-900">联系管理</h1>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+        .font-mono-custom { font-family: 'JetBrains Mono', monospace; }
+        .font-body-custom { font-family: 'IBM Plex Sans', sans-serif; }
+        @keyframes cardEnter {
+          from { opacity: 0; transform: translateY(24px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes headerSlideIn {
+          from { opacity: 0; transform: translateX(-20px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        .card-enter { animation: cardEnter 0.5s ease-out forwards; opacity: 0; }
+        .header-slide { animation: headerSlideIn 0.4s ease-out forwards; }
+      `}</style>
+
+      <div className="space-y-6 font-body-custom">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8 header-slide">
+          <div>
+            <h1 className="text-2xl font-semibold text-slate-900 font-mono-custom tracking-tight">
+              联系管理
+            </h1>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="w-8 h-0.5 bg-gradient-to-r from-orange-500 to-transparent rounded"></span>
+              <span className="text-xs text-slate-500 font-mono-custom">CONTACT MGMT</span>
+            </div>
+          </div>
+        </div>
 
         {/* Filters */}
         <div className="flex flex-wrap items-center gap-4 bg-white rounded-xl border border-slate-200 shadow-sm p-4">
@@ -86,7 +113,7 @@ export default function AdminContactPage() {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all"
             />
           </div>
 
@@ -97,9 +124,9 @@ export default function AdminContactPage() {
                 key={tab}
                 onClick={() => { setActiveTab(tab); setCurrentPage(1); }}
                 className={clsx(
-                  "px-4 py-2 text-sm font-medium transition-colors",
+                  "px-4 py-2 text-sm font-medium transition-colors font-mono-custom",
                   activeTab === tab
-                    ? "bg-blue-600 text-white"
+                    ? "bg-orange-500 text-white"
                     : "bg-white text-slate-600 hover:bg-slate-50"
                 )}
               >
@@ -112,7 +139,7 @@ export default function AdminContactPage() {
           <select
             value={categoryFilter}
             onChange={(e) => { setCategoryFilter(e.target.value); setCurrentPage(1); }}
-            className="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all"
           >
             <option value="">全部分类</option>
             {Object.entries(categoryLabels).map(([key, label]) => (
@@ -129,20 +156,21 @@ export default function AdminContactPage() {
             <div className="p-8 text-center text-slate-400">暂无数据</div>
           ) : (
             <div className="divide-y divide-slate-100">
-              {submissions.map((submission) => (
+              {submissions.map((submission, index) => (
                 <div
                   key={submission.id}
                   className={clsx(
-                    "p-4 hover:bg-slate-50 transition-colors",
-                    !submission.is_read && "border-l-4 border-blue-500"
+                    "p-4 hover:bg-slate-50 transition-colors card-enter",
+                    !submission.is_read && "border-l-4 border-orange-500"
                   )}
+                  style={{ animationDelay: `${index * 0.05}s` }}
                 >
                   <div className="flex items-start gap-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className={clsx(
                           "inline-block px-2 py-0.5 rounded text-xs font-medium",
-                          submission.is_read ? "bg-slate-100 text-slate-500" : "bg-blue-100 text-blue-700"
+                          submission.is_read ? "bg-slate-100 text-slate-500" : "bg-orange-100 text-orange-700"
                         )}>
                           {submission.is_read ? "已读" : "未读"}
                         </span>
@@ -152,7 +180,7 @@ export default function AdminContactPage() {
                       </div>
                       <Link
                         href={`/admin/contact/${submission.id}`}
-                        className="block mt-1 text-base font-medium text-slate-900 hover:text-blue-600 truncate"
+                        className="block mt-1 text-base font-medium text-slate-900 hover:text-orange-600 truncate"
                       >
                         {submission.subject}
                       </Link>
@@ -173,7 +201,7 @@ export default function AdminContactPage() {
                     {!submission.is_read && (
                       <button
                         onClick={(e) => { e.preventDefault(); markReadMutation.mutate(submission.id); }}
-                        className="text-xs text-blue-600 hover:text-blue-800 font-medium whitespace-nowrap"
+                        className="text-xs text-orange-600 hover:text-orange-800 font-medium whitespace-nowrap"
                       >
                         标记已读
                       </button>

@@ -67,27 +67,51 @@ export default function AdminContactDetailPage() {
 
   return (
     <AdminLayout>
-      <main className="max-w-4xl mx-auto space-y-6">
-        {/* Back link */}
-        <Link
-          href="/admin/contact"
-          className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-600 transition-colors text-sm"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-          返回联系列表
-        </Link>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+        .font-mono-custom { font-family: 'JetBrains Mono', monospace; }
+        .font-body-custom { font-family: 'IBM Plex Sans', sans-serif; }
+        @keyframes cardEnter {
+          from { opacity: 0; transform: translateY(24px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes headerSlideIn {
+          from { opacity: 0; transform: translateX(-20px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        .card-enter { animation: cardEnter 0.5s ease-out forwards; opacity: 0; }
+        .header-slide { animation: headerSlideIn 0.4s ease-out forwards; }
+      `}</style>
+
+      <main className="max-w-4xl mx-auto space-y-6 font-body-custom">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8 header-slide">
+          <div>
+            <Link href="/admin/contact" className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-600 transition-colors text-sm mb-2">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+              返回联系列表
+            </Link>
+            <h1 className="text-2xl font-semibold text-slate-900 font-mono-custom tracking-tight">
+              联系详情
+            </h1>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="w-8 h-0.5 bg-gradient-to-r from-teal-500 to-transparent rounded"></span>
+              <span className="text-xs text-slate-500 font-mono-custom">CONTACT DETAIL</span>
+            </div>
+          </div>
+        </div>
 
         {/* Original Message Card */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden card-enter" style={{ animationDelay: "0.1s" }}>
           <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center gap-2">
             <div className="w-1 h-4 rounded-full bg-orange-500" />
             <h2 className="text-sm font-semibold text-slate-700">原始信息</h2>
             {submission.is_read ? (
               <span className="ml-auto text-xs text-slate-400">已读</span>
             ) : (
-              <span className="ml-auto text-xs text-blue-600 font-medium">未读</span>
+              <span className="ml-auto text-xs text-orange-600 font-medium">未读</span>
             )}
           </div>
           <div className="p-5 space-y-4">
@@ -126,7 +150,7 @@ export default function AdminContactDetailPage() {
 
         {/* Reply History Timeline */}
         {submission.replies && submission.replies.length > 0 && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden card-enter" style={{ animationDelay: "0.2s" }}>
             <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center gap-2">
               <div className="w-1 h-4 rounded-full bg-teal-500" />
               <h2 className="text-sm font-semibold text-slate-700">回复历史</h2>
@@ -164,9 +188,9 @@ export default function AdminContactDetailPage() {
         )}
 
         {/* Reply Form */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden card-enter" style={{ animationDelay: "0.3s" }}>
           <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center gap-2">
-            <div className="w-1 h-4 rounded-full bg-blue-500" />
+            <div className="w-1 h-4 rounded-full bg-orange-500" />
             <h2 className="text-sm font-semibold text-slate-700">发送回复</h2>
           </div>
           <div className="p-5 space-y-4">
@@ -175,7 +199,7 @@ export default function AdminContactDetailPage() {
               onChange={(e) => setReplyContent(e.target.value)}
               placeholder="输入回复内容..."
               rows={5}
-              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 resize-none transition-all"
             />
             <div className="flex items-center justify-between">
               {showSuccess && (
@@ -184,7 +208,7 @@ export default function AdminContactDetailPage() {
               <button
                 onClick={() => replyContent.trim() && replyMutation.mutate(replyContent)}
                 disabled={!replyContent.trim() || replyMutation.isPending}
-                className="ml-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="ml-auto px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-orange-500/20"
               >
                 {replyMutation.isPending ? "发送中..." : "发送回复"}
               </button>

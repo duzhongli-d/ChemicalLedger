@@ -133,6 +133,10 @@ export default function AdminLedgerEditPage() {
 
   return (
     <AdminLayout>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+      `}</style>
+
       <main className="max-w-3xl mx-auto space-y-6">
         {/* Page Header */}
         <div className="flex items-center gap-4">
@@ -148,16 +152,17 @@ export default function AdminLedgerEditPage() {
           </Link>
 
           <div className="flex items-center gap-3">
-            <div className="w-1 h-10 rounded-full bg-gradient-to-b from-teal-500 to-orange-500" />
+            <div className="w-1 h-10 rounded-full bg-gradient-to-b from-blue-600 to-teal-500" />
             <div>
-              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{t("edit")}</h1>
-              <p className="text-sm text-slate-500">{ledger.product_name}</p>
+              <h1 className="text-2xl font-bold text-slate-900 font-mono-custom tracking-tight">{t("edit")}</h1>
+              <p className="text-sm text-slate-500 font-mono-custom">{ledger.product_name}</p>
             </div>
           </div>
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden relative card-enter">
+          <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-600 via-blue-400 to-transparent"></div>
           <form onSubmit={handleSubmit} className="p-6 space-y-6">
             {/* Basic Info Section */}
             <div className="space-y-4">
@@ -355,7 +360,7 @@ export default function AdminLedgerEditPage() {
                 <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                {error}
+                <span className="font-mono-custom">{error}</span>
               </div>
             )}
 
@@ -365,7 +370,7 @@ export default function AdminLedgerEditPage() {
                 <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                保存成功，即将跳转...
+                <span className="font-mono-custom">保存成功，即将跳转...</span>
               </div>
             )}
 
