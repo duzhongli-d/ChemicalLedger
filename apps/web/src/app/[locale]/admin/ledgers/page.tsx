@@ -6,89 +6,91 @@ import { Link } from "@/i18n/navigation";
 import { format } from "date-fns";
 import clsx from "clsx";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { adminLedgerApi } from "@/lib/api-client";
+import { adminLedgerApi, Ledger } from "@/lib/api-client";
+import { FilterTabs, FilterTabValue } from "@/components/layout/FilterTabs";
+import { Pagination } from "@/components/layout/Pagination";
+import { getDaysLeft } from "@/lib/date-utils";
 
 const PAGE_SIZE = 20;
-
-interface Ledger {
-  id: string;
-  internal_batch_no: string;
-  product_name: string;
-  batch_no: string;
-  cas_no: string;
-  weight_capacity: string;
-  supplier: string;
-  quantity: number;
-  category: { level1: string; level2: string };
-  cert_expiry_date: string;
-  effective_expiry_date: string;
-  status: "active" | "archived";
-  created_at: string;
-  created_by_id: string;
-  creator?: { username: string };
-  is_opened: boolean;
-  open_date: string | null;
-}
 
 export default function AdminLedgersPage() {
   const queryClient = useQueryClient();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [activeTab, setActiveTab] = useState<FilterTabValue>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-  const { data: ledgers = [], isLoading } = useQuery({
-    queryKey: ["admin-ledgers"],
+  // Fetch all data for tabCounts and categories (page_size=100 to get most/all records)
+  const { data: allLedgersData } = useQuery({
+    queryKey: ["admin-ledgers-all"],
     queryFn: () => adminLedgerApi.list({ page_size: 100 }).then((r) => r.data),
   });
+
+  // Server-side paginated query for table data
+  const { data: paginatedData, isLoading } = useQuery({
+    queryKey: ["admin-ledgers", currentPage, activeTab, categoryFilter, searchQuery],
+    queryFn: () => {
+      // Map activeTab to status filter for API
+      let status: string | undefined;
+      if (activeTab === "archived") {
+        status = "archived";
+      } else if (activeTab !== "all") {
+        // For expiring10, expiring20, expired — we'll fetch all active and filter client-side
+        // since effective_expiry_date logic is complex to express in SQL
+        status = "active";
+      }
+      return adminLedgerApi.list({
+        page: currentPage,
+        page_size: PAGE_SIZE,
+        status,
+        search: searchQuery || undefined,
+        category: categoryFilter || undefined,
+      }).then((r) => r.data);
+    },
+  });
+
+  const ledgers = paginatedData?.items ?? [];
+  const totalItems = paginatedData?.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
 
   // Get unique categories for filter
   const categories = useMemo(() => {
     const cats = new Set<string>();
-    ledgers.forEach((l: Ledger) => {
+    (allLedgersData?.items ?? []).forEach((l: Ledger) => {
       if (l.category?.level2) cats.add(l.category.level2);
     });
     return Array.from(cats).sort();
-  }, [ledgers]);
+  }, [allLedgersData]);
 
-  // Filter ledgers
-  const filteredLedgers = useMemo(() => {
-    let filtered: Ledger[] = Array.isArray(ledgers) ? ledgers : [];
-
-    if (statusFilter) {
-      filtered = filtered.filter((l) => l.status === statusFilter);
-    }
-
-    if (categoryFilter) {
-      filtered = filtered.filter((l) => l.category?.level2 === categoryFilter);
-    }
-
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (l) =>
-          l.product_name?.toLowerCase().includes(q) ||
-          l.internal_batch_no?.toLowerCase().includes(q) ||
-          l.batch_no?.toLowerCase().includes(q)
-      );
-    }
-
-    return filtered;
-  }, [ledgers, statusFilter, categoryFilter, searchQuery]);
-
-  // Pagination
-  const totalPages = Math.ceil(filteredLedgers.length / PAGE_SIZE);
-  const paginatedLedgers = filteredLedgers.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE
-  );
+  // Calculate counts for each tab from full dataset
+  const tabCounts = useMemo(() => {
+    const counts = { all: 0, active: 0, expiring10: 0, expiring20: 0, expired: 0, archived: 0 };
+    (allLedgersData?.items ?? []).forEach((l: Ledger) => {
+      counts.all++;
+      if (l.status === "archived") {
+        counts.archived++;
+      } else {
+        counts.active++;
+        const daysLeft = getDaysLeft(l.effective_expiry_date);
+        if (daysLeft < 0) {
+          counts.expired++;
+        } else if (daysLeft <= 10) {
+          counts.expiring10++;
+        } else if (daysLeft <= 20) {
+          counts.expiring20++;
+        }
+      }
+    });
+    return counts;
+  }, [allLedgersData]);
 
   // Archive mutation
   const archiveMutation = useMutation({
     mutationFn: (id: string) => adminLedgerApi.update(id, { status: "archived" }),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-ledgers-all"] });
       queryClient.invalidateQueries({ queryKey: ["admin-ledgers"] });
       setSelectedIds(new Set());
     },
@@ -98,6 +100,7 @@ export default function AdminLedgersPage() {
   const batchArchiveMutation = useMutation({
     mutationFn: (ids: string[]) => adminLedgerApi.batchArchive(ids),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-ledgers-all"] });
       queryClient.invalidateQueries({ queryKey: ["admin-ledgers"] });
       setSelectedIds(new Set());
     },
@@ -107,7 +110,7 @@ export default function AdminLedgersPage() {
     if (checked) {
       setSelectedIds(
         new Set(
-          paginatedLedgers
+          ledgers
             .filter((l) => l.status === "active")
             .map((l) => l.id)
         )
@@ -140,13 +143,16 @@ export default function AdminLedgersPage() {
     }
   };
 
-  const getDaysLeft = (dateStr: string) => {
-    return Math.ceil((new Date(dateStr).getTime() - Date.now()) / 86400000);
-  };
-
   const getExpiryClass = (daysLeft: number) => {
     if (daysLeft < 0) return "text-red-600 font-medium";
     if (daysLeft <= 30) return "text-amber-600 font-medium";
+    return "text-slate-600";
+  };
+
+  const getDaysColorClass = (daysLeft: number, status: string) => {
+    if (status === "archived") return "";
+    if (daysLeft <= 10) return "text-red-600 font-medium";
+    if (daysLeft <= 20) return "text-yellow-600 font-medium";
     return "text-slate-600";
   };
 
@@ -174,19 +180,15 @@ export default function AdminLedgersPage() {
             />
           </div>
 
-          {/* Status Filter */}
-          <select
-            value={statusFilter}
-            onChange={(e) => {
-              setStatusFilter(e.target.value);
+          {/* Filter Tabs */}
+          <FilterTabs
+            activeTab={activeTab}
+            onTabChange={(tab) => {
+              setActiveTab(tab);
               setCurrentPage(1);
             }}
-            className="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">全部状态</option>
-            <option value="active">使用中</option>
-            <option value="archived">已归档</option>
-          </select>
+            counts={tabCounts}
+          />
 
           {/* Category Filter */}
           <select
@@ -223,7 +225,7 @@ export default function AdminLedgersPage() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           {isLoading ? (
             <div className="p-8 text-center text-slate-500">加载中...</div>
-          ) : paginatedLedgers.length === 0 ? (
+          ) : ledgers.length === 0 ? (
             <div className="p-8 text-center text-slate-400">暂无数据</div>
           ) : (
             <div className="overflow-x-auto">
@@ -235,9 +237,9 @@ export default function AdminLedgersPage() {
                         type="checkbox"
                         onChange={(e) => handleSelectAll(e.target.checked)}
                         checked={
-                          paginatedLedgers.filter((l) => l.status === "active").length >
+                          ledgers.filter((l) => l.status === "active").length >
                             0 &&
-                          paginatedLedgers
+                          ledgers
                             .filter((l) => l.status === "active")
                             .every((l) => selectedIds.has(l.id))
                         }
@@ -255,14 +257,13 @@ export default function AdminLedgersPage() {
                     <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">证书有效期</th>
                     <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">开封日期</th>
                     <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">有效期</th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">剩余有效天数</th>
                     <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">状态</th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">数量</th>
-                    <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">创建人</th>
                     <th className="text-left px-4 py-3 font-medium text-slate-600 whitespace-nowrap">操作</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {paginatedLedgers.map((ledger) => {
+                  {ledgers.map((ledger) => {
                     const certDaysLeft = getDaysLeft(ledger.cert_expiry_date);
                     const effectiveDaysLeft = getDaysLeft(ledger.effective_expiry_date);
 
@@ -352,6 +353,17 @@ export default function AdminLedgersPage() {
                           )}
                         </td>
 
+                        {/* Days Left */}
+                        <td className="px-4 py-3">
+                          {ledger.status === "archived" ? (
+                            "-"
+                          ) : (
+                            <span className={getDaysColorClass(effectiveDaysLeft, ledger.status)}>
+                              {effectiveDaysLeft}
+                            </span>
+                          )}
+                        </td>
+
                         {/* Status */}
                         <td className="px-4 py-3">
                           <span
@@ -363,16 +375,6 @@ export default function AdminLedgersPage() {
                           >
                             {ledger.status === "active" ? "使用中" : "已归档"}
                           </span>
-                        </td>
-
-                        {/* Quantity */}
-                        <td className="px-4 py-3 text-slate-500">
-                          {ledger.quantity}
-                        </td>
-
-                        {/* Creator */}
-                        <td className="px-4 py-3 text-slate-500 text-xs">
-                          {ledger.creator?.username || ledger.created_by_id?.slice(0, 8) || "-"}
                         </td>
 
                         {/* Actions */}
@@ -405,27 +407,13 @@ export default function AdminLedgersPage() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-4">
-            <div className="text-sm text-slate-600">
-              共 {filteredLedgers.length} 条记录，第 {currentPage}/{totalPages} 页
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage <= 1}
-                className="px-3 py-1 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                上一页
-              </button>
-              <button
-                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                disabled={currentPage >= totalPages}
-                className="px-3 py-1 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                下一页
-              </button>
-            </div>
-          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            pageSize={PAGE_SIZE}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
         )}
       </div>
     </AdminLayout>

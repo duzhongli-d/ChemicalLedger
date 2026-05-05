@@ -85,13 +85,13 @@ function DashboardContent() {
           page_size: 100,
         });
 
-        const allLedgers = ledgersRes.data;
+        const allLedgers = ledgersRes.data.items;
         const expiring = allLedgers
-          .filter((ledger: { effective_expiry_date: string }) => {
+          .filter((ledger) => {
             const expiryDate = new Date(ledger.effective_expiry_date);
             return expiryDate <= filterDate && expiryDate >= today;
           })
-          .map((ledger: { effective_expiry_date: string; [key: string]: unknown }) => {
+          .map((ledger) => {
             const daysRemaining = Math.ceil(
               (new Date(ledger.effective_expiry_date).getTime() - today.getTime()) /
                 (1000 * 60 * 60 * 24)
@@ -99,7 +99,7 @@ function DashboardContent() {
             return { ...ledger, days_remaining: daysRemaining };
           })
           .sort(
-            (a: { days_remaining: number }, b: { days_remaining: number }) =>
+            (a, b) =>
               a.days_remaining - b.days_remaining
           )
           .slice(0, 10);
@@ -108,7 +108,7 @@ function DashboardContent() {
 
         // Fetch recent audit logs
         const auditRes = await auditLogApi.list({ page_size: 10 });
-        setRecentActivity(auditRes.data);
+        setRecentActivity(auditRes.data.items);
       } catch (error) {
         console.error("Failed to fetch dashboard data:", error);
       } finally {

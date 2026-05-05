@@ -1,18 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional
 from uuid import UUID
 from datetime import datetime
 from app.db.session import get_db
 from app.api.deps import get_admin_user
 from app.db.models import Ledger
-from app.schemas.schemas import BatchArchiveRequest
+from app.schemas.schemas import BatchArchiveRequest, LedgerResponse, PaginatedLedgerResponse
 from app.services.audit_service import AuditService
 
 router = APIRouter()
 
 
-@router.get("/")
+@router.get("/", response_model=PaginatedLedgerResponse)
 def list_ledgers(
     page: int = 1,
     page_size: int = 20,
@@ -22,12 +22,24 @@ def list_ledgers(
     db: Session = Depends(get_db),
     current_user=Depends(get_admin_user),
 ):
-    query = db.query(Ledger)
+    query = db.query(Ledger).options(joinedload(Ledger.category))
     if search:
         query = query.filter(Ledger.product_name.contains(search) | Ledger.internal_batch_no.contains(search))
     if status:
         query = query.filter(Ledger.status == status)
-    return query.offset((page - 1) * page_size).limit(page_size).all()
+    if category:
+        from app.db.models import Category
+        query = query.join(Ledger.category).filter(Category.level2 == category)
+
+    total = query.count()
+    items = query.offset((page - 1) * page_size).limit(page_size).all()
+
+    return PaginatedLedgerResponse(
+        items=items,
+        total=total,
+        page=page,
+        page_size=page_size,
+    )
 
 
 @router.patch("/{ledger_id}")

@@ -196,3 +196,10 @@ class ContactSubmissionResponse(BaseModel):
     user_id: Optional[UUID]
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class PaginatedLedgerResponse(BaseModel):
+    items: list[LedgerResponse]
+    total: int
+    page: int
+    page_size: int

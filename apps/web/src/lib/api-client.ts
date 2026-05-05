@@ -91,9 +91,36 @@ export const userApi = {
 
 // ─── Admin Ledgers ───────────────────────────────────────────────────────────
 
+export interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+export interface Ledger {
+  id: string;
+  internal_batch_no: string;
+  product_name: string;
+  batch_no: string;
+  cas_no: string;
+  weight_capacity: string;
+  supplier: string;
+  quantity: number;
+  category: { level1: string; level2: string };
+  cert_expiry_date: string;
+  effective_expiry_date: string;
+  status: "active" | "archived";
+  created_at: string;
+  created_by_id: string;
+  creator?: { username: string };
+  is_opened: boolean;
+  open_date: string | null;
+}
+
 export const adminLedgerApi = {
-  list: (params?: { page?: number; page_size?: number; status?: string; search?: string }) =>
-    api.get("/admin/ledgers/", { params }),
+  list: (params?: { page?: number; page_size?: number; status?: string; search?: string; category?: string }) =>
+    api.get<PaginatedResponse<Ledger>>("/admin/ledgers/", { params }),
   update: (id: string, data: Record<string, unknown>) =>
     api.patch(`/admin/ledgers/${id}`, data),
   batchArchive: (ledgerIds: string[]) =>
