@@ -78,7 +78,6 @@ export default function AdminSidebar() {
 
   const handleLogout = () => {
     logout();
-    // Extract locale from pathname (e.g., "/zh/admin/dashboard" -> "zh")
     const locale = pathname.split("/")[1] || "zh";
     router.push(`/${locale}/admin/login`);
   };
@@ -102,7 +101,7 @@ export default function AdminSidebar() {
       {/* Navigation */}
       <nav className="flex-1 p-4 space-y-1">
         {navItems.map((item) => {
-          const isActive = pathname === item.href;
+          const isActive = pathname.startsWith(item.href);
           return (
             <Link
               key={item.href}
@@ -114,7 +113,7 @@ export default function AdminSidebar() {
               }`}
             >
               {item.icon}
-              <span className={`font-medium ${isActive ? "text-blue-400 drop-shadow-sm" : ""}`}>{item.label}</span>
+              <span className="font-medium">{item.label}</span>
             </Link>
           );
         })}
