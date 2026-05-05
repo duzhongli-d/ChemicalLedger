@@ -132,7 +132,33 @@
     "ledgers": "台账管理",
     "auditLogs": "审计日志",
     "addUser": "添加用户",
-    "addCategory": "添加品类"
+    "addCategory": "添加品类",
+    "annualSummary": "年度总结",
+    "annualSummaries": {
+      "title": "年度总结数据维护",
+      "selectYear": "选择年份",
+      "sampleTesting": "样品检测",
+      "methodDev": "方法开发&验证",
+      "stabilityTest": "稳定性试验",
+      "projectCount": "项目数",
+      "batchCount": "批次数",
+      "yoyGrowth": "同比",
+      "projects": "项目",
+      "editSection": "编辑",
+      "addCategory": "添加检测类型",
+      "categoryName": "检测类型",
+      "projectNames": "项目名称",
+      "enterOpenDate": "录入开封日期",
+      "trends": "数据趋势",
+      "noData": "暂无数据",
+      "save": "保存",
+      "cancel": "取消",
+      "delete": "删除",
+      "confirmDelete": "确认删除此记录？",
+      "success": "保存成功",
+      "error": "保存失败",
+      "year": "年份"
+    }
   },
   "dashboard": {
     "title": "台账总览",
@@ -221,6 +247,7 @@
     "footer": {
       "contact": "联系我们",
       "contactInfo": "上海市浦东新区李冰路67弄4号",
+      "phone": "电话：021-50720006",
       "email": "qc@abachem.com",
       "downloadCerts": "资质下载",
       "platformEntry": "平台入口",
@@ -241,7 +268,9 @@
       "addressValue": "上海市浦东新区李冰路67弄4号",
       "email": "邮箱",
       "hours": "工作时间",
-      "hoursValue": "周一至周五 9:00-18:00"
+      "hoursValue": "周一至周五 9:00-18:00",
+      "phone": "电话",
+      "phoneValue": "021-50720006"
     },
     "form": {
       "name": "姓名",
@@ -364,15 +393,15 @@
       "intro": "我们的团队由资深QC专业人员、资深化学家和法规专员组成，致力于提供准确、可靠的结果。团队硕博比例超过60%，平均行业经验8年以上，为每次分析带来深厚专业知识。",
       "deptStructure": {
         "title": "部门架构",
-        "chemistry": "化学分析部",
+        "chemistry": "化学分析",
         "chemistryDesc": "HPLC、GC、滴定、水分分析",
-        "instrumental": "仪器分析部",
+        "instrumental": "仪器分析",
         "instrumentalDesc": "LC-MS、GC-MS、NMR、AAS",
-        "microbiology": "微生物部",
+        "microbiology": "微生物",
         "microbiologyDesc": "无菌检测、环境监测",
-        "quality": "质量保证部",
+        "quality": "质量保证",
         "qualityDesc": "方法验证、文档管理",
-        "regulatory": "注册法规部",
+        "regulatory": "注册法规",
         "regulatoryDesc": "合规、申报注册"
       }
     }

@@ -1,6 +1,6 @@
 import uuid as uuid_lib
 from datetime import datetime, timezone
-from sqlalchemy import Column, String, Integer, Boolean, Date, DateTime, ForeignKey, Text, JSON
+from sqlalchemy import Column, String, Integer, Boolean, Date, DateTime, ForeignKey, Text, JSON, UniqueConstraint
 from sqlalchemy import func
 from sqlalchemy import Uuid
 from sqlalchemy.orm import relationship, declarative_base
@@ -183,3 +183,22 @@ class DailyStats(Base):
     archived_ledgers = Column(Integer, nullable=False, default=0)
     created_count = Column(Integer, nullable=False, default=0)
     archived_count = Column(Integer, nullable=False, default=0)
+
+
+class AnnualSummary(Base):
+    __tablename__ = "annual_summaries"
+
+    id = Column(Uuid, primary_key=True, default=uuid_lib.uuid4)
+    year = Column(Integer, nullable=False)
+    section = Column(String(50), nullable=False)  # "sample_testing", "method_dev", "stability_test"
+    category = Column(String(100), nullable=True)  # 检测类型/类别
+    project_count = Column(Integer, default=0)
+    project_names = Column(Text, nullable=True)  # 项目名称，逗号分隔
+    batch_count = Column(Integer, default=0)  # 检测批次数
+    yoy_growth = Column(String(20), nullable=True)  # 同比增长率，如 "22%"
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+
+    __table_args__ = (
+        UniqueConstraint('year', 'section', 'category', name='uq_annual_summary_year_section_category'),
+    )

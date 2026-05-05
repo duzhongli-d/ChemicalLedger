@@ -202,4 +202,39 @@ export const adminContactApi = {
   reply: (id: string, content: string) => api.post(`/admin/contact/${id}/reply`, { content }),
 };
 
+// ─── Admin Annual Summaries ─────────────────────────────────────────────────
+
+export interface AnnualSummary {
+  id: string;
+  year: number;
+  section: string;
+  category: string | null;
+  project_count: number;
+  project_names: string | null;
+  batch_count: number;
+  yoy_growth: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export const adminAnnualSummaryApi = {
+  list: (params?: { year?: number; section?: string }) =>
+    api.get<AnnualSummary[]>("/admin/annual-summaries/", { params }),
+  getByYear: (year: number) =>
+    api.get<AnnualSummary[]>(`/admin/annual-summaries/${year}`),
+  create: (data: {
+    year: number;
+    section: string;
+    category?: string | null;
+    project_count?: number;
+    project_names?: string | null;
+    batch_count?: number;
+    yoy_growth?: string | null;
+  }) => api.post<AnnualSummary>("/admin/annual-summaries/", data),
+  update: (id: string, data: Record<string, unknown>) =>
+    api.patch<AnnualSummary>(`/admin/annual-summaries/${id}`, data),
+  delete: (id: string) =>
+    api.delete(`/admin/annual-summaries/${id}`),
+};
+
 export default api;
