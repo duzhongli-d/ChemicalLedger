@@ -27,8 +27,9 @@ export function HeroSection() {
           t("heroMetrics.rdFull"),
         ];
 
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
         const res = await fetch(
-          `/api/v1/public/annual-summaries/by-category?categories=${encodeURIComponent(categories.join(','))}&year=${previousYear}`,
+          `${apiUrl}/public/annual-summaries/by-category?categories=${encodeURIComponent(categories.join(','))}&year=${previousYear}`,
           { signal: controller.signal }
         );
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
