@@ -192,6 +192,13 @@
       "cta": "立即开始",
       "secondaryCta": "了解更多"
     },
+    "heroMetrics": {
+      "zhongkong": "中控检测",
+      "businessFull": "商务全检",
+      "referenceStandard": "对照品标定",
+      "rdFull": "研发全检",
+      "unit": "批"
+    },
     "strengths": {
       "title": "核心优势",
       "compliance": "合规体系",

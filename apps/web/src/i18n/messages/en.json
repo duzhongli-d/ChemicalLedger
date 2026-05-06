@@ -192,6 +192,13 @@
       "cta": "Start Now",
       "secondaryCta": "Learn More"
     },
+    "heroMetrics": {
+      "zhongkong": "In-Process Control",
+      "businessFull": "Business Full Inspection",
+      "referenceStandard": "Reference Standard",
+      "rdFull": "R&D Full Testing",
+      "unit": "batches"
+    },
     "strengths": {
       "title": "Core Strengths",
       "compliance": "Compliance System",
@@ -227,16 +234,30 @@
       "methods": "Methods Developed",
       "methodsLabel": "Methods Developed",
       "auditRate": "Compliance Audit Rate",
-      "auditRateLabel": "Audit Pass Rate"
+      "auditRateLabel": "Audit Pass Rate",
+      "card1": {
+        "label": "Sample Testing"
+      },
+      "card2": {
+        "label": "Method Development & Validation"
+      },
+      "card3": {
+        "label": "Stability Testing"
+      },
+      "noData": "No Data",
+      "projectsBatches": "{projectCount} Projects / {batchCount} Batches",
+      "projectsOnly": "{projectCount} Projects"
     },
     "team": {
       "title": "Team Showcase",
       "professional": "Professional Team",
       "professionalDesc": "Led by senior QC engineers, over 60% with master's/PhD degrees",
       "professionalBadge": "Masters/PhDs >60%",
+      "professionalImageAlt": "Professional team photo",
       "innovation": "Innovation Spirit",
       "innovationDesc": "Continuously optimizing detection methods, driving industry advancement",
-      "innovationBadge": "Innovation Driven"
+      "innovationBadge": "Innovation Driven",
+      "innovationImageAlt": "Research and innovation photo"
     },
     "entry": {
       "aiAssistant": "AI Ledger Assistant",
