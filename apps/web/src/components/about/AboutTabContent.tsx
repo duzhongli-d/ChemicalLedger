@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import AboutTabNav, { TabId, tabs } from "./AboutTabNav";
 import PlatformStoryTab from "./tabs/PlatformStoryTab";
 import { TechnicalCapabilitiesTab } from "./tabs/TechnicalCapabilitiesTab";
@@ -23,17 +24,17 @@ export default function AboutTabContent({
   initialTab = "platform-story",
   onActiveTabChange,
 }: AboutTabContentProps) {
-  const [activeTab, setActiveTab] = useState<TabId>(() => {
-  if (typeof window !== "undefined") {
-    const params = new URLSearchParams(window.location.search);
-    const tab = params.get("tab");
-    if (tab && tabs.some((t) => t.id === tab)) {
-      return tab as TabId;
-    }
-  }
-  return initialTab;
-});
+  const searchParams = useSearchParams();
+  const [activeTab, setActiveTab] = useState<TabId>(initialTab);
   const [isAnimating, setIsAnimating] = useState(false);
+
+  // Sync activeTab from URL search params on mount and when searchParams changes
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab && tabs.some((t) => t.id === tab)) {
+      setActiveTab(tab as TabId);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (activeTab !== initialTab) {
@@ -45,10 +46,10 @@ export default function AboutTabContent({
     }
   }, [activeTab, initialTab]);
 
-  const handleTabChange = (tab: TabId) => {
+  const handleTabChange = useCallback((tab: TabId) => {
     setActiveTab(tab);
     onActiveTabChange?.(tab);
-  };
+  }, [onActiveTabChange]);
 
   const ActivePanel = tabComponents[activeTab];
 
