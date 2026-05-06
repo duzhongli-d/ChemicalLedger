@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import AboutTabNav, { TabId } from "./AboutTabNav";
+import AboutTabNav, { TabId, tabs } from "./AboutTabNav";
 import PlatformStoryTab from "./tabs/PlatformStoryTab";
 import { TechnicalCapabilitiesTab } from "./tabs/TechnicalCapabilitiesTab";
 import ComplianceTab from "./tabs/ComplianceTab";
@@ -23,7 +23,16 @@ export default function AboutTabContent({
   initialTab = "platform-story",
   onActiveTabChange,
 }: AboutTabContentProps) {
-  const [activeTab, setActiveTab] = useState<TabId>(initialTab);
+  const [activeTab, setActiveTab] = useState<TabId>(() => {
+  if (typeof window !== "undefined") {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab");
+    if (tab && tabs.some((t) => t.id === tab)) {
+      return tab as TabId;
+    }
+  }
+  return initialTab;
+});
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {

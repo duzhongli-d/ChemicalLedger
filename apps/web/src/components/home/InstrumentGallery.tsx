@@ -77,7 +77,7 @@ export function InstrumentGallery() {
           <h2 className="text-xl sm:text-2xl font-bold text-foreground font-mono tracking-wide">
             {t("instruments.title")}
           </h2>
-          <Link href="/ledgers" className="inline-flex items-center gap-2 text-orange-500 hover:text-orange-600 text-sm font-medium transition-colors group">
+          <Link href="/about?tab=technical" className="inline-flex items-center gap-2 text-orange-500 hover:text-orange-600 text-sm font-medium transition-colors group">
             {t("instruments.viewAll")}
             <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

@@ -9,7 +9,7 @@ interface AboutTabNavProps {
   setActiveTab: (tab: TabId) => void;
 }
 
-const tabs: { id: TabId; labelKey: string }[] = [
+export const tabs: { id: TabId; labelKey: string }[] = [
   { id: "platform-story", labelKey: "about.tabs.platformStory" },
   { id: "technical", labelKey: "about.tabs.technicalCapabilities" },
   { id: "compliance", labelKey: "about.tabs.compliance" },
