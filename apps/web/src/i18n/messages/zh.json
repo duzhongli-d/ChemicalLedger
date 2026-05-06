@@ -221,22 +221,36 @@
     },
     "metrics": {
       "title": "技术实力",
-      "subtitle": "精准数据，可信结果",
+      "subtitle": "精准数据，可信结果，上一年度统计",
       "samples": "年检测样本量",
       "samplesLabel": "检测样本",
       "methods": "方法开发数量",
       "methodsLabel": "检测方法",
       "auditRate": "合规审计通过率",
-      "auditRateLabel": "审计通过率"
+      "auditRateLabel": "审计通过率",
+      "card1": {
+        "label": "样品检测"
+      },
+      "card2": {
+        "label": "方法开发&验证"
+      },
+      "card3": {
+        "label": "稳定性试验"
+      },
+      "noData": "暂无数据",
+      "projectsBatches": "{projectCount}个项目 / {batchCount}批次",
+      "projectsOnly": "{projectCount}个项目"
     },
     "team": {
       "title": "团队风貌",
       "professional": "专业团队",
       "professionalDesc": "资深QC工程师领衔，硕博比例超过60%",
       "professionalBadge": "硕博比例 >60%",
+      "professionalImageAlt": "专业团队照片",
       "innovation": "创新精神",
       "innovationDesc": "持续优化检测方法，驱动行业技术进步",
-      "innovationBadge": "持续创新驱动"
+      "innovationBadge": "持续创新驱动",
+      "innovationImageAlt": "科研创新照片"
     },
     "entry": {
       "aiAssistant": "AI台账管家",

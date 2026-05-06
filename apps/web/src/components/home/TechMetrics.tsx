@@ -1,12 +1,29 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
+import { usePathname } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 
-const metrics = [
-  { key: "samples", value: 50000, suffix: "+" },
-  { key: "methods", value: 200, suffix: "+" },
-  { key: "auditRate", value: 99.8, suffix: "%" },
-];
+interface AnnualSummaryResponse {
+  year: number;
+  data: AnnualSummaryItem[];
+  message?: string;
+}
+
+interface AnnualSummaryItem {
+  section: string;
+  project_count: number;
+  batch_count: number | null;
+}
+
+type MetricCard = {
+  key: string;
+  primaryValue: number;
+  primaryUnit: string;
+  secondaryValue?: number;
+  secondaryUnit?: string;
+  label: string;
+  hasError: boolean;
+};
 
 // Progress ring values (0-100) for each metric
 const progressValues = [85, 72, 95];
@@ -89,7 +106,9 @@ function ProgressRing({ progress, isVisible, delay = 0 }: { progress: number; is
   );
 }
 
-function MetricCard({ metric, index, isVisible }: { metric: typeof metrics[0]; index: number; isVisible: boolean }) {
+function MetricCard({ metric, index, isVisible }: { metric: MetricCard; index: number; isVisible: boolean }) {
+  const t = useTranslations("home.metrics");
+
   return (
     <div
       className={`
@@ -107,10 +126,32 @@ function MetricCard({ metric, index, isVisible }: { metric: typeof metrics[0]; i
       {/* Card content */}
       <div className="relative z-10 bg-white rounded-2xl p-6 sm:p-8 text-center border border-slate-200 hover:border-orange-400/50 transition-colors shadow-sm">
         <div className="relative">
-          <div className="text-4xl sm:text-5xl font-bold font-mono mb-2 text-orange-500">
-            <AnimatedNumber value={metric.value} suffix={metric.suffix} isVisible={isVisible} />
+          <div className="mt-1">
+            {metric.hasError ? (
+              <span className="text-3xl">{t("noData")}</span>
+            ) : (
+              <div className="flex flex-wrap items-baseline justify-center gap-x-1">
+                <span className="text-5xl sm:text-6xl font-bold font-mono text-orange-500">
+                  {metric.primaryValue.toLocaleString()}
+                </span>
+                <span className="text-base sm:text-lg font-medium text-slate-400">
+                  {metric.primaryUnit}
+                </span>
+                {metric.secondaryValue !== undefined && (
+                  <>
+                    <span className="text-slate-300 mx-1">/</span>
+                    <span className="text-3xl sm:text-4xl font-bold font-mono text-orange-500">
+                      {metric.secondaryValue.toLocaleString()}
+                    </span>
+                    <span className="text-base sm:text-lg font-medium text-slate-400">
+                      {metric.secondaryUnit}
+                    </span>
+                  </>
+                )}
+              </div>
+            )}
           </div>
-          <div className="text-slate-500 font-mono text-sm">{metric.key}</div>
+          <div className="text-slate-500 font-mono text-sm">{metric.label}</div>
         </div>
       </div>
     </div>
@@ -119,8 +160,17 @@ function MetricCard({ metric, index, isVisible }: { metric: typeof metrics[0]; i
 
 export function TechMetrics() {
   const t = useTranslations("home");
+  const tMetrics = useTranslations("home.metrics");
+  const pathname = usePathname();
+  const locale = pathname.split("/")[1] || "zh";
+  const isZh = locale === "zh";
+  const projectUnit = isZh ? "个项目" : " Projects";
+  const batchUnit = isZh ? "批次" : " Batches";
   const [isVisible, setIsVisible] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [metrics, setMetrics] = useState<MetricCard[]>([]);
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -147,6 +197,87 @@ export function TechMetrics() {
     return () => observer.disconnect();
   }, [mounted]);
 
+  useEffect(() => {
+    if (!mounted) return;
+
+    const fetchData = async () => {
+      setLoading(true);
+      setError(false);
+
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+        const response = await fetch(`${apiUrl}/public/annual-summaries/previous-year`);
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch");
+        }
+
+        const result: AnnualSummaryResponse = await response.json();
+        const data = result.data;
+
+        // Aggregate data by section (sum project_count and batch_count per section)
+        const aggregated = data.reduce(
+          (acc, item) => {
+            if (!acc[item.section]) {
+              acc[item.section] = { project_count: 0, batch_count: 0 };
+            }
+            acc[item.section].project_count += item.project_count;
+            if (item.batch_count) {
+              acc[item.section].batch_count += item.batch_count;
+            }
+            return acc;
+          },
+          {} as Record<string, { project_count: number; batch_count: number }>
+        );
+
+        const card1 = aggregated["sample_testing"];
+        const card2 = aggregated["method_dev"];
+        const card3 = aggregated["stability_test"];
+
+        const mappedMetrics: MetricCard[] = [
+          {
+            key: "sample_testing",
+            primaryValue: card1.project_count,
+            primaryUnit: projectUnit,
+            secondaryValue: card1.batch_count ?? 0,
+            secondaryUnit: batchUnit,
+            label: tMetrics("card1.label"),
+            hasError: !card1,
+          },
+          {
+            key: "method_dev",
+            primaryValue: card2.project_count,
+            primaryUnit: projectUnit,
+            label: tMetrics("card2.label"),
+            hasError: !card2,
+          },
+          {
+            key: "stability_test",
+            primaryValue: card3.project_count,
+            primaryUnit: projectUnit,
+            label: tMetrics("card3.label"),
+            hasError: !card3,
+          },
+        ];
+
+        setMetrics(mappedMetrics);
+      } catch (err) {
+        console.error("Failed to fetch annual summaries:", err);
+        setError(true);
+        // Set error state for all cards
+        setMetrics([
+          { key: "sample_testing", primaryValue: 0, primaryUnit: projectUnit, secondaryValue: 0, secondaryUnit: batchUnit, label: tMetrics("card1.label"), hasError: true },
+          { key: "method_dev", primaryValue: 0, primaryUnit: projectUnit, label: tMetrics("card2.label"), hasError: true },
+          { key: "stability_test", primaryValue: 0, primaryUnit: projectUnit, label: tMetrics("card3.label"), hasError: true },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [mounted, tMetrics, pathname]);
+
   return (
     <section ref={sectionRef} className="py-20 sm:py-24 bg-background relative overflow-hidden">
       {/* Background decoration */}
@@ -162,11 +293,38 @@ export function TechMetrics() {
           {t("metrics.subtitle")}
         </p>
 
-        <div className="grid sm:grid-cols-3 gap-6 sm:gap-8">
-          {metrics.map((m, i) => (
-            <MetricCard key={m.key} metric={m} index={i} isVisible={isVisible} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="grid sm:grid-cols-3 gap-6 sm:gap-8">
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className={`
+                  relative overflow-hidden
+                  transform transition-all duration-700
+                  ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'}
+                `}
+                style={{ transitionDelay: `${i * 150}ms` }}
+              >
+                {/* Animated placeholder rings */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-30">
+                  <div className="w-[100px] h-[100px] rounded-full border-4 border-orange-200 border-t-orange-500 animate-spin" />
+                </div>
+
+                {/* Card content placeholder */}
+                <div className="relative z-10 bg-white rounded-2xl p-6 sm:p-8 text-center border border-slate-200 shadow-sm">
+                  <div className="h-[48px] w-full bg-slate-100 rounded-lg animate-pulse mb-2" />
+                  <div className="h-[16px] w-24 bg-slate-100 rounded animate-pulse mx-auto" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid sm:grid-cols-3 gap-6 sm:gap-8">
+            {metrics.map((m, i) => (
+              <MetricCard key={m.key} metric={m} index={i} isVisible={isVisible} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
