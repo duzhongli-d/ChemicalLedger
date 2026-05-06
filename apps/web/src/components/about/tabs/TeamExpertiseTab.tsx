@@ -104,7 +104,7 @@ interface DepartmentCardProps {
 function DepartmentCard({ title, description, icon, index }: DepartmentCardProps) {
   return (
     <div
-      className="bg-white border border-slate-200 rounded-xl p-5 hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 group"
+      className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 group"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       <div className="flex items-start gap-4">
@@ -224,11 +224,8 @@ export default function TeamExpertiseTab() {
   ];
 
   return (
-    <div ref={sectionRef} className="max-w-[1320px] mx-auto px-4 py-12">
-      {/* Decorative elements */}
-      <div className="absolute top-20 left-8 w-32 h-32 text-orange-500/20 animate-pulse pointer-events-none">
-        <DNAHelixAnimation className="w-full h-full" />
-      </div>
+    <div ref={sectionRef} className="max-w-[1320px] mx-auto px-4 py-12 relative overflow-hidden">
+      {/* Decorative elements - matching PlatformStoryTab positions */}
       <div className="absolute top-40 right-12 w-28 h-28 text-orange-500/15 pointer-events-none">
         <MolecularStructure className="w-full h-full" />
       </div>
@@ -239,26 +236,34 @@ export default function TeamExpertiseTab() {
         <DNAHelixAnimation className="w-full h-full" />
       </div>
 
-      {/* Content container */}
-      <div className="relative max-w-6xl mx-auto">
-        {/* Header Section */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 border border-orange-200 mb-6">
-            <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-            <span className="text-sm font-medium text-orange-600">
-              {t("about.team.professionalBadge")}
-            </span>
-          </div>
+      {/* Content container - flat relative wrapper matching PlatformStoryTab */}
+      <div className="relative">
+        {/* Header Badge */}
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 border border-orange-200 mb-6">
+          <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+          <span className="text-sm font-medium text-orange-600">
+            {t("about.team.professionalBadge")}
+          </span>
+        </div>
+
+        {/* Section Title with Divider Lines */}
+        <div className="mb-10">
           <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
             {t("about.team.title")}
           </h2>
-          <p className="text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
-            {t("about.team.intro")}
-          </p>
+          <div className="flex items-center justify-center gap-4">
+            <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300" />
+            <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300" />
+          </div>
         </div>
 
+        {/* Intro Text */}
+        <p className="text-lg text-slate-600 leading-relaxed mb-12">
+          {t("about.team.intro")}
+        </p>
+
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <StatCard
             value={`${isVisible ? animatedPercent : 0}%+`}
             label="Masters/PhDs"
@@ -302,7 +307,7 @@ export default function TeamExpertiseTab() {
         </div>
 
         {/* Additional Team Info */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300">
           <div className="flex flex-col md:flex-row items-center gap-8">
             <div className="flex-shrink-0 w-20 h-20 rounded-full bg-gradient-to-br from-orange-100 to-orange-50 border border-orange-200 flex items-center justify-center">
               <svg className="w-10 h-10 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>

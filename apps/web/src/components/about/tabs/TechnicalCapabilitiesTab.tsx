@@ -198,20 +198,6 @@ export function TechnicalCapabilitiesTab() {
 
   return (
     <div ref={sectionRef} className="max-w-[1320px] mx-auto px-4 py-12 relative overflow-hidden">
-      {/* Decorative elements */}
-      <div className="absolute top-20 left-8 w-32 h-32 text-orange-500/20 animate-pulse pointer-events-none">
-        <DNAHelixAnimation className="w-full h-full" />
-      </div>
-      <div className="absolute top-40 right-12 w-28 h-28 text-orange-500/15 pointer-events-none">
-        <MolecularStructure className="w-full h-full" />
-      </div>
-      <div className="absolute bottom-32 left-16 w-24 h-24 text-orange-500/20 pointer-events-none">
-        <MolecularStructure className="w-full h-full" />
-      </div>
-      <div className="absolute bottom-20 right-20 w-36 h-36 text-orange-500/15 animate-pulse pointer-events-none">
-        <DNAHelixAnimation className="w-full h-full" />
-      </div>
-
       {/* Content container */}
       <div className="relative">
         {/* Header Badge */}
@@ -227,10 +213,6 @@ export function TechnicalCapabilitiesTab() {
           <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
             {t("technicalCapabilities.title")}
           </h2>
-          <div className="flex items-center justify-center gap-4">
-            <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300" />
-            <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300" />
-          </div>
         </div>
 
         {/* Instrument Grid Section */}

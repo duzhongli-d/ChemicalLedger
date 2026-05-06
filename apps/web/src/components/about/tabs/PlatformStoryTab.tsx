@@ -107,9 +107,6 @@ export default function PlatformStoryTab() {
   return (
     <div ref={sectionRef} className="max-w-[1320px] mx-auto px-4 py-12 relative overflow-hidden">
       {/* Decorative elements */}
-      <div className="absolute top-20 left-8 w-32 h-32 text-orange-500/20 animate-pulse pointer-events-none">
-        <DNAHelixAnimation className="w-full h-full" />
-      </div>
       <div className="absolute top-40 right-12 w-28 h-28 text-orange-500/15 pointer-events-none">
         <MolecularStructure className="w-full h-full" />
       </div>
