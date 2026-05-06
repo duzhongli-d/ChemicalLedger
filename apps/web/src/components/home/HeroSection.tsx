@@ -10,6 +10,47 @@ export function HeroSection() {
   const t = useTranslations("home");
   const sectionRef = useRef<HTMLElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [metricsData, setMetricsData] = useState<Array<{ label: string; batch_count: number | null }>>([]);
+  const [metricsLoading, setMetricsLoading] = useState(true);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const fetchMetrics = async () => {
+      try {
+        const currentYear = new Date().getFullYear();
+        const previousYear = currentYear - 1;
+        const categories = ['中控检测', '商务全检', '对照品标定', '研发全检'];
+        const labels = [
+          t("heroMetrics.zhongkong"),
+          t("heroMetrics.businessFull"),
+          t("heroMetrics.referenceStandard"),
+          t("heroMetrics.rdFull"),
+        ];
+
+        const res = await fetch(
+          `/api/v1/public/annual-summaries/by-category?categories=${encodeURIComponent(categories.join(','))}&year=${previousYear}`,
+          { signal: controller.signal }
+        );
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+
+        const data = (json.data || []).map((item: { category: string; batch_count: number | null }, i: number) => ({
+          label: labels[i] || item.category,
+          batch_count: item.batch_count,
+        }));
+
+        setMetricsData(data);
+      } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") return;
+        console.error("Failed to fetch hero metrics:", err);
+        setMetricsData([]);
+      } finally {
+        setMetricsLoading(false);
+      }
+    };
+    fetchMetrics();
+    return () => controller.abort();
+  }, [t]);
 
   // Auto-play carousel
   useEffect(() => {
@@ -117,23 +158,38 @@ export function HeroSection() {
             </div>
 
             {/* Bottom metrics bar */}
-            <div
-              className="flex flex-wrap gap-8 pt-8 border-t border-white/20 mt-8 animate-hero-cta-reveal"
-              style={{ animationDelay: '0.5s' }}
-            >
-              <div className="space-y-1">
-                <p className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-orange-500">12,580+</p>
-                <p className="text-sm text-white/60">{t("metrics.samples")}</p>
+            {!metricsLoading && metricsData.length > 0 && (
+              <div
+                className="flex flex-wrap gap-8 pt-8 border-t border-white/20 mt-8 animate-hero-cta-reveal"
+                style={{ animationDelay: '0.5s' }}
+              >
+                {metricsData.map((metric, index) => (
+                  <div key={index} className="space-y-1">
+                    <p className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-orange-500">
+                      {metric.batch_count !== null && metric.batch_count !== undefined
+                        ? metric.batch_count.toLocaleString()
+                        : '—'}
+                    </p>
+                    <p className="text-sm text-white/60">{metric.label}</p>
+                  </div>
+                ))}
               </div>
-              <div className="space-y-1">
-                <p className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-orange-500">156</p>
-                <p className="text-sm text-white/60">{t("metrics.methods")}</p>
+            )}
+            {!metricsLoading && metricsData.length === 0 && (
+              <div className="flex flex-wrap gap-8 pt-8 border-t border-white/20 mt-8 animate-hero-cta-reveal" style={{ animationDelay: '0.5s' }}>
+                <p className="text-sm text-white/60">暂无数据</p>
               </div>
-              <div className="space-y-1">
-                <p className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-orange-500">99.8%</p>
-                <p className="text-sm text-white/60">{t("metrics.auditRate")}</p>
+            )}
+            {metricsLoading && (
+              <div className="flex flex-wrap gap-8 pt-8 border-t border-white/20 mt-8 animate-hero-cta-reveal" style={{ animationDelay: '0.5s' }}>
+                {[1,2,3,4].map(i => (
+                  <div key={i} className="space-y-1 animate-pulse">
+                    <div className="h-8 w-20 bg-white/10 rounded" />
+                    <div className="h-4 w-16 bg-white/10 rounded" />
+                  </div>
+                ))}
               </div>
-            </div>
+            )}
           </div>
 
           {/* Right - Chromatogram animation (2/5 width) */}
