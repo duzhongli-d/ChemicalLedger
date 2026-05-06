@@ -1,4 +1,5 @@
 "use client";
+import type { ComponentType } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
@@ -15,6 +16,37 @@ function BrainIcon() {
     <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
       <path strokeLinecap="round" strokeLinejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25V4.5m5.834.166l-1.591 1.591M20.25 10.5H18M7.757 14.743l-1.59 1.59M6 10.5H3.75m4.007-4.243l-1.59-1.59" />
     </svg>
+  );
+}
+
+function PlatformEntryCard({
+  href,
+  icon: Icon,
+  title,
+  description,
+}: {
+  href: string;
+  icon: ComponentType;
+  title: string;
+  description: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="group relative p-4 rounded-xl bg-gradient-to-br from-orange-500/10 to-orange-600/10 border border-orange-500/25 hover:border-orange-400 transition-colors"
+    >
+      <div className="flex items-center gap-3">
+        <span className="text-orange-500">
+          <Icon />
+        </span>
+        <div>
+          <p className="font-medium text-foreground group-hover:text-orange-400 transition-colors">
+            {title}
+          </p>
+          <p className="text-xs text-muted-foreground mt-1">{description}</p>
+        </div>
+      </div>
+    </Link>
   );
 }
 
@@ -50,35 +82,18 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-semibold text-foreground mb-4">{t("footer.platformEntry")}</h3>
             <div className="grid grid-cols-2 gap-4">
-              <Link
+              <PlatformEntryCard
                 href="/ledgers"
-                className="group relative p-4 rounded-xl bg-gradient-to-br from-orange-500/10 to-orange-600/10 border border-orange-500/25 hover:border-orange-400 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-orange-500"><FlaskIcon /></span>
-                  <div>
-                    <p className="font-medium text-foreground group-hover:text-orange-400 transition-colors">
-                      {t("entry.aiAssistant")}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">{t("entry.aiAssistantDesc")}</p>
-                  </div>
-                </div>
-              </Link>
-
-              <Link
+                icon={FlaskIcon}
+                title={t("entry.aiAssistant")}
+                description={t("entry.aiAssistantDesc")}
+              />
+              <PlatformEntryCard
                 href="/research"
-                className="group relative p-4 rounded-xl bg-gradient-to-br from-orange-500/10 to-primary-500/10 border border-orange-500/25 hover:border-orange-400 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-orange-500"><BrainIcon /></span>
-                  <div>
-                    <p className="font-medium text-foreground group-hover:text-orange-400 transition-colors">
-                      {t("entry.deepResearch")}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">{t("entry.deepResearchDesc")}</p>
-                  </div>
-                </div>
-              </Link>
+                icon={BrainIcon}
+                title={t("entry.deepResearch")}
+                description={t("entry.deepResearchDesc")}
+              />
             </div>
           </div>
         </div>
