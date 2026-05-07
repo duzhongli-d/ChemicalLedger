@@ -38,7 +38,7 @@ interface AuditLog {
   user?: { username: string };
 }
 
-type ExpiryFilter = 30 | 60 | 90;
+type ExpiryFilter = 10 | 20 | 30;
 
 // ─── Animation Helpers ───────────────────────────────────────────────────────
 
@@ -265,7 +265,7 @@ function SectionCard({ icon, title, titleEn, children, headerAction, animationDe
 function DashboardContent() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [expiringLedgers, setExpiringLedgers] = useState<ExpiringLedger[]>([]);
-  const [expiryFilter, setExpiryFilter] = useState<ExpiryFilter>(30);
+  const [expiryFilter, setExpiryFilter] = useState<ExpiryFilter>(10);
   const [recentActivity, setRecentActivity] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -453,7 +453,7 @@ function DashboardContent() {
               }
               headerAction={
                 <div className="flex gap-2">
-                  {([30, 60, 90] as ExpiryFilter[]).map((days) => (
+                  {([10, 20, 30] as ExpiryFilter[]).map((days) => (
                     <button
                       key={days}
                       onClick={() => setExpiryFilter(days)}
