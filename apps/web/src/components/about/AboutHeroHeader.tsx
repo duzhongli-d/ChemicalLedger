@@ -25,9 +25,9 @@ export default function AboutHeroHeader() {
       {/* Content container */}
       <div className="relative max-w-[1320px] mx-auto px-4 py-20 text-center">
         {/* Orange accent badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-500/10 border border-orange-300 dark:border-orange-500/30 mb-6">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/30 mb-6">
           <span className="w-2 h-2 rounded-full bg-orange-500 dark:bg-orange-500 animate-pulse" />
-          <span className="text-sm font-medium text-orange-600 dark:text-orange-400">{t("about.hero.badge")}</span>
+          <span className="text-sm font-medium text-orange-400">{t("about.hero.badge")}</span>
         </div>
 
         {/* Main title */}
