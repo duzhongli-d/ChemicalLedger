@@ -133,21 +133,21 @@ export default function ComplianceTab() {
   const getStatusBadge = (status: Certification["status"]) => {
     const badges = {
       active: {
-        bg: "bg-emerald-50",
-        text: "text-emerald-700",
-        border: "border-emerald-200",
+        bg: "bg-emerald-50 dark:bg-emerald-950/30",
+        text: "text-emerald-700 dark:text-emerald-400",
+        border: "border-emerald-200 dark:border-emerald-800",
         label: t("about.compliance.statusActive"),
       },
       expired: {
-        bg: "bg-red-50",
-        text: "text-red-700",
-        border: "border-red-200",
+        bg: "bg-red-50 dark:bg-red-950/30",
+        text: "text-red-700 dark:text-red-400",
+        border: "border-red-200 dark:border-red-800",
         label: t("about.compliance.statusExpired"),
       },
       pending: {
-        bg: "bg-amber-50",
-        text: "text-amber-700",
-        border: "border-amber-200",
+        bg: "bg-amber-50 dark:bg-amber-950/30",
+        text: "text-amber-700 dark:text-amber-400",
+        border: "border-amber-200 dark:border-amber-800",
         label: t("about.compliance.statusPending"),
       },
     };
@@ -172,21 +172,21 @@ export default function ComplianceTab() {
   return (
     <div ref={sectionRef} className="max-w-[1320px] mx-auto px-4 py-12">
       {/* Header Badge */}
-      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 border border-orange-200 mb-6">
+      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 border border-orange-200 dark:bg-orange-950/30 dark:border-orange-800 mb-6">
         <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-        <span className="text-sm font-medium text-orange-600">
+        <span className="text-sm font-medium text-orange-600 dark:text-orange-400">
           {t("about.compliance.professionalBadge")}
         </span>
       </div>
 
       {/* Section Title */}
       <div className="mb-10">
-        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-[var(--foreground)] mb-4">
           {t("about.compliance.title")}
         </h2>
         <div className="flex items-center justify-center gap-4">
-          <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300" />
-          <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300" />
+          <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300 dark:to-orange-700" />
+          <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300 dark:to-orange-700" />
         </div>
       </div>
 
@@ -197,76 +197,76 @@ export default function ComplianceTab() {
         }`}
       >
         {/* ISO 17025 Card */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300">
+        <div className="bg-white dark:bg-[var(--card)] rounded-2xl border border-slate-200 dark:border-[var(--border)] p-6 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300">
           <div className="flex items-start justify-between mb-4">
-            <div className="w-14 h-14 rounded-xl bg-teal-50 flex items-center justify-center">
+            <div className="w-14 h-14 rounded-xl bg-teal-50 dark:bg-teal-950/30 flex items-center justify-center">
               <AwardIcon className="w-8 h-8 text-teal-600" />
             </div>
             {getStatusBadge("active")}
           </div>
-          <h3 className="text-lg font-semibold text-slate-900 mb-1">ISO 17025:2017</h3>
-          <p className="text-sm text-slate-500 mb-3">{t("about.compliance.cardTestingLab")}</p>
-          <div className="text-xs text-slate-400 font-mono">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-[var(--foreground)] mb-1">ISO 17025:2017</h3>
+          <p className="text-sm text-slate-500 dark:text-[var(--muted-foreground)] mb-3">{t("about.compliance.cardTestingLab")}</p>
+          <div className="text-xs text-slate-400 dark:text-[var(--muted-foreground)] font-mono">
             {t("about.compliance.cardAccredited")}
           </div>
         </div>
 
         {/* GMP Card */}
         <div
-          className={`bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:border-orange-400/50 transition-colors transition-delay-100 ${
+          className={`bg-white dark:bg-[var(--card)] rounded-2xl border border-slate-200 dark:border-[var(--border)] p-6 shadow-sm hover:border-orange-400/50 transition-colors transition-delay-100 ${
             isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
           }`}
           style={{ transitionDelay: "100ms" }}
         >
           <div className="flex items-start justify-between mb-4">
-            <div className="w-14 h-14 rounded-xl bg-orange-50 flex items-center justify-center">
+            <div className="w-14 h-14 rounded-xl bg-orange-50 dark:bg-orange-950/30 flex items-center justify-center">
               <ShieldIcon className="w-8 h-8 text-orange-500" />
             </div>
             {getStatusBadge("active")}
           </div>
-          <h3 className="text-lg font-semibold text-slate-900 mb-1">{t("about.compliance.gmpLabel")}</h3>
-          <p className="text-sm text-slate-500 mb-3">{t("about.compliance.cardGoodPractices")}</p>
-          <div className="text-xs text-slate-400 font-mono">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-[var(--foreground)] mb-1">{t("about.compliance.gmpLabel")}</h3>
+          <p className="text-sm text-slate-500 dark:text-[var(--muted-foreground)] mb-3">{t("about.compliance.cardGoodPractices")}</p>
+          <div className="text-xs text-slate-400 dark:text-[var(--muted-foreground)] font-mono">
             {t("about.compliance.cardVerified2021")}
           </div>
         </div>
 
         {/* ISO 9001 Card */}
         <div
-          className={`bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 transition-delay-200 ${
+          className={`bg-white dark:bg-[var(--card)] rounded-2xl border border-slate-200 dark:border-[var(--border)] p-6 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 transition-delay-200 ${
             isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
           }`}
           style={{ transitionDelay: "200ms" }}
         >
           <div className="flex items-start justify-between mb-4">
-            <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center">
+            <div className="w-14 h-14 rounded-xl bg-blue-50 dark:bg-blue-950/30 flex items-center justify-center">
               <AwardIcon className="w-8 h-8 text-blue-600" />
             </div>
             {getStatusBadge("active")}
           </div>
-          <h3 className="text-lg font-semibold text-slate-900 mb-1">ISO 9001:2015</h3>
-          <p className="text-sm text-slate-500 mb-3">{t("about.compliance.cardQualityMgmt")}</p>
-          <div className="text-xs text-slate-400 font-mono">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-[var(--foreground)] mb-1">ISO 9001:2015</h3>
+          <p className="text-sm text-slate-500 dark:text-[var(--muted-foreground)] mb-3">{t("about.compliance.cardQualityMgmt")}</p>
+          <div className="text-xs text-slate-400 dark:text-[var(--muted-foreground)] font-mono">
             {t("about.compliance.cardCertified2020")}
           </div>
         </div>
 
         {/* GLP Card */}
         <div
-          className={`bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 transition-delay-300 ${
+          className={`bg-white dark:bg-[var(--card)] rounded-2xl border border-slate-200 dark:border-[var(--border)] p-6 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 transition-delay-300 ${
             isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
           }`}
           style={{ transitionDelay: "300ms" }}
         >
           <div className="flex items-start justify-between mb-4">
-            <div className="w-14 h-14 rounded-xl bg-purple-50 flex items-center justify-center">
+            <div className="w-14 h-14 rounded-xl bg-purple-50 dark:bg-purple-950/30 flex items-center justify-center">
               <CheckCircleIcon className="w-8 h-8 text-purple-500" />
             </div>
             {getStatusBadge("active")}
           </div>
-          <h3 className="text-lg font-semibold text-slate-900 mb-1">{t("about.compliance.glpLabel")}</h3>
-          <p className="text-sm text-slate-500 mb-3">{t("about.compliance.cardLabPractice")}</p>
-          <div className="text-xs text-slate-400 font-mono">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-[var(--foreground)] mb-1">{t("about.compliance.glpLabel")}</h3>
+          <p className="text-sm text-slate-500 dark:text-[var(--muted-foreground)] mb-3">{t("about.compliance.cardLabPractice")}</p>
+          <div className="text-xs text-slate-400 dark:text-[var(--muted-foreground)] font-mono">
             {t("about.compliance.cardCertified2023")}
           </div>
         </div>
@@ -326,51 +326,51 @@ export default function ComplianceTab() {
 
       {/* Certification List Table */}
       <div
-        className={`bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all duration-700 delay-500 ${
+        className={`bg-white dark:bg-[var(--card)] rounded-2xl border border-slate-200 dark:border-[var(--border)] shadow-sm overflow-hidden transition-all duration-700 delay-500 ${
           isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
         }`}
       >
-        <div className="px-6 py-5 border-b border-slate-200 bg-slate-50">
-          <h3 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-            <FileTextIcon className="w-5 h-5 text-slate-500" />
+        <div className="px-6 py-5 border-b border-slate-200 dark:border-[var(--border)] bg-slate-50 dark:bg-[var(--muted)]">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-[var(--foreground)] flex items-center gap-2">
+            <FileTextIcon className="w-5 h-5 text-slate-500 dark:text-[var(--muted-foreground)]" />
             {t("about.compliance.certificationsList.title")}
           </h3>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-slate-50 border-b border-slate-200">
+            <thead className="bg-slate-50 dark:bg-[var(--muted)] border-b border-slate-200 dark:border-[var(--border)]">
               <tr>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[var(--muted-foreground)] uppercase tracking-wider">
                   {t("about.compliance.tableName")}
                 </th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[var(--muted-foreground)] uppercase tracking-wider">
                   {t("about.compliance.tableIssueDate")}
                 </th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[var(--muted-foreground)] uppercase tracking-wider">
                   {t("about.compliance.tableScope")}
                 </th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[var(--muted-foreground)] uppercase tracking-wider">
                   {t("about.compliance.tableStatus")}
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-[var(--border)]">
               {certifications.map((cert, index) => (
-                <tr key={index} className="hover:bg-slate-50 transition-colors">
+                <tr key={index} className="hover:bg-slate-50 dark:hover:bg-[var(--muted)] transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-[var(--muted)] flex items-center justify-center">
                         {getCertificationIcon(cert.name)}
                       </div>
-                      <span className="font-medium text-slate-900">{cert.name}</span>
+                      <span className="font-medium text-slate-900 dark:text-[var(--foreground)]">{cert.name}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-slate-600 font-mono text-sm">{cert.issueDate}</span>
+                    <span className="text-slate-600 dark:text-[var(--muted-foreground)] font-mono text-sm">{cert.issueDate}</span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-slate-600 text-sm">{cert.scope}</span>
+                    <span className="text-slate-600 dark:text-[var(--muted-foreground)] text-sm">{cert.scope}</span>
                   </td>
                   <td className="px-6 py-4">
                     {getStatusBadge(cert.status)}

@@ -115,7 +115,7 @@ interface InstrumentCardProps {
 
 function InstrumentCard({ inst }: InstrumentCardProps) {
   return (
-    <div className="flex-shrink-0 w-[260px] sm:w-[280px] h-[180px] relative rounded-2xl overflow-hidden group transition-all duration-300 bg-white border border-slate-200 hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02]">
+    <div className="flex-shrink-0 w-[260px] sm:w-[280px] h-[180px] relative rounded-2xl overflow-hidden group transition-all duration-300 bg-white dark:bg-[var(--card)] border border-slate-200 dark:border-[var(--border)] hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02]">
       {/* Dot grid pattern overlay */}
       <div className="absolute inset-0 opacity-[0.03]" style={{
         backgroundImage: 'linear-gradient(rgba(249, 115, 22, 1) 1px, transparent 1px), linear-gradient(90deg, rgba(249, 115, 22, 1) 1px, transparent 1px)',
@@ -124,11 +124,11 @@ function InstrumentCard({ inst }: InstrumentCardProps) {
       {/* Content */}
       <div className="relative z-10 p-5 h-full flex flex-col justify-between items-center text-center">
         <div>
-          <div className="text-2xl font-bold text-slate-800 mb-1 tracking-wide font-mono">{inst.name}</div>
+          <div className="text-2xl font-bold text-slate-800 dark:text-[var(--foreground)] mb-1 tracking-wide font-mono">{inst.name}</div>
           <div className="text-orange-500 font-mono text-xs">{inst.model}</div>
         </div>
         <div className="space-y-1">
-          <div className="text-slate-500 text-sm leading-relaxed">QC Analysis</div>
+          <div className="text-slate-500 dark:text-[var(--muted-foreground)] text-sm leading-relaxed">QC Analysis</div>
           <div className="text-teal-500/80 text-xs">Chemical Testing</div>
         </div>
       </div>
@@ -146,10 +146,10 @@ interface TechMetricProps {
 function TechMetric({ value, suffix, label, isVisible }: TechMetricProps) {
   return (
     <div className="flex flex-col items-center text-center">
-      <div className="text-4xl sm:text-5xl font-bold text-slate-800 font-mono tracking-tight">
+      <div className="text-4xl sm:text-5xl font-bold text-slate-800 dark:text-[var(--foreground)] font-mono tracking-tight">
         <AnimatedNumber value={value} suffix={suffix} isVisible={isVisible} />
       </div>
-      <div className="text-sm sm:text-base text-slate-500 mt-2 leading-relaxed">{label}</div>
+      <div className="text-sm sm:text-base text-slate-500 dark:text-[var(--muted-foreground)] mt-2 leading-relaxed">{label}</div>
     </div>
   );
 }
@@ -162,13 +162,13 @@ interface TechHighlightProps {
 
 function TechHighlight({ title, description, icon }: TechHighlightProps) {
   return (
-    <div className="flex items-start gap-4 p-4 rounded-xl bg-white/50 border border-slate-100 hover:border-orange-200 hover:bg-white/80 transition-all duration-300">
+    <div className="flex items-start gap-4 p-4 rounded-xl bg-white/50 dark:bg-[var(--card)]/50 border border-slate-100 dark:border-[var(--border)] hover:border-orange-200 hover:bg-white/80 dark:hover:bg-[var(--card)]/80 transition-all duration-300">
       <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500 to-teal-500 flex items-center justify-center text-white">
         {icon}
       </div>
       <div>
-        <h4 className="text-base font-semibold text-slate-800 mb-1">{title}</h4>
-        <p className="text-sm text-slate-500 leading-relaxed">{description}</p>
+        <h4 className="text-base font-semibold text-slate-800 dark:text-[var(--foreground)] mb-1">{title}</h4>
+        <p className="text-sm text-slate-500 dark:text-[var(--muted-foreground)] leading-relaxed">{description}</p>
       </div>
     </div>
   );
@@ -201,16 +201,16 @@ export function TechnicalCapabilitiesTab() {
       {/* Content container */}
       <div className="relative">
         {/* Header Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 border border-orange-200 mb-6">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 border border-orange-200 dark:bg-orange-950/30 dark:border-orange-800 mb-6">
           <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-          <span className="text-sm font-medium text-orange-600">
+          <span className="text-sm font-medium text-orange-600 dark:text-orange-400">
             {t("technicalCapabilities.professionalBadge")}
           </span>
         </div>
 
         {/* Section Title */}
         <div className="mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-[var(--foreground)] mb-4">
             {t("technicalCapabilities.title")}
           </h2>
         </div>
@@ -218,13 +218,13 @@ export function TechnicalCapabilitiesTab() {
         {/* Instrument Grid Section */}
         <section className="mb-12">
           <div className="flex items-center justify-center gap-4 mb-8">
-            <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300" />
-            <h3 className="text-xl sm:text-2xl font-bold text-slate-800 font-mono tracking-wide text-center">
+            <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300 dark:to-orange-700" />
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-[var(--foreground)] font-mono tracking-wide text-center">
               Equipment
             </h3>
-            <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300" />
+            <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300 dark:to-orange-700" />
           </div>
-          <p className="text-slate-500 leading-relaxed mb-8 text-center">
+          <p className="text-slate-500 dark:text-[var(--muted-foreground)] leading-relaxed mb-8 text-center">
             {t("technicalCapabilities.instrumentsIntro")}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -235,7 +235,7 @@ export function TechnicalCapabilitiesTab() {
         </section>
 
         {/* Tech Metrics Section */}
-        <section className="py-8 px-6 rounded-2xl bg-gradient-to-br from-slate-50 to-teal-50/30 border border-slate-100 mb-12">
+        <section className="py-8 px-6 rounded-2xl bg-gradient-to-br from-slate-50 dark:from-[var(--muted)] to-teal-50/30 dark:to-transparent border border-slate-100 dark:border-[var(--border)] mb-12">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             <TechMetric value={14} suffix="+" label="Analytical Instruments" isVisible={isVisible} />
             <TechMetric value={99.9} suffix="%" label="Instrument Uptime" isVisible={isVisible} />
@@ -247,13 +247,13 @@ export function TechnicalCapabilitiesTab() {
         {/* Platform Technology Highlights */}
         <section className="mb-12">
           <div className="flex items-center justify-center gap-4 mb-8">
-            <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300" />
-            <h3 className="text-xl sm:text-2xl font-bold text-slate-800 font-mono tracking-wide text-center">
+            <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300 dark:to-orange-700" />
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-[var(--foreground)] font-mono tracking-wide text-center">
               Platform Technology
             </h3>
-            <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300" />
+            <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300 dark:to-orange-700" />
           </div>
-        <p className="text-slate-500 leading-relaxed mb-6">
+        <p className="text-slate-500 dark:text-[var(--muted-foreground)] leading-relaxed mb-6">
           {t("technicalCapabilities.techIntro")}
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -317,36 +317,36 @@ export function TechnicalCapabilitiesTab() {
         {/* Analysis Categories */}
       <section>
         <div className="flex items-center justify-center gap-4 mb-8">
-          <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300" />
-          <h3 className="text-xl sm:text-2xl font-bold text-slate-800 font-mono tracking-wide text-center">
+          <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300 dark:to-orange-700" />
+          <h3 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-[var(--foreground)] font-mono tracking-wide text-center">
             {t("technicalCapabilities.categories.title")}
           </h3>
-          <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300" />
+          <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300 dark:to-orange-700" />
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <div className="text-center p-4 rounded-xl bg-white border border-slate-100 hover:border-orange-200 hover:shadow-md hover:shadow-orange-500/10 transition-all duration-300">
+          <div className="text-center p-4 rounded-xl bg-white dark:bg-[var(--card)] border border-slate-100 dark:border-[var(--border)] hover:border-orange-200 hover:shadow-md hover:shadow-orange-500/10 transition-all duration-300">
             <div className="text-2xl mb-2">🔬</div>
-            <div className="text-sm font-medium text-slate-700">{t("technicalCapabilities.categories.identification")}</div>
+            <div className="text-sm font-medium text-slate-700 dark:text-[var(--muted-foreground)]">{t("technicalCapabilities.categories.identification")}</div>
           </div>
-          <div className="text-center p-4 rounded-xl bg-white border border-slate-100 hover:border-orange-200 hover:shadow-md hover:shadow-orange-500/10 transition-all duration-300">
+          <div className="text-center p-4 rounded-xl bg-white dark:bg-[var(--card)] border border-slate-100 dark:border-[var(--border)] hover:border-orange-200 hover:shadow-md hover:shadow-orange-500/10 transition-all duration-300">
             <div className="text-2xl mb-2">⚗️</div>
-            <div className="text-sm font-medium text-slate-700">{t("technicalCapabilities.categories.purity")}</div>
+            <div className="text-sm font-medium text-slate-700 dark:text-[var(--muted-foreground)]">{t("technicalCapabilities.categories.purity")}</div>
           </div>
-          <div className="text-center p-4 rounded-xl bg-white border border-slate-100 hover:border-orange-200 hover:shadow-md hover:shadow-orange-500/10 transition-all duration-300">
+          <div className="text-center p-4 rounded-xl bg-white dark:bg-[var(--card)] border border-slate-100 dark:border-[var(--border)] hover:border-orange-200 hover:shadow-md hover:shadow-orange-500/10 transition-all duration-300">
             <div className="text-2xl mb-2">🎯</div>
-            <div className="text-sm font-medium text-slate-700">{t("technicalCapabilities.categories.impurity")}</div>
+            <div className="text-sm font-medium text-slate-700 dark:text-[var(--muted-foreground)]">{t("technicalCapabilities.categories.impurity")}</div>
           </div>
-          <div className="text-center p-4 rounded-xl bg-white border border-slate-100 hover:border-orange-200 hover:shadow-md hover:shadow-orange-500/10 transition-all duration-300">
+          <div className="text-center p-4 rounded-xl bg-white dark:bg-[var(--card)] border border-slate-100 dark:border-[var(--border)] hover:border-orange-200 hover:shadow-md hover:shadow-orange-500/10 transition-all duration-300">
             <div className="text-2xl mb-2">📊</div>
-            <div className="text-sm font-medium text-slate-700">{t("technicalCapabilities.categories.content")}</div>
+            <div className="text-sm font-medium text-slate-700 dark:text-[var(--muted-foreground)]">{t("technicalCapabilities.categories.content")}</div>
           </div>
-          <div className="text-center p-4 rounded-xl bg-white border border-slate-100 hover:border-orange-200 hover:shadow-md hover:shadow-orange-500/10 transition-all duration-300">
+          <div className="text-center p-4 rounded-xl bg-white dark:bg-[var(--card)] border border-slate-100 dark:border-[var(--border)] hover:border-orange-200 hover:shadow-md hover:shadow-orange-500/10 transition-all duration-300">
             <div className="text-2xl mb-2">⏱️</div>
-            <div className="text-sm font-medium text-slate-700">{t("technicalCapabilities.categories.dissolution")}</div>
+            <div className="text-sm font-medium text-slate-700 dark:text-[var(--muted-foreground)]">{t("technicalCapabilities.categories.dissolution")}</div>
           </div>
-          <div className="text-center p-4 rounded-xl bg-white border border-slate-100 hover:border-orange-200 hover:shadow-md hover:shadow-orange-500/10 transition-all duration-300">
+          <div className="text-center p-4 rounded-xl bg-white dark:bg-[var(--card)] border border-slate-100 dark:border-[var(--border)] hover:border-orange-200 hover:shadow-md hover:shadow-orange-500/10 transition-all duration-300">
             <div className="text-2xl mb-2">📈</div>
-            <div className="text-sm font-medium text-slate-700">{t("technicalCapabilities.categories.stability")}</div>
+            <div className="text-sm font-medium text-slate-700 dark:text-[var(--muted-foreground)]">{t("technicalCapabilities.categories.stability")}</div>
           </div>
         </div>
       </section>

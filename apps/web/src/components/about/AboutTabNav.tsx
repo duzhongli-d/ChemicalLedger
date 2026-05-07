@@ -20,10 +20,10 @@ export default function AboutTabNav({ activeTab, setActiveTab }: AboutTabNavProp
   const t = useTranslations();
 
   return (
-    <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-slate-200">
+    <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-slate-200 dark:bg-[var(--card)]/95 dark:border-[var(--border)]">
       {/* Mobile fade edges */}
-      <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent pointer-events-none z-10 md:hidden" />
-      <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none z-10 md:hidden" />
+      <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent dark:from-[var(--card)] dark:to-transparent pointer-events-none z-10 md:hidden" />
+      <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent dark:from-[var(--card)] dark:to-transparent pointer-events-none z-10 md:hidden" />
 
       {/* Scrollable tab container */}
       <div className="overflow-x-auto scrollbar-hide relative">

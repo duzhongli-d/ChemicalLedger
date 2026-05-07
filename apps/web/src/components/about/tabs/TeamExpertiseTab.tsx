@@ -104,18 +104,18 @@ interface DepartmentCardProps {
 function DepartmentCard({ title, description, icon, index }: DepartmentCardProps) {
   return (
     <div
-      className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 group"
+      className="bg-white dark:bg-[var(--card)] border border-slate-200 dark:border-[var(--border)] rounded-2xl p-5 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 group"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       <div className="flex items-start gap-4">
-        <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-gradient-to-br from-orange-100 to-orange-50 border border-orange-200 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+        <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-gradient-to-br from-orange-100 dark:from-orange-900/30 to-orange-50 dark:to-orange-950/20 border border-orange-200 dark:border-orange-800 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
           {icon}
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-semibold text-slate-900 mb-1 group-hover:text-orange-600 transition-colors">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-[var(--foreground)] mb-1 group-hover:text-orange-600 transition-colors">
             {title}
           </h3>
-          <p className="text-sm text-slate-600 leading-relaxed">
+          <p className="text-sm text-slate-600 dark:text-[var(--muted-foreground)] leading-relaxed">
             {description}
           </p>
         </div>
@@ -135,10 +135,10 @@ interface StatCardProps {
 function StatCard({ value, label, subtext, highlight }: StatCardProps) {
   return (
     <div
-      className={`relative bg-white backdrop-blur-sm border rounded-xl p-6 text-center ${
+      className={`relative bg-white dark:bg-[var(--card)] backdrop-blur-sm border rounded-xl p-6 text-center ${
         highlight
           ? "border-orange-500/50 shadow-lg shadow-orange-500/10"
-          : "border-slate-200"
+          : "border-slate-200 dark:border-[var(--border)]"
       }`}
     >
       {highlight && (
@@ -146,11 +146,11 @@ function StatCard({ value, label, subtext, highlight }: StatCardProps) {
           Key Metric
         </div>
       )}
-      <div className={`text-4xl font-bold mb-2 ${highlight ? "text-orange-500" : "text-slate-900"}`}>
+      <div className={`text-4xl font-bold mb-2 ${highlight ? "text-orange-500" : "text-slate-900 dark:text-[var(--foreground)]"}`}>
         {value}
       </div>
-      <div className="text-sm text-slate-600 font-medium">{label}</div>
-      {subtext && <div className="text-xs text-slate-400 mt-1">{subtext}</div>}
+      <div className="text-sm text-slate-600 dark:text-[var(--muted-foreground)] font-medium">{label}</div>
+      {subtext && <div className="text-xs text-slate-400 dark:text-[var(--muted-foreground)] mt-1">{subtext}</div>}
     </div>
   );
 }
@@ -239,26 +239,26 @@ export default function TeamExpertiseTab() {
       {/* Content container - flat relative wrapper matching PlatformStoryTab */}
       <div className="relative">
         {/* Header Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 border border-orange-200 mb-6">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 border border-orange-200 dark:bg-orange-950/30 dark:border-orange-800 mb-6">
           <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-          <span className="text-sm font-medium text-orange-600">
+          <span className="text-sm font-medium text-orange-600 dark:text-orange-400">
             {t("about.team.professionalBadge")}
           </span>
         </div>
 
         {/* Section Title with Divider Lines */}
         <div className="mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-[var(--foreground)] mb-4">
             {t("about.team.title")}
           </h2>
           <div className="flex items-center justify-center gap-4">
-            <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300" />
-            <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300" />
+            <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300 dark:to-orange-700" />
+            <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300 dark:to-orange-700" />
           </div>
         </div>
 
         {/* Intro Text */}
-        <p className="text-lg text-slate-600 leading-relaxed mb-12">
+        <p className="text-lg text-slate-600 dark:text-[var(--muted-foreground)] leading-relaxed mb-12">
           {t("about.team.intro")}
         </p>
 
@@ -285,11 +285,11 @@ export default function TeamExpertiseTab() {
         {/* Department Structure Section */}
         <div className="mb-12">
           <div className="flex items-center justify-center gap-4 mb-8">
-            <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300" />
-            <h3 className="text-2xl font-bold text-slate-900 text-center">
+            <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300 dark:to-orange-700" />
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-[var(--foreground)] text-center">
               {t("about.team.deptStructure.title")}
             </h3>
-            <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300" />
+            <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300 dark:to-orange-700" />
           </div>
 
           {/* Department Cards Grid */}
@@ -307,18 +307,18 @@ export default function TeamExpertiseTab() {
         </div>
 
         {/* Additional Team Info */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300">
+        <div className="bg-white dark:bg-[var(--card)] border border-slate-200 dark:border-[var(--border)] rounded-2xl p-8 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300">
           <div className="flex flex-col md:flex-row items-center gap-8">
-            <div className="flex-shrink-0 w-20 h-20 rounded-full bg-gradient-to-br from-orange-100 to-orange-50 border border-orange-200 flex items-center justify-center">
+            <div className="flex-shrink-0 w-20 h-20 rounded-full bg-gradient-to-br from-orange-100 dark:from-orange-900/30 to-orange-50 dark:to-orange-950/20 border border-orange-200 dark:border-orange-800 flex items-center justify-center">
               <svg className="w-10 h-10 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.227 3.375 3.375 0 014.438-4.982l1.653-1.653a9.337 9.337 0 002.625-.372 3.375 3.375 0 00-4.438-4.982l-1.653-1.653a9.337 9.337 0 00-2.625-.372 9.337 9.337 0 00-4.121.227 3.375 3.375 0 01-4.438 4.982L2.686 13.06a9.337 9.337 0 00.372 2.625 3.375 3.375 0 01-4.982 4.438l1.653 1.653a9.337 9.337 0 00.372 2.625 9.337 9.337 0 004.121-.227 3.375 3.375 0 014.438 4.982l1.653 1.653a9.337 9.337 0 002.625-.372 3.375 3.375 0 014.982-4.982l1.653-1.653a9.337 9.337 0 00.372-2.625 3.375 3.375 0 014.982-4.982l1.653-1.653a9.337 9.337 0 00-.372-2.625 3.375 3.375 0 014.982-4.982l1.653-1.653a9.337 9.337 0 00.372-2.625 3.375 3.375 0 01-4.982-4.438z" />
               </svg>
             </div>
             <div className="flex-1 text-center md:text-left">
-              <h4 className="text-xl font-semibold text-slate-900 mb-2">
+              <h4 className="text-xl font-semibold text-slate-900 dark:text-[var(--foreground)] mb-2">
                 Professional Certifications
               </h4>
-              <p className="text-slate-600 leading-relaxed">
+              <p className="text-slate-600 dark:text-[var(--muted-foreground)] leading-relaxed">
                 Our team members hold certifications including ISO 17025 Assessor,
                 GMP Practitioner, and ICH Guideline Training, ensuring the highest
                 standards in quality control operations and regulatory compliance.
