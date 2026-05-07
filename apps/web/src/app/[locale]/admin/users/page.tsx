@@ -605,6 +605,18 @@ function ImportModal({
   const fileRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string>("");
 
+  const downloadTemplate = () => {
+    const headers = ["username", "email", "phone", "department", "role"];
+    const sampleRow = ["示例用户名", "example@company.com", "13800138000", "技术部", "user"];
+    const csvContent = [headers.join(","), sampleRow.join(",")].join("\n");
+    const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `用户导入模板_${format(new Date(), "yyyyMMdd")}.csv`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  };
+
   return (
     <Modal
       open={open}
@@ -675,6 +687,27 @@ function ImportModal({
         </div>
 
         <div className="flex gap-3 pt-2">
+          <div className="flex gap-2">
+            <button
+              onClick={downloadTemplate}
+              className="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 font-mono-custom"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              下载模板
+            </button>
+            <button
+              onClick={() => fileRef.current?.click()}
+              disabled={isPending}
+              className="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 font-mono-custom"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+              批量导入
+            </button>
+          </div>
           <button
             onClick={() => {
               if (fileRef.current?.files?.[0]) onImport(fileRef.current.files[0]);
@@ -701,7 +734,7 @@ function ImportModal({
           </button>
           <button
             onClick={onClose}
-            className="flex-1 border border-slate-200 text-slate-600 py-2.5 rounded-lg font-medium hover:bg-slate-50 transition-all font-mono-custom"
+            className="border border-slate-200 text-slate-600 py-2.5 rounded-lg font-medium hover:bg-slate-50 transition-all font-mono-custom px-4"
           >
             取消
           </button>
@@ -716,6 +749,7 @@ export default function AdminUsersPage() {
   const { user: currentUser } = useAuthStore();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [roleFilter, setRoleFilter] = useState<"all" | "admin" | "user">("all");
   const [showCreate, setShowCreate] = useState(false);
   const [editTarget, setEditTarget] = useState<User | undefined>();
   const [deleteTarget, setDeleteTarget] = useState<User | undefined>();
@@ -728,11 +762,17 @@ export default function AdminUsersPage() {
   useEffect(() => { setMounted(true); }, []);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-users", page, search],
+    queryKey: ["admin-users", page, search, roleFilter],
     queryFn: () => {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+      const params = new URLSearchParams({
+        page: String(page),
+        page_size: String(pageSize),
+        search: search || "",
+      });
+      if (roleFilter !== "all") params.set("role", roleFilter);
       return fetch(
-        `${apiUrl}/admin/users/?page=${page}&page_size=${pageSize}&search=${encodeURIComponent(search)}`,
+        `${apiUrl}/admin/users/?${params.toString()}`,
         { credentials: "include" }
       ).then((r) => r.json());
     },
@@ -855,11 +895,6 @@ export default function AdminUsersPage() {
     onError: () => setActionMsg("导入失败"),
   });
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setPage(1);
-  };
-
   return (
     <AdminLayout>
       <style>{`
@@ -890,41 +925,35 @@ export default function AdminUsersPage() {
       <div className="min-h-screen bg-background font-body-custom">
         <div className="space-y-6">
           {/* Header */}
-          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden relative header-slide">
-            <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-600 via-blue-400 to-transparent"></div>
-            <div className="flex items-center gap-4 px-6 py-5">
-              <div className="w-11 h-11 rounded-xl bg-blue-500/10 flex items-center justify-center">
-                <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+          <div className="flex items-center justify-between mb-8 header-slide">
+            <div>
+              <h1 className="text-2xl font-semibold text-slate-900 font-mono-custom tracking-tight">
+                用户管理
+              </h1>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="w-8 h-0.5 bg-gradient-to-r from-blue-600 to-transparent rounded"></span>
+                <span className="text-xs text-slate-500 font-mono-custom">USER MANAGEMENT</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setShowImport(true)}
+                className="px-4 py-2 text-sm border border-slate-200 rounded-lg text-slate-700 hover:bg-slate-50 hover:border-slate-300 font-medium font-mono-custom transition-all flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
-              </div>
-              <div className="flex-1">
-                <h1 className="text-2xl font-semibold text-slate-900 font-mono-custom tracking-tight">用户管理</h1>
-                <div className="flex items-center gap-2 mt-0.5">
-                  <span className="w-6 h-0.5 bg-gradient-to-r from-blue-600 to-transparent rounded"></span>
-                  <span className="text-xs text-slate-500 font-mono-custom">USER MANAGEMENT</span>
-                </div>
-              </div>
-              <div className="ml-auto flex items-center gap-3">
-                <button
-                  onClick={() => setShowImport(true)}
-                  className="px-4 py-2 text-sm border border-slate-200 rounded-lg text-slate-700 hover:bg-slate-50 hover:border-slate-300 font-medium font-mono-custom transition-all flex items-center gap-2"
-                >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                  </svg>
-                  批量导入
-                </button>
-                <button
-                  onClick={() => setShowCreate(true)}
-                  className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium font-mono-custom transition-all flex items-center gap-2 shadow-sm shadow-blue-600/30"
-                >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                  </svg>
-                  新建用户
-                </button>
-              </div>
+                批量导入
+              </button>
+              <button
+                onClick={() => setShowCreate(true)}
+                className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium font-mono-custom transition-all flex items-center gap-2 shadow-sm shadow-blue-600/30"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                新建用户
+              </button>
             </div>
           </div>
 
@@ -939,38 +968,35 @@ export default function AdminUsersPage() {
           )}
 
           {/* Search bar */}
-          <form onSubmit={handleSearch} className="flex gap-3 card-enter" style={{ animationDelay: "0.1s" }}>
-            <div className="relative flex-1 max-w-md">
-              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+          <div className="flex flex-wrap items-center gap-4 bg-white rounded-xl border border-slate-200 shadow-sm p-4 card-enter">
+            <div className="flex-1 min-w-[200px]">
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="搜索用户名、邮箱或部门..."
-                className="w-full bg-white border border-slate-200 pl-10 pr-4 py-2.5 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-mono-custom"
+                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all font-mono-custom"
               />
             </div>
-            <button
-              type="submit"
-              className="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium font-mono-custom transition-all shadow-sm shadow-blue-600/20"
-            >
-              搜索
-            </button>
-            {search && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSearch("");
-                  setPage(1);
-                }}
-                className="px-4 py-2.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-sm font-medium transition-all font-mono-custom text-slate-600"
-              >
-                清除
-              </button>
-            )}
-          </form>
+
+            {/* Role Tabs */}
+            <div className="flex rounded-lg border border-slate-200 overflow-hidden">
+              {(["all", "admin", "user"] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => { setRoleFilter(tab); setPage(1); }}
+                  className={clsx(
+                    "px-4 py-2 text-sm font-medium transition-colors font-mono-custom",
+                    roleFilter === tab
+                      ? "bg-blue-600 text-white"
+                      : "bg-white text-slate-600 hover:bg-slate-50"
+                  )}
+                >
+                  {tab === "all" ? "全部" : tab === "admin" ? "管理员" : "用户"}
+                </button>
+              ))}
+            </div>
+          </div>
 
           {/* User cards grid */}
           <div className="card-enter" style={{ animationDelay: "0.15s" }}>
