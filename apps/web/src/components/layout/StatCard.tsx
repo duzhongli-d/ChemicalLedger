@@ -67,7 +67,7 @@ function ClinicalTrendBar({ trend, color }: { trend: number[]; color: string }) 
   const fillPercent = ((lastValue - minVal) / range) * 100;
 
   return (
-    <div className="mt-3 h-[3px] w-full rounded-full bg-slate-200 overflow-hidden">
+    <div className="mt-3 h-[3px] w-full rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
       <div
         className="h-full rounded-full transition-all duration-500"
         style={{
@@ -93,20 +93,27 @@ export function StatCard({
 
   // Clinical Minimal variant
   if (variant === "clinical") {
+    const shadow = isHovered
+      ? "0 4px 12px rgba(0,0,0,0.08)"
+      : "0 1px 3px rgba(0,0,0,0.04)";
     return (
       <div
         className={`
-          relative bg-white rounded-xl p-5 cursor-pointer
-          border border-slate-200/50 overflow-hidden
+          relative rounded-xl p-5 cursor-pointer overflow-hidden
           transition-all duration-200 ease-out
-          ${onClick ? "hover:-translate-y-px hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)]" : ""}
-          ${isHovered ? "-translate-y-px shadow-[0_4px_12px_rgba(0,0,0,0.08)]" : "shadow-[0_1px_3px_rgba(0,0,0,0.04)]"}
+          ${onClick ? "hover:-translate-y-px" : ""}
+          ${isHovered ? "-translate-y-px" : ""}
           ${className}
         `}
+        style={{
+          animationFillMode: "backwards",
+          backgroundColor: "var(--card, #FFFFFF)",
+          border: "1px solid var(--border, #E2E8F0)",
+          boxShadow: shadow,
+        }}
         onClick={onClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        style={{ animationFillMode: "backwards" }}
       >
         {/* 4px accent bar on the left */}
         <div
@@ -118,8 +125,11 @@ export function StatCard({
         <div className="pl-3">
           {/* Title - JetBrains Mono style */}
           <p
-            className="text-[10px] uppercase tracking-[0.08em] text-slate-500 mb-1"
-            style={{ fontFamily: "'JetBrains Mono', monospace" }}
+            className="text-[10px] uppercase tracking-[0.08em] mb-1"
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              color: "var(--muted-foreground, #64748b)",
+            }}
           >
             {title}
           </p>
@@ -127,8 +137,11 @@ export function StatCard({
           {/* Value - Space Grotesk style */}
           <div className="flex items-end justify-between">
             <p
-              className="text-[36px] font-bold text-slate-900 leading-none"
-              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+              className="text-[36px] font-bold leading-none"
+              style={{
+                fontFamily: "'Space Grotesk', sans-serif",
+                color: "var(--card-foreground, #0F172A)",
+              }}
             >
               {value}
             </p>
