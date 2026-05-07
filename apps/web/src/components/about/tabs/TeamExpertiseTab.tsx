@@ -266,19 +266,19 @@ export default function TeamExpertiseTab() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <StatCard
             value={`${isVisible ? animatedPercent : 0}%+`}
-            label="Masters/PhDs"
-            subtext="of team composition"
+            label={t("about.team.stats.mastersLabel")}
+            subtext={t("about.team.stats.mastersSubtext")}
             highlight={true}
           />
           <StatCard
             value="8+"
-            label="Years Avg Experience"
-            subtext="Industry expertise"
+            label={t("about.team.stats.experienceLabel")}
+            subtext={t("about.team.stats.experienceSubtext")}
           />
           <StatCard
             value="100%"
-            label="Compliance Rate"
-            subtext="Across all audits"
+            label={t("about.team.stats.complianceLabel")}
+            subtext={t("about.team.stats.complianceSubtext")}
           />
         </div>
 
@@ -316,12 +316,10 @@ export default function TeamExpertiseTab() {
             </div>
             <div className="flex-1 text-center md:text-left">
               <h4 className="text-xl font-semibold text-foreground mb-2">
-                Professional Certifications
+                {t("about.team.certifications.title")}
               </h4>
               <p className="text-muted-foreground leading-relaxed">
-                Our team members hold certifications including ISO 17025 Assessor,
-                GMP Practitioner, and ICH Guideline Training, ensuring the highest
-                standards in quality control operations and regulatory compliance.
+                {t("about.team.certifications.description")}
               </p>
             </div>
           </div>

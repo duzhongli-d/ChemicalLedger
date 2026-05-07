@@ -471,6 +471,18 @@
         "qualityDesc": "Method validation, documentation",
         "regulatory": "Regulatory Affairs",
         "regulatoryDesc": "Compliance, submissions"
+      },
+      "stats": {
+        "mastersLabel": "Masters/PhDs",
+        "mastersSubtext": "of team composition",
+        "experienceLabel": "Years Avg Experience",
+        "experienceSubtext": "Industry expertise",
+        "complianceLabel": "Compliance Rate",
+        "complianceSubtext": "Across all audits"
+      },
+      "certifications": {
+        "title": "Professional Certifications",
+        "description": "Our team members hold certifications including ISO 17025 Assessor, GMP Practitioner, and ICH Guideline Training, ensuring the highest standards in quality control operations and regulatory compliance."
       }
     }
   }

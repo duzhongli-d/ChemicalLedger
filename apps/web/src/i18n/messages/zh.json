@@ -471,6 +471,18 @@
         "qualityDesc": "方法验证、文档管理",
         "regulatory": "注册法规",
         "regulatoryDesc": "合规、申报注册"
+      },
+      "stats": {
+        "mastersLabel": "硕博比例",
+        "mastersSubtext": "团队组成",
+        "experienceLabel": "平均从业年限",
+        "experienceSubtext": "行业经验",
+        "complianceLabel": "合规审计通过率",
+        "complianceSubtext": "所有审计项目"
+      },
+      "certifications": {
+        "title": "专业资质认证",
+        "description": "团队成员持有ISO 17025评审员、GMP执业药师、ICH指南培训等专业资质，确保质量控制操作和合规审计达到最高标准。"
       }
     }
   }
