@@ -226,7 +226,13 @@
       "polarimeter": { "use": "旋光度测定", "application": "手性分析" },
       "gc": { "use": "挥发性分析", "application": "残留分析" },
       "tlc": { "use": "定性鉴别", "application": "快速检测" },
-      "ea": { "use": "C/H/N/S分析", "application": "组成分析" }
+      "ea": { "use": "C/H/N/S分析", "application": "组成分析" },
+      "ftir": { "use": "官能团分析", "application": "红外光谱" },
+      "icpms": { "use": "元素分析", "application": "金属杂质检测" },
+      "psa": { "use": "粒度分析", "application": "颗粒测定" },
+      "moisture": { "use": "水分测定", "application": "湿度分析" },
+      "hplccolumns": { "use": "色谱柱测试", "application": "柱效分析" },
+      "refractometer": { "use": "折光率测定", "application": "折射率分析" }
     },
     "metrics": {
       "title": "技术实力",
@@ -360,6 +366,44 @@
       "title": "先进技术能力",
       "instrumentsIntro": "我们的实验室配备了超过15台高精度分析仪器，涵盖HPLC、LC-MS/MS、GC-MS、NMR等。这些仪器使我们能够完成从定性鉴别到痕量杂质检测（ppb级）的全面化学分析。",
       "techIntro": "除了仪器设备，我们的技术能力还包括方法开发和验证、稳定性研究、强制降解分析和标准品表征。我们的资深化学家团队应用QbD原则，确保所有方法符合ICH和监管指南要求。",
+      "equipment": "仪器设备",
+      "instrumentCard": {
+        "qcAnalysis": "QC分析",
+        "chemicalTesting": "化学测试"
+      },
+      "metrics": {
+        "analyticalInstruments": "分析仪器",
+        "instrumentUptime": "仪器开机率",
+        "yearsCombinedExperience": "累计行业经验",
+        "methodsValidated": "验证方法数"
+      },
+      "platformTechnology": "平台技术",
+      "highlights": {
+        "ocr": {
+          "title": "OCR数据提取",
+          "desc": "采用先进光学字符识别技术自动采集仪器读数和证书数据"
+        },
+        "expiryAlert": {
+          "title": "效期预警系统",
+          "desc": "实时追踪试剂和参考标准有效期，主动推送提醒通知"
+        },
+        "advancedAnalytics": {
+          "title": "高级数据分析",
+          "desc": "综合数据分析、趋势分析、超标检测和法规报告"
+        },
+        "methodValidation": {
+          "title": "方法验证",
+          "desc": "内置ICH Q2(R1)合规的方法验证模板和文档工作流"
+        },
+        "auditTrail": {
+          "title": "审计追踪",
+          "desc": "完整电子审计追踪，记录时间戳操作，确保合规和可追溯性"
+        },
+        "cloudIntegration": {
+          "title": "云端集成",
+          "desc": "安全云端数据存储，实验室工作站实时同步"
+        }
+      },
       "categories": {
         "title": "检测类别",
         "identification": "定性鉴别",

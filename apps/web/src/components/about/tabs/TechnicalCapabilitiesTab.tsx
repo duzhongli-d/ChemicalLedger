@@ -111,9 +111,11 @@ function AnimatedNumber({ value, suffix, isVisible }: AnimatedNumberProps) {
 
 interface InstrumentCardProps {
   inst: Instrument;
+  qcLabel: string;
+  chemicalLabel: string;
 }
 
-function InstrumentCard({ inst }: InstrumentCardProps) {
+function InstrumentCard({ inst, qcLabel, chemicalLabel }: InstrumentCardProps) {
   return (
     <div className="flex-shrink-0 w-[260px] sm:w-[280px] h-[180px] relative rounded-2xl overflow-hidden group transition-all duration-300 bg-card border-border hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02]">
       {/* Dot grid pattern overlay */}
@@ -128,8 +130,8 @@ function InstrumentCard({ inst }: InstrumentCardProps) {
           <div className="text-orange-500 dark:text-orange-400 font-mono text-xs">{inst.model}</div>
         </div>
         <div className="space-y-1">
-          <div className="text-muted-foreground text-sm leading-relaxed">QC Analysis</div>
-          <div className="text-teal-500/80 text-xs">Chemical Testing</div>
+          <div className="text-muted-foreground text-sm leading-relaxed">{qcLabel}</div>
+          <div className="text-teal-500/80 text-xs">{chemicalLabel}</div>
         </div>
       </div>
     </div>
@@ -176,6 +178,7 @@ function TechHighlight({ title, description, icon }: TechHighlightProps) {
 
 export function TechnicalCapabilitiesTab() {
   const t = useTranslations("about");
+  const tInstrument = useTranslations("home");
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -220,7 +223,7 @@ export function TechnicalCapabilitiesTab() {
           <div className="flex items-center justify-center gap-4 mb-8">
             <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300 dark:to-orange-700" />
             <h3 className="text-xl sm:text-2xl font-bold text-foreground font-mono tracking-wide text-center">
-              Equipment
+              {t("technicalCapabilities.equipment")}
             </h3>
             <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300 dark:to-orange-700" />
           </div>
@@ -229,7 +232,12 @@ export function TechnicalCapabilitiesTab() {
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {instruments.map((inst, idx) => (
-              <InstrumentCard key={`${inst.name}-${idx}`} inst={inst} />
+              <InstrumentCard
+                key={`${inst.name}-${idx}`}
+                inst={inst}
+                qcLabel={tInstrument("instruments." + inst.useKey)}
+                chemicalLabel={tInstrument("instruments." + inst.appKey)}
+              />
             ))}
           </div>
         </section>
@@ -237,10 +245,10 @@ export function TechnicalCapabilitiesTab() {
         {/* Tech Metrics Section */}
         <section className="py-8 px-6 rounded-2xl bg-gradient-to-br from-muted to-teal-50/30 border-border mb-12">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            <TechMetric value={14} suffix="+" label="Analytical Instruments" isVisible={isVisible} />
-            <TechMetric value={99.9} suffix="%" label="Instrument Uptime" isVisible={isVisible} />
-            <TechMetric value={15} suffix="+" label="Years Combined Experience" isVisible={isVisible} />
-            <TechMetric value={1000} suffix="+" label="Methods Validated" isVisible={isVisible} />
+            <TechMetric value={14} suffix="+" label={t("technicalCapabilities.metrics.analyticalInstruments")} isVisible={isVisible} />
+            <TechMetric value={99.9} suffix="%" label={t("technicalCapabilities.metrics.instrumentUptime")} isVisible={isVisible} />
+            <TechMetric value={15} suffix="+" label={t("technicalCapabilities.metrics.yearsCombinedExperience")} isVisible={isVisible} />
+            <TechMetric value={1000} suffix="+" label={t("technicalCapabilities.metrics.methodsValidated")} isVisible={isVisible} />
           </div>
         </section>
 
@@ -249,7 +257,7 @@ export function TechnicalCapabilitiesTab() {
           <div className="flex items-center justify-center gap-4 mb-8">
             <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300 dark:to-orange-700" />
             <h3 className="text-xl sm:text-2xl font-bold text-foreground font-mono tracking-wide text-center">
-              Platform Technology
+              {t("technicalCapabilities.platformTechnology")}
             </h3>
             <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300 dark:to-orange-700" />
           </div>
@@ -258,8 +266,8 @@ export function TechnicalCapabilitiesTab() {
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <TechHighlight
-            title="OCR Data Extraction"
-            description="Automated capture of instrument readings and certificate data using advanced optical character recognition"
+            title={t("technicalCapabilities.highlights.ocr.title")}
+            description={t("technicalCapabilities.highlights.ocr.desc")}
             icon={
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -267,8 +275,8 @@ export function TechnicalCapabilitiesTab() {
             }
           />
           <TechHighlight
-            title="Expiry Alert System"
-            description="Real-time tracking of reagent and reference standard expiration dates with proactive notification"
+            title={t("technicalCapabilities.highlights.expiryAlert.title")}
+            description={t("technicalCapabilities.highlights.expiryAlert.desc")}
             icon={
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -276,8 +284,8 @@ export function TechnicalCapabilitiesTab() {
             }
           />
           <TechHighlight
-            title="Advanced Analytics"
-            description="Comprehensive data analytics with trend analysis, out-of-spec detection, and regulatory reporting"
+            title={t("technicalCapabilities.highlights.advancedAnalytics.title")}
+            description={t("technicalCapabilities.highlights.advancedAnalytics.desc")}
             icon={
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -285,8 +293,8 @@ export function TechnicalCapabilitiesTab() {
             }
           />
           <TechHighlight
-            title="Method Validation"
-            description="Built-in ICH Q2(R1) compliant method validation templates and documentation workflows"
+            title={t("technicalCapabilities.highlights.methodValidation.title")}
+            description={t("technicalCapabilities.highlights.methodValidation.desc")}
             icon={
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -294,8 +302,8 @@ export function TechnicalCapabilitiesTab() {
             }
           />
           <TechHighlight
-            title="Audit Trail"
-            description="Complete electronic audit trail with timestamped actions for regulatory compliance and traceability"
+            title={t("technicalCapabilities.highlights.auditTrail.title")}
+            description={t("technicalCapabilities.highlights.auditTrail.desc")}
             icon={
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
@@ -303,8 +311,8 @@ export function TechnicalCapabilitiesTab() {
             }
           />
           <TechHighlight
-            title="Cloud Integration"
-            description="Secure cloud-based data storage with real-time synchronization across laboratory workstations"
+            title={t("technicalCapabilities.highlights.cloudIntegration.title")}
+            description={t("technicalCapabilities.highlights.cloudIntegration.desc")}
             icon={
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />

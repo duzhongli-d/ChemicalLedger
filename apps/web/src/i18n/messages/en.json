@@ -226,7 +226,13 @@
       "polarimeter": { "use": "Optical Rotation", "application": "Chiral Analysis" },
       "gc": { "use": "Volatility Analysis", "application": "Residual Analysis" },
       "tlc": { "use": "Qualitative Identification", "application": "Rapid Detection" },
-      "ea": { "use": "C/H/N/S Analysis", "application": "Composition Analysis" }
+      "ea": { "use": "C/H/N/S Analysis", "application": "Composition Analysis" },
+      "ftir": { "use": "Functional Group Analysis", "application": "Infrared Spectroscopy" },
+      "icpms": { "use": "Elemental Analysis", "application": "Metal Impurity Detection" },
+      "psa": { "use": "Particle Size Analysis", "application": "Particle Measurement" },
+      "moisture": { "use": "Moisture Determination", "application": "Humidity Analysis" },
+      "hplccolumns": { "use": "Chromatography Column Testing", "application": "Column Efficiency Analysis" },
+      "refractometer": { "use": "Refractive Index Measurement", "application": "Refractometry Analysis" }
     },
     "metrics": {
       "title": "Technical Capabilities",
@@ -360,6 +366,44 @@
       "title": "Advanced Technical Capabilities",
       "instrumentsIntro": "Our laboratory is equipped with over 15 high-precision analytical instruments spanning HPLC, LC-MS/MS, GC-MS, NMR, and more. These instruments enable us to perform comprehensive chemical analysis from qualitative identification to trace impurity detection at ppb levels.",
       "techIntro": "Beyond instrumentation, our technical capabilities include method development and validation, stability studies, forced degradation analysis, and reference standard characterization. Our team of senior chemists applies QbD principles to ensure all methods meet ICH and regulatory guidelines.",
+      "equipment": "Equipment",
+      "instrumentCard": {
+        "qcAnalysis": "QC Analysis",
+        "chemicalTesting": "Chemical Testing"
+      },
+      "metrics": {
+        "analyticalInstruments": "Analytical Instruments",
+        "instrumentUptime": "Instrument Uptime",
+        "yearsCombinedExperience": "Years Combined Experience",
+        "methodsValidated": "Methods Validated"
+      },
+      "platformTechnology": "Platform Technology",
+      "highlights": {
+        "ocr": {
+          "title": "OCR Data Extraction",
+          "desc": "Automated capture of instrument readings and certificate data using advanced optical character recognition"
+        },
+        "expiryAlert": {
+          "title": "Expiry Alert System",
+          "desc": "Real-time tracking of reagent and reference standard expiration dates with proactive notification"
+        },
+        "advancedAnalytics": {
+          "title": "Advanced Analytics",
+          "desc": "Comprehensive data analytics with trend analysis, out-of-spec detection, and regulatory reporting"
+        },
+        "methodValidation": {
+          "title": "Method Validation",
+          "desc": "Built-in ICH Q2(R1) compliant method validation templates and documentation workflows"
+        },
+        "auditTrail": {
+          "title": "Audit Trail",
+          "desc": "Complete electronic audit trail with timestamped actions for regulatory compliance and traceability"
+        },
+        "cloudIntegration": {
+          "title": "Cloud Integration",
+          "desc": "Secure cloud-based data storage with real-time synchronization across laboratory workstations"
+        }
+      },
       "categories": {
         "title": "Analysis Categories",
         "identification": "Qualitative Identification",
