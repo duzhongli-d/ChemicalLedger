@@ -9,22 +9,30 @@ import { LoginModal } from "@/components/auth/LoginModal";
 
 export default function ResearchPage() {
   const t = useTranslations("research");
-  const { isAuthenticated } = useAuthStore();
+  const isAuth = useAuthStore((s) => !!s.user);
   const [selectedNotebook, setSelectedNotebook] = useState<string | null>(null);
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<{ q: string; a: string }[]>([]);
-  const [loginModalOpen, setLoginModalOpen] = useState(!isAuthenticated());
+  const [loginModalOpen, setLoginModalOpen] = useState(!isAuth);
+
+  const requireAuth = () => {
+    if (!isAuth) {
+      setLoginModalOpen(true);
+      return false;
+    }
+    return true;
+  };
 
   const { data: quota } = useQuery({
     queryKey: ["quota"],
     queryFn: () => researchApi.getQuota().then((r) => r.data),
-    enabled: isAuthenticated(),
+    enabled: isAuth,
   });
 
   const { data: notebooks = [] } = useQuery({
     queryKey: ["notebooks"],
     queryFn: () => researchApi.listNotebooks().then((r) => r.data),
-    enabled: isAuthenticated(),
+    enabled: isAuth,
   });
 
   const handleAsk = async () => {
@@ -52,7 +60,13 @@ export default function ResearchPage() {
             {notebooks.map((nb: { id: string; name: string }) => (
               <li key={nb.id}>
                 <button
-                  onClick={() => setSelectedNotebook(nb.id)}
+                  onClick={() => {
+                    if (!isAuth) {
+                      setLoginModalOpen(true);
+                      return;
+                    }
+                    setSelectedNotebook(nb.id);
+                  }}
                   className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
                     selectedNotebook === nb.id ? "bg-blue-50 text-blue-700" : "hover:bg-gray-50"
                   }`}
@@ -103,14 +117,29 @@ export default function ResearchPage() {
             <input
               type="text"
               value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleAsk()}
+              onChange={(e) => {
+                if (!isAuth) {
+                  setLoginModalOpen(true);
+                  return;
+                }
+                setQuestion(e.target.value);
+              }}
+              onKeyDown={(e) => {
+                if (!isAuth) {
+                  setLoginModalOpen(true);
+                  return;
+                }
+                if (e.key === "Enter") handleAsk();
+              }}
               placeholder={t("placeholder")}
               disabled={!selectedNotebook}
               className="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50"
             />
             <button
-              onClick={handleAsk}
+              onClick={() => {
+                if (!requireAuth()) return;
+                handleAsk();
+              }}
               disabled={!selectedNotebook || !question.trim()}
               className="bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-blue-800 disabled:opacity-50"
             >
