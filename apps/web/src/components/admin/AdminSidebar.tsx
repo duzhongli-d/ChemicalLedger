@@ -76,8 +76,8 @@ export default function AdminSidebar() {
   const { logout } = useAuthStore();
   const router = useRouter();
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     const locale = pathname.split("/")[1] || "zh";
     router.push(`/${locale}/admin/login`);
   };

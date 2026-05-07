@@ -13,7 +13,7 @@ export interface User {
 interface AuthState {
   user: User | null;
   setAuth: (user: User) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
   isAuthenticated: () => boolean;
   isAdmin: () => boolean;
 }
@@ -32,7 +32,18 @@ export const useAuthStore = create<AuthState>()(
         set({ user });
       },
 
-      logout: () => {
+      logout: async () => {
+        try {
+          await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"}/auth/logout`,
+            {
+              method: "POST",
+              credentials: "include",
+            }
+          );
+        } catch {
+          // Ignore network errors, proceed with local cleanup
+        }
         set({ user: null });
         clearAuthToken();
       },
