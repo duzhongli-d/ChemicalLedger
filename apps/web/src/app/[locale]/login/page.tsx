@@ -200,17 +200,6 @@ export default function LoginPage() {
           <div className="flex rounded-xl bg-slate-200 dark:bg-slate-800 p-1">
             <button
               type="button"
-              onClick={() => setLoginMode("username")}
-              className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
-                loginMode === "username"
-                  ? "bg-white dark:bg-slate-700 text-orange-600 dark:text-orange-400 shadow-sm"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-              }`}
-            >
-              {t("username")}
-            </button>
-            <button
-              type="button"
               onClick={() => setLoginMode("email")}
               className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
                 loginMode === "email"
@@ -219,6 +208,17 @@ export default function LoginPage() {
               }`}
             >
               {t("email")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setLoginMode("username")}
+              className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
+                loginMode === "username"
+                  ? "bg-white dark:bg-slate-700 text-orange-600 dark:text-orange-400 shadow-sm"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              }`}
+            >
+              {t("username")}
             </button>
           </div>
 
