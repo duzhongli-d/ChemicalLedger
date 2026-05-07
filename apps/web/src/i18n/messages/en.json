@@ -326,6 +326,7 @@
   },
   "about": {
     "hero": {
+      "badge": "Quality Control Excellence",
       "title": "About Abachem QC Platform",
       "subtitle": "A comprehensive solution for chemical quality control management, integrating laboratory operations, compliance tracking, and intelligent analytics",
       "mission": "Our mission is to deliver rigorous, reliable QC data management that meets the highest pharmaceutical standards while enabling digital transformation in laboratory operations"
