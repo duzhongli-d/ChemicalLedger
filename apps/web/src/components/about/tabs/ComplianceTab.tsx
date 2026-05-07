@@ -181,7 +181,7 @@ export default function ComplianceTab() {
 
       {/* Section Title */}
       <div className="mb-10">
-        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-[var(--foreground)] mb-4">
+        <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
           {t("about.compliance.title")}
         </h2>
         <div className="flex items-center justify-center gap-4">
@@ -197,23 +197,23 @@ export default function ComplianceTab() {
         }`}
       >
         {/* ISO 17025 Card */}
-        <div className="bg-white dark:bg-[var(--card)] rounded-2xl border border-slate-200 dark:border-[var(--border)] p-6 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300">
+        <div className="bg-card rounded-2xl border-border p-6 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300">
           <div className="flex items-start justify-between mb-4">
             <div className="w-14 h-14 rounded-xl bg-teal-50 dark:bg-teal-950/30 flex items-center justify-center">
               <AwardIcon className="w-8 h-8 text-teal-600" />
             </div>
             {getStatusBadge("active")}
           </div>
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-[var(--foreground)] mb-1">ISO 17025:2017</h3>
-          <p className="text-sm text-slate-500 dark:text-[var(--muted-foreground)] mb-3">{t("about.compliance.cardTestingLab")}</p>
-          <div className="text-xs text-slate-400 dark:text-[var(--muted-foreground)] font-mono">
+          <h3 className="text-lg font-semibold text-foreground mb-1">ISO 17025:2017</h3>
+          <p className="text-sm text-muted-foreground mb-3">{t("about.compliance.cardTestingLab")}</p>
+          <div className="text-xs text-muted-foreground font-mono">
             {t("about.compliance.cardAccredited")}
           </div>
         </div>
 
         {/* GMP Card */}
         <div
-          className={`bg-white dark:bg-[var(--card)] rounded-2xl border border-slate-200 dark:border-[var(--border)] p-6 shadow-sm hover:border-orange-400/50 transition-colors transition-delay-100 ${
+          className={`bg-card rounded-2xl border-border p-6 shadow-sm hover:border-orange-400/50 transition-colors transition-delay-100 ${
             isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
           }`}
           style={{ transitionDelay: "100ms" }}
@@ -224,16 +224,16 @@ export default function ComplianceTab() {
             </div>
             {getStatusBadge("active")}
           </div>
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-[var(--foreground)] mb-1">{t("about.compliance.gmpLabel")}</h3>
-          <p className="text-sm text-slate-500 dark:text-[var(--muted-foreground)] mb-3">{t("about.compliance.cardGoodPractices")}</p>
-          <div className="text-xs text-slate-400 dark:text-[var(--muted-foreground)] font-mono">
+          <h3 className="text-lg font-semibold text-foreground mb-1">{t("about.compliance.gmpLabel")}</h3>
+          <p className="text-sm text-muted-foreground mb-3">{t("about.compliance.cardGoodPractices")}</p>
+          <div className="text-xs text-muted-foreground font-mono">
             {t("about.compliance.cardVerified2021")}
           </div>
         </div>
 
         {/* ISO 9001 Card */}
         <div
-          className={`bg-white dark:bg-[var(--card)] rounded-2xl border border-slate-200 dark:border-[var(--border)] p-6 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 transition-delay-200 ${
+          className={`bg-card rounded-2xl border-border p-6 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 transition-delay-200 ${
             isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
           }`}
           style={{ transitionDelay: "200ms" }}
@@ -244,16 +244,16 @@ export default function ComplianceTab() {
             </div>
             {getStatusBadge("active")}
           </div>
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-[var(--foreground)] mb-1">ISO 9001:2015</h3>
-          <p className="text-sm text-slate-500 dark:text-[var(--muted-foreground)] mb-3">{t("about.compliance.cardQualityMgmt")}</p>
-          <div className="text-xs text-slate-400 dark:text-[var(--muted-foreground)] font-mono">
+          <h3 className="text-lg font-semibold text-foreground mb-1">ISO 9001:2015</h3>
+          <p className="text-sm text-muted-foreground mb-3">{t("about.compliance.cardQualityMgmt")}</p>
+          <div className="text-xs text-muted-foreground font-mono">
             {t("about.compliance.cardCertified2020")}
           </div>
         </div>
 
         {/* GLP Card */}
         <div
-          className={`bg-white dark:bg-[var(--card)] rounded-2xl border border-slate-200 dark:border-[var(--border)] p-6 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 transition-delay-300 ${
+          className={`bg-card rounded-2xl border-border p-6 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 transition-delay-300 ${
             isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
           }`}
           style={{ transitionDelay: "300ms" }}
@@ -264,9 +264,9 @@ export default function ComplianceTab() {
             </div>
             {getStatusBadge("active")}
           </div>
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-[var(--foreground)] mb-1">{t("about.compliance.glpLabel")}</h3>
-          <p className="text-sm text-slate-500 dark:text-[var(--muted-foreground)] mb-3">{t("about.compliance.cardLabPractice")}</p>
-          <div className="text-xs text-slate-400 dark:text-[var(--muted-foreground)] font-mono">
+          <h3 className="text-lg font-semibold text-foreground mb-1">{t("about.compliance.glpLabel")}</h3>
+          <p className="text-sm text-muted-foreground mb-3">{t("about.compliance.cardLabPractice")}</p>
+          <div className="text-xs text-muted-foreground font-mono">
             {t("about.compliance.cardCertified2023")}
           </div>
         </div>
@@ -295,7 +295,7 @@ export default function ComplianceTab() {
             <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2">
               {t("about.compliance.auditRate")}
             </h3>
-            <p className="text-slate-400 text-sm max-w-md">
+            <p className="text-muted-foreground max-w-md">
               {t("about.compliance.auditRateDesc")}
             </p>
           </div>
@@ -305,18 +305,18 @@ export default function ComplianceTab() {
               <div className="text-5xl sm:text-6xl font-bold font-mono text-orange-400">
                 <AnimatedCounter value={99.8} suffix="%" isVisible={isVisible} />
               </div>
-              <div className="text-slate-500 text-xs mt-2 uppercase tracking-wider">
+              <div className="text-muted-foreground mt-2 uppercase tracking-wider">
                 {t("about.compliance.auditPassRate")}
               </div>
             </div>
 
-            <div className="w-px h-16 bg-slate-700" />
+            <div className="w-px h-16 bg-muted-foreground/30" />
 
             <div className="text-center">
               <div className="text-3xl font-bold font-mono text-white">
                 3+
               </div>
-              <div className="text-slate-500 text-xs mt-2 uppercase tracking-wider">
+              <div className="text-muted-foreground mt-2 uppercase tracking-wider">
                 {t("about.compliance.consecutiveYears")}
               </div>
             </div>
@@ -326,51 +326,51 @@ export default function ComplianceTab() {
 
       {/* Certification List Table */}
       <div
-        className={`bg-white dark:bg-[var(--card)] rounded-2xl border border-slate-200 dark:border-[var(--border)] shadow-sm overflow-hidden transition-all duration-700 delay-500 ${
+        className={`bg-card rounded-2xl border-border shadow-sm overflow-hidden transition-all duration-700 delay-500 ${
           isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
         }`}
       >
-        <div className="px-6 py-5 border-b border-slate-200 dark:border-[var(--border)] bg-slate-50 dark:bg-[var(--muted)]">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-[var(--foreground)] flex items-center gap-2">
-            <FileTextIcon className="w-5 h-5 text-slate-500 dark:text-[var(--muted-foreground)]" />
+        <div className="px-6 py-5 border-b border-border bg-muted">
+          <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+            <FileTextIcon className="w-5 h-5 text-muted-foreground" />
             {t("about.compliance.certificationsList.title")}
           </h3>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-slate-50 dark:bg-[var(--muted)] border-b border-slate-200 dark:border-[var(--border)]">
+            <thead className="bg-muted border-b border-border">
               <tr>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[var(--muted-foreground)] uppercase tracking-wider">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   {t("about.compliance.tableName")}
                 </th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[var(--muted-foreground)] uppercase tracking-wider">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   {t("about.compliance.tableIssueDate")}
                 </th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[var(--muted-foreground)] uppercase tracking-wider">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   {t("about.compliance.tableScope")}
                 </th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[var(--muted-foreground)] uppercase tracking-wider">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   {t("about.compliance.tableStatus")}
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-[var(--border)]">
+            <tbody className="divide-y divide-border">
               {certifications.map((cert, index) => (
-                <tr key={index} className="hover:bg-slate-50 dark:hover:bg-[var(--muted)] transition-colors">
+                <tr key={index} className="hover:bg-muted transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-[var(--muted)] flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
                         {getCertificationIcon(cert.name)}
                       </div>
-                      <span className="font-medium text-slate-900 dark:text-[var(--foreground)]">{cert.name}</span>
+                      <span className="font-medium text-foreground">{cert.name}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-slate-600 dark:text-[var(--muted-foreground)] font-mono text-sm">{cert.issueDate}</span>
+                    <span className="text-muted-foreground font-mono text-sm">{cert.issueDate}</span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-slate-600 dark:text-[var(--muted-foreground)] text-sm">{cert.scope}</span>
+                    <span className="text-muted-foreground text-sm">{cert.scope}</span>
                   </td>
                   <td className="px-6 py-4">
                     {getStatusBadge(cert.status)}

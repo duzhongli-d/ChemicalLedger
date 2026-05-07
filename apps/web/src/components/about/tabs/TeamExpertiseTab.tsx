@@ -104,7 +104,7 @@ interface DepartmentCardProps {
 function DepartmentCard({ title, description, icon, index }: DepartmentCardProps) {
   return (
     <div
-      className="bg-white dark:bg-[var(--card)] border border-slate-200 dark:border-[var(--border)] rounded-2xl p-5 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 group"
+      className="bg-card border-border rounded-2xl p-5 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 group"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       <div className="flex items-start gap-4">
@@ -112,10 +112,10 @@ function DepartmentCard({ title, description, icon, index }: DepartmentCardProps
           {icon}
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-[var(--foreground)] mb-1 group-hover:text-orange-600 transition-colors">
+          <h3 className="text-lg font-semibold text-foreground mb-1 group-hover:text-orange-600 transition-colors">
             {title}
           </h3>
-          <p className="text-sm text-slate-600 dark:text-[var(--muted-foreground)] leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {description}
           </p>
         </div>
@@ -135,10 +135,10 @@ interface StatCardProps {
 function StatCard({ value, label, subtext, highlight }: StatCardProps) {
   return (
     <div
-      className={`relative bg-white dark:bg-[var(--card)] backdrop-blur-sm border rounded-xl p-6 text-center ${
+      className={`relative bg-card backdrop-blur-sm border rounded-xl p-6 text-center ${
         highlight
           ? "border-orange-500/50 shadow-lg shadow-orange-500/10"
-          : "border-slate-200 dark:border-[var(--border)]"
+          : "border-border"
       }`}
     >
       {highlight && (
@@ -146,11 +146,11 @@ function StatCard({ value, label, subtext, highlight }: StatCardProps) {
           Key Metric
         </div>
       )}
-      <div className={`text-4xl font-bold mb-2 ${highlight ? "text-orange-500" : "text-slate-900 dark:text-[var(--foreground)]"}`}>
+      <div className={`text-4xl font-bold mb-2 ${highlight ? "text-orange-500" : "text-foreground"}`}>
         {value}
       </div>
-      <div className="text-sm text-slate-600 dark:text-[var(--muted-foreground)] font-medium">{label}</div>
-      {subtext && <div className="text-xs text-slate-400 dark:text-[var(--muted-foreground)] mt-1">{subtext}</div>}
+      <div className="text-sm text-muted-foreground font-medium">{label}</div>
+      {subtext && <div className="text-xs text-muted-foreground mt-1">{subtext}</div>}
     </div>
   );
 }
@@ -248,7 +248,7 @@ export default function TeamExpertiseTab() {
 
         {/* Section Title with Divider Lines */}
         <div className="mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-[var(--foreground)] mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             {t("about.team.title")}
           </h2>
           <div className="flex items-center justify-center gap-4">
@@ -258,7 +258,7 @@ export default function TeamExpertiseTab() {
         </div>
 
         {/* Intro Text */}
-        <p className="text-lg text-slate-600 dark:text-[var(--muted-foreground)] leading-relaxed mb-12">
+        <p className="text-lg text-muted-foreground leading-relaxed mb-12">
           {t("about.team.intro")}
         </p>
 
@@ -286,7 +286,7 @@ export default function TeamExpertiseTab() {
         <div className="mb-12">
           <div className="flex items-center justify-center gap-4 mb-8">
             <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-300 dark:to-orange-700" />
-            <h3 className="text-2xl font-bold text-slate-900 dark:text-[var(--foreground)] text-center">
+            <h3 className="text-2xl font-bold text-foreground text-center">
               {t("about.team.deptStructure.title")}
             </h3>
             <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-300 dark:to-orange-700" />
@@ -307,7 +307,7 @@ export default function TeamExpertiseTab() {
         </div>
 
         {/* Additional Team Info */}
-        <div className="bg-white dark:bg-[var(--card)] border border-slate-200 dark:border-[var(--border)] rounded-2xl p-8 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300">
+        <div className="bg-card border-border rounded-2xl p-8 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300">
           <div className="flex flex-col md:flex-row items-center gap-8">
             <div className="flex-shrink-0 w-20 h-20 rounded-full bg-gradient-to-br from-orange-100 dark:from-orange-900/30 to-orange-50 dark:to-orange-950/20 border border-orange-200 dark:border-orange-800 flex items-center justify-center">
               <svg className="w-10 h-10 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -315,10 +315,10 @@ export default function TeamExpertiseTab() {
               </svg>
             </div>
             <div className="flex-1 text-center md:text-left">
-              <h4 className="text-xl font-semibold text-slate-900 dark:text-[var(--foreground)] mb-2">
+              <h4 className="text-xl font-semibold text-foreground mb-2">
                 Professional Certifications
               </h4>
-              <p className="text-slate-600 dark:text-[var(--muted-foreground)] leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed">
                 Our team members hold certifications including ISO 17025 Assessor,
                 GMP Practitioner, and ICH Guideline Training, ensuring the highest
                 standards in quality control operations and regulatory compliance.

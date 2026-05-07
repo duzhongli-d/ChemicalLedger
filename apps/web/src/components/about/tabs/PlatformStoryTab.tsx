@@ -107,13 +107,13 @@ export default function PlatformStoryTab() {
   return (
     <div ref={sectionRef} className="max-w-[1320px] mx-auto px-4 py-12 relative overflow-hidden">
       {/* Decorative elements */}
-      <div className="absolute top-40 right-12 w-28 h-28 text-orange-500/15 pointer-events-none">
+      <div className="absolute top-40 right-12 w-28 h-28 text-orange-500/15 dark:text-orange-500/30 pointer-events-none">
         <MolecularStructure className="w-full h-full" />
       </div>
-      <div className="absolute bottom-32 left-16 w-24 h-24 text-orange-500/20 pointer-events-none">
+      <div className="absolute bottom-32 left-16 w-24 h-24 text-orange-500/20 dark:text-orange-500/40 pointer-events-none">
         <MolecularStructure className="w-full h-full" />
       </div>
-      <div className="absolute bottom-20 right-20 w-36 h-36 text-orange-500/15 animate-pulse pointer-events-none">
+      <div className="absolute bottom-20 right-20 w-36 h-36 text-orange-500/15 dark:text-orange-500/30 animate-pulse pointer-events-none">
         <DNAHelixAnimation className="w-full h-full" />
       </div>
 
@@ -129,7 +129,7 @@ export default function PlatformStoryTab() {
 
         {/* Section Title */}
         <div className="mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-[var(--foreground)] mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             {t("about.platformStory.title")}
           </h2>
           <div className="flex items-center justify-center gap-4">
@@ -140,7 +140,7 @@ export default function PlatformStoryTab() {
 
         {/* Narrative Body */}
         <div
-          className={`text-slate-600 dark:text-[var(--muted-foreground)] leading-relaxed space-y-4 mb-12 transition-all duration-700 ${
+          className={`text-muted-foreground leading-relaxed space-y-4 mb-12 transition-all duration-700 ${
             isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
           }`}
         >
@@ -149,19 +149,19 @@ export default function PlatformStoryTab() {
 
         {/* Milestone Timeline Card */}
         <div
-          className={`rounded-2xl border border-slate-200 dark:border-[var(--border)] bg-white dark:bg-[var(--card)] p-8 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 ${
+          className={`rounded-2xl border-border bg-card p-8 shadow-sm hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 ${
             isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
           }`}
           style={{ transitionDelay: "100ms" }}
         >
-          <h3 className="text-lg font-semibold text-slate-800 dark:text-[var(--foreground)] mb-8">
+          <h3 className="text-lg font-semibold text-foreground mb-8">
             {t("about.platformStory.milestones.title")}
           </h3>
 
           {/* Timeline */}
           <div className="relative">
             {/* Horizontal connecting line */}
-            <div className="absolute top-4 left-0 right-0 h-0.5 bg-slate-200 dark:bg-[var(--border)]" />
+            <div className="absolute top-4 left-0 right-0 h-0.5 bg-muted-foreground/20" />
 
             {/* Milestone dots and content */}
             <div className="relative flex justify-between">
@@ -171,12 +171,12 @@ export default function PlatformStoryTab() {
                   <div className="relative z-10 w-4 h-4 rounded-full bg-orange-500 border-4 border-white dark:border-[var(--card)] shadow" />
 
                   {/* Year */}
-                  <span className="mt-3 text-sm font-mono font-semibold text-slate-700 dark:text-[var(--muted-foreground)]">
+                  <span className="mt-3 text-sm font-mono font-semibold text-muted-foreground">
                     {milestone.year}
                   </span>
 
                   {/* Label */}
-                  <span className="mt-1 text-xs text-slate-500 dark:text-[var(--muted-foreground)] text-center max-w-[100px] leading-tight">
+                  <span className="mt-1 text-xs text-muted-foreground text-center max-w-[100px] leading-tight">
                     {milestone.label}
                   </span>
                 </div>
