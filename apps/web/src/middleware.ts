@@ -24,7 +24,7 @@ export function middleware(request: NextRequest) {
   const publicPaths = ["/login", "/register", "/admin/login"];
 
   // Define protected paths (without locale prefix)
-  const protectedPaths = ["/ledger/create", "/research", "/admin", "/profile", "/notifications"];
+  const protectedPaths = ["/ledger/create", "/admin", "/profile", "/notifications"];
 
   // Get locale from pathname
   const locale = routing.locales.find(
