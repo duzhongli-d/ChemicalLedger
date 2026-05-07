@@ -368,38 +368,16 @@ function DashboardContent() {
         <div className="space-y-6">
 
           {/* ── 1. Header Redesign ── */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6 relative overflow-hidden header-slide">
-            {/* Top gradient accent */}
-            <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-600 via-blue-400 to-transparent" />
-
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center shadow-sm">
-                <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-                </svg>
-              </div>
-
-              <div>
-                <h1 className="text-2xl font-bold text-slate-900 tracking-tight" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                  仪表板
-                </h1>
-                <p className="text-slate-500 text-sm mt-0.5 font-body-custom">QC管理后台概览</p>
-              </div>
-
-              {/* Decorative line + label */}
-              <div className="ml-auto flex items-center gap-3">
-                <div className="w-8 h-0.5 bg-gradient-to-r from-blue-600 to-transparent rounded" />
-                <span
-                  className="text-blue-600/70 text-xs font-mono-custom tracking-widest"
-                  style={{ fontFamily: "'JetBrains Mono', monospace" }}
-                >
-                  DASHBOARD
-                </span>
+          <div className="flex items-center justify-between mb-8 header-slide">
+            <div>
+              <h1 className="text-2xl font-semibold text-slate-900 font-mono-custom tracking-tight">
+                仪表板
+              </h1>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="w-8 h-0.5 bg-gradient-to-r from-blue-600 to-transparent rounded"></span>
+                <span className="text-xs text-slate-500 font-mono-custom">DASHBOARD</span>
               </div>
             </div>
-
-            {/* Animated underline accent */}
-            <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-600 via-blue-400 to-transparent opacity-20" />
           </div>
 
           {/* ── 2. Stat Overview Grid ── */}
