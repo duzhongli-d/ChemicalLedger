@@ -147,13 +147,13 @@ export default function LedgersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen bg-background">
       <Header />
 
       <main className="p-6 space-y-6">
         {/* Toast notification */}
         {toastMessage && (
-          <div className="fixed top-4 right-4 z-50 bg-slate-800 text-white px-4 py-2 rounded-lg shadow-lg text-sm">
+          <div className="fixed top-4 right-4 z-50 bg-foreground text-background px-4 py-2 rounded-lg shadow-lg text-sm">
             {toastMessage}
           </div>
         )}

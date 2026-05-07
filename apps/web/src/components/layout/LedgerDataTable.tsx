@@ -65,8 +65,8 @@ function DatePickerModal({
         className="absolute inset-0 bg-black/50 cursor-pointer"
         onClick={onClose}
       />
-      <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-sm mx-4 p-6 cursor-default">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">
+      <div className="relative bg-card rounded-xl shadow-2xl w-full max-w-sm mx-4 p-6 cursor-default border border-border">
+        <h3 className="text-lg font-semibold text-foreground mb-4">
           {t("openDateAction")}
         </h3>
         <input
@@ -74,18 +74,18 @@ function DatePickerModal({
           value={selectedDate}
           onChange={(e) => setSelectedDate(e.target.value)}
           max={new Date().toISOString().split("T")[0]}
-          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none mb-4"
+          className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none mb-4 bg-background text-foreground"
         />
         <div className="flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+            className="px-4 py-2 text-sm text-muted-foreground hover:bg-secondary rounded-lg transition-colors"
           >
             {t("openDateCancel")}
           </button>
           <button
             onClick={handleConfirm}
-            className="px-4 py-2 text-sm bg-teal-500 hover:bg-teal-600 text-white rounded-lg transition-colors"
+            className="px-4 py-2 text-sm bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition-colors"
           >
             {t("openDateConfirm")}
           </button>
@@ -140,13 +140,13 @@ export function LedgerDataTable({
     return (
       <div
         className={clsx(
-          "bg-white rounded-xl border border-red-200 shadow-sm",
+          "bg-card rounded-xl border border-error/50",
           className
         )}
       >
         <div className="p-8 text-center">
           <p className="text-red-500 font-medium">{tCommon("failedToLoad")}</p>
-          <p className="text-sm mt-1 text-slate-400">{error.message}</p>
+          <p className="text-sm mt-1 text-muted-foreground">{error.message}</p>
         </div>
       </div>
     );
@@ -156,11 +156,11 @@ export function LedgerDataTable({
     return (
       <div
         className={clsx(
-          "bg-white rounded-xl border border-slate-200 shadow-sm",
+          "bg-card rounded-xl border border-border",
           className
         )}
       >
-        <div className="p-8 text-center text-slate-500">
+        <div className="p-8 text-center text-muted-foreground">
           {tCommon("loading")}
         </div>
       </div>
@@ -171,7 +171,7 @@ export function LedgerDataTable({
     return (
       <div
         className={clsx(
-          "bg-white rounded-xl border border-slate-200 shadow-sm",
+          "bg-card rounded-xl border border-border",
           className
         )}
       >
@@ -191,13 +191,13 @@ export function LedgerDataTable({
       )}
       <div
         className={clsx(
-          "bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden",
+          "bg-card rounded-xl border border-border overflow-hidden",
           className
         )}
       >
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-slate-50 border-b border-slate-200">
+            <thead className="bg-secondary border-b border-border">
               <tr>
                 {[
                   { key: "internalBatchNo", label: t("fields.internalBatchNo") },
@@ -220,14 +220,14 @@ export function LedgerDataTable({
                 ].map((h) => (
                   <th
                     key={h.key}
-                    className="text-left px-4 py-3.5 font-semibold text-slate-600 whitespace-nowrap"
+                    className="text-left px-4 py-3.5 font-semibold text-muted-foreground whitespace-nowrap"
                   >
                     {h.label}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-border/50">
               {ledgers.map((ledger) => {
                 const certDaysLeft = getDaysLeft(ledger.cert_expiry_date);
                 const effectiveDaysLeft = getDaysLeft(
@@ -237,52 +237,52 @@ export function LedgerDataTable({
                 return (
                   <tr
                     key={ledger.id}
-                    className="hover:bg-slate-50 transition-colors"
+                    className="hover:bg-secondary transition-colors"
                   >
                     {/* Internal Batch No - monospace orange */}
                     <td className="px-4 py-3">
                       <Link
                         href={`/ledger/${ledger.id}`}
-                        className="font-mono text-xs text-[#f97316] hover:underline"
+                        className="font-mono text-xs text-primary hover:underline"
                       >
                         {ledger.internal_batch_no}
                       </Link>
                     </td>
 
                     {/* Product Name */}
-                    <td className="px-4 py-3 font-medium text-slate-900">
+                    <td className="px-4 py-3 font-medium text-foreground">
                       {ledger.product_name}
                     </td>
 
                     {/* Specification */}
-                    <td className="px-4 py-3 text-slate-500">
+                    <td className="px-4 py-3 text-muted-foreground">
                       {ledger.weight_capacity || "-"}
                     </td>
 
                     {/* Supplier */}
-                    <td className="px-4 py-3 text-slate-500">
+                    <td className="px-4 py-3 text-muted-foreground">
                       {ledger.supplier || "-"}
                     </td>
 
                     {/* Batch No */}
-                    <td className="px-4 py-3 text-slate-500 font-mono text-xs">
+                    <td className="px-4 py-3 text-muted-foreground font-mono text-xs">
                       {ledger.batch_no}
                     </td>
 
                     {/* CAS No */}
-                    <td className="px-4 py-3 text-slate-500 font-mono text-xs">
+                    <td className="px-4 py-3 text-muted-foreground font-mono text-xs">
                       {ledger.cas_no || "-"}
                     </td>
 
                     {/* Category - Level1 / Level2 */}
-                    <td className="px-4 py-3 text-slate-500">
+                    <td className="px-4 py-3 text-muted-foreground">
                       {ledger.category?.level1 && ledger.category?.level2
                         ? `${ledger.category.level1} / ${ledger.category.level2}`
                         : ledger.category?.level2 || "-"}
                     </td>
 
                     {/* Created At */}
-                    <td className="px-4 py-3 text-slate-500">
+                    <td className="px-4 py-3 text-muted-foreground">
                       {ledger.created_at ? ledger.created_at.split("T")[0] : "-"}
                     </td>
 
@@ -297,7 +297,7 @@ export function LedgerDataTable({
                     </td>
 
                     {/* Open Date */}
-                    <td className="px-4 py-3 text-slate-500">
+                    <td className="px-4 py-3 text-muted-foreground">
                       {ledger.is_opened && ledger.open_date
                         ? ledger.open_date.split("T")[0]
                         : t("notOpened")}
@@ -339,8 +339,8 @@ export function LedgerDataTable({
                         className={clsx(
                           "inline-block px-2 py-0.5 rounded text-xs font-medium",
                           ledger.status === "active"
-                            ? "bg-emerald-100 text-emerald-700"
-                            : "bg-slate-100 text-slate-500"
+                            ? "bg-success/10 text-success"
+                            : "bg-secondary text-muted-foreground"
                         )}
                       >
                         {t(`status.${ledger.status}`)}
@@ -353,7 +353,7 @@ export function LedgerDataTable({
                         {/* View */}
                         <Link
                           href={`/ledger/${ledger.id}`}
-                          className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"
+                          className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary rounded transition-colors"
                           title="View"
                         >
                           <svg
@@ -382,7 +382,7 @@ export function LedgerDataTable({
                           onArchive && (
                             <button
                               onClick={() => handleOpenDateClick(ledger)}
-                              className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"
+                              className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary rounded transition-colors"
                               title={t("openDateAction")}
                             >
                               <svg
@@ -416,7 +416,7 @@ export function LedgerDataTable({
                               }
                               onArchive(ledger.id);
                             }}
-                            className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"
+                            className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary rounded transition-colors"
                             title={t("archive")}
                           >
                             <svg

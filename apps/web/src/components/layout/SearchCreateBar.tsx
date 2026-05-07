@@ -25,7 +25,7 @@ export function SearchCreateBar({
       {/* Search Input */}
       <div className="flex-1 relative">
         <svg
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -42,7 +42,7 @@ export function SearchCreateBar({
           placeholder={tFilter("search")}
           value={searchValue}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all"
+          className="w-full pl-10 pr-4 py-2.5 bg-card border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
         />
       </div>
 
@@ -55,7 +55,7 @@ export function SearchCreateBar({
           }
           window.location.href = "/ledger/create";
         }}
-        className="inline-flex items-center gap-2 bg-[#f97316] text-white px-4 py-2.5 rounded-lg font-medium text-sm hover:bg-[#ea580c] transition-colors shadow-lg shadow-orange-500/25"
+        className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-lg font-medium text-sm hover:bg-primary/90 transition-colors shadow-lg shadow-primary/25"
       >
         <svg
           className="w-4 h-4"

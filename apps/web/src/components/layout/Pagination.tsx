@@ -41,13 +41,13 @@ export function Pagination({
   if (totalPages <= 1) return null;
 
   return (
-    <div className={clsx("flex items-center justify-between px-4 py-3 bg-white rounded-xl border border-slate-200 shadow-sm", className)}>
+    <div className={clsx("flex items-center justify-between px-4 py-3 bg-card rounded-xl border border-border", className)}>
       {/* Left: Showing X-Y of Z */}
-      <div className="text-sm text-slate-500">
+      <div className="text-sm text-muted-foreground">
         <span>显示 </span>
-        <span className="font-medium text-slate-700">{startItem}-{endItem}</span>
+        <span className="font-medium text-foreground">{startItem}-{endItem}</span>
         <span> 共 </span>
-        <span className="font-medium text-slate-700">{totalItems}</span>
+        <span className="font-medium text-foreground">{totalItems}</span>
         <span> 条</span>
       </div>
 
@@ -60,8 +60,8 @@ export function Pagination({
           className={clsx(
             "p-2 rounded-lg transition-colors",
             currentPage === 1
-              ? "text-slate-300 cursor-not-allowed"
-              : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+              ? "text-muted-foreground/50 cursor-not-allowed"
+              : "text-muted-foreground hover:bg-secondary hover:text-foreground"
           )}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
@@ -72,7 +72,7 @@ export function Pagination({
         {/* Page Numbers */}
         {getPageNumbers().map((page, idx) =>
           page === "ellipsis" ? (
-            <span key={`ellipsis-${idx}`} className="px-2 text-slate-400">
+            <span key={`ellipsis-${idx}`} className="px-2 text-muted-foreground/50">
               ...
             </span>
           ) : (
@@ -82,8 +82,8 @@ export function Pagination({
               className={clsx(
                 "w-9 h-9 rounded-lg text-sm font-medium transition-colors",
                 currentPage === page
-                  ? "bg-[#f97316] text-white"
-                  : "text-slate-500 hover:bg-slate-100"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:bg-secondary"
               )}
             >
               {page}
@@ -98,8 +98,8 @@ export function Pagination({
           className={clsx(
             "p-2 rounded-lg transition-colors",
             currentPage === totalPages
-              ? "text-slate-300 cursor-not-allowed"
-              : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+              ? "text-muted-foreground/50 cursor-not-allowed"
+              : "text-muted-foreground hover:bg-secondary hover:text-foreground"
           )}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
