@@ -197,7 +197,9 @@
       "businessFull": "商务全检",
       "referenceStandard": "对照品标定",
       "rdFull": "研发全检",
-      "unit": "批"
+      "unit": "批",
+      "previousYear": "上一年度",
+      "batch": "批次"
     },
     "strengths": {
       "title": "核心优势",

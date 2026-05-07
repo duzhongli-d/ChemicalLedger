@@ -161,34 +161,54 @@ export function HeroSection() {
             {/* Bottom metrics bar */}
             {!metricsLoading && metricsData.length > 0 && (
               <div
-                className="flex flex-wrap gap-8 pt-8 border-t border-white/20 mt-8 animate-hero-cta-reveal"
+                className="pt-8 border-t border-white/20 mt-8 animate-hero-cta-reveal"
                 style={{ animationDelay: '0.5s' }}
               >
-                {metricsData.map((metric, index) => (
-                  <div key={index} className="space-y-1">
-                    <p className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-orange-500">
-                      {metric.batch_count !== null && metric.batch_count !== undefined
-                        ? metric.batch_count.toLocaleString()
-                        : '—'}
-                    </p>
-                    <p className="text-sm text-white/60">{metric.label}</p>
-                  </div>
-                ))}
+                {/* Previous year indicator */}
+                <p className="text-xs text-white/50 mb-4 tracking-wider">
+                  {t("heroMetrics.previousYear")}
+                </p>
+
+                {/* Metrics row */}
+                <div className="flex flex-wrap gap-6 md:gap-12">
+                  {metricsData.map((metric, index) => (
+                    <div key={index} className="space-y-1">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-orange-500">
+                          {metric.batch_count !== null && metric.batch_count !== undefined
+                            ? metric.batch_count.toLocaleString()
+                            : '—'}
+                        </span>
+                        <span className="text-xs text-white/40">{t("heroMetrics.batch")}</span>
+                      </div>
+                      <p className="text-sm text-white/60">{metric.label}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
             {!metricsLoading && metricsData.length === 0 && (
-              <div className="flex flex-wrap gap-8 pt-8 border-t border-white/20 mt-8 animate-hero-cta-reveal" style={{ animationDelay: '0.5s' }}>
+              <div className="pt-8 border-t border-white/20 mt-8 animate-hero-cta-reveal" style={{ animationDelay: '0.5s' }}>
+                <p className="text-xs text-white/50 mb-4 tracking-wider">
+                  {t("heroMetrics.previousYear")}
+                </p>
+                {/* Metrics row - empty state */}
                 <p className="text-sm text-white/60">暂无数据</p>
               </div>
             )}
             {metricsLoading && (
-              <div className="flex flex-wrap gap-8 pt-8 border-t border-white/20 mt-8 animate-hero-cta-reveal" style={{ animationDelay: '0.5s' }}>
-                {[1,2,3,4].map(i => (
-                  <div key={i} className="space-y-1 animate-pulse">
-                    <div className="h-8 w-20 bg-white/10 rounded" />
-                    <div className="h-4 w-16 bg-white/10 rounded" />
-                  </div>
-                ))}
+              <div className="pt-8 border-t border-white/20 mt-8 animate-hero-cta-reveal" style={{ animationDelay: '0.5s' }}>
+                <p className="text-xs text-white/50 mb-4 tracking-wider">
+                  {t("heroMetrics.previousYear")}
+                </p>
+                <div className="flex flex-wrap gap-6 md:gap-12">
+                  {[1,2,3,4].map(i => (
+                    <div key={i} className="space-y-1 animate-pulse">
+                      <div className="h-8 w-20 bg-white/10 rounded" />
+                      <div className="h-4 w-16 bg-white/10 rounded" />
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>

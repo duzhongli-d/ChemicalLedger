@@ -197,7 +197,9 @@
       "businessFull": "Business Full Inspection",
       "referenceStandard": "Reference Standard",
       "rdFull": "R&D Full Testing",
-      "unit": "batches"
+      "unit": "batches",
+      "previousYear": "Previous Year",
+      "batch": "batches"
     },
     "strengths": {
       "title": "Core Strengths",
