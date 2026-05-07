@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { researchApi } from "@/lib/api-client";
 import { useAuthStore } from "@/lib/auth-store";
+import { LoginModal } from "@/components/auth/LoginModal";
 
 export default function ResearchPage() {
   const t = useTranslations("research");
@@ -12,6 +13,7 @@ export default function ResearchPage() {
   const [selectedNotebook, setSelectedNotebook] = useState<string | null>(null);
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<{ q: string; a: string }[]>([]);
+  const [loginModalOpen, setLoginModalOpen] = useState(!isAuthenticated());
 
   const { data: quota } = useQuery({
     queryKey: ["quota"],
@@ -117,6 +119,13 @@ export default function ResearchPage() {
           </div>
         </div>
       </main>
+      <LoginModal
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+        onLoginSuccess={() => {
+          setLoginModalOpen(false);
+        }}
+      />
     </div>
   );
 }
