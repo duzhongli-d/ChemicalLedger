@@ -165,6 +165,7 @@ export default function LedgersPage() {
             value={counts.all}
             trend={mockTrends.total}
             accentColor="orange"
+            variant="clinical"
             onClick={() => handleStatCardClick("all")}
           />
           <StatCard
@@ -172,6 +173,7 @@ export default function LedgersPage() {
             value={counts.active}
             trend={mockTrends.active}
             accentColor="teal"
+            variant="clinical"
             onClick={() => handleStatCardClick("active")}
           />
           <StatCard
@@ -179,6 +181,7 @@ export default function LedgersPage() {
             value={counts.expiring10}
             trend={mockTrends.expiring10}
             accentColor="red"
+            variant="clinical"
             onClick={() => handleStatCardClick("expiring10")}
           />
           <StatCard
@@ -186,6 +189,7 @@ export default function LedgersPage() {
             value={counts.expiring20}
             trend={mockTrends.expiring20}
             accentColor="amber"
+            variant="clinical"
             onClick={() => handleStatCardClick("expiring20")}
           />
           <StatCard
@@ -193,6 +197,7 @@ export default function LedgersPage() {
             value={counts.expired}
             trend={mockTrends.expired}
             accentColor="rose"
+            variant="clinical"
             onClick={() => handleStatCardClick("expired")}
           />
           <StatCard
@@ -200,6 +205,7 @@ export default function LedgersPage() {
             value={counts.archived}
             trend={mockTrends.archived}
             accentColor="slate"
+            variant="clinical"
             onClick={() => handleStatCardClick("archived")}
           />
         </div>
