@@ -83,10 +83,6 @@ export default function PlatformStoryTab() {
 
   const milestones: Milestone[] = [
     {
-      year: t("about.platformStory.milestones.establishedYear"),
-      label: t("about.platformStory.milestones.established"),
-    },
-    {
       year: t("about.platformStory.milestones.gmpYear"),
       label: t("about.platformStory.milestones.gmpCertified"),
     },
@@ -95,12 +91,16 @@ export default function PlatformStoryTab() {
       label: t("about.platformStory.milestones.isoCertified"),
     },
     {
-      year: t("about.platformStory.milestones.cloudYear"),
-      label: t("about.platformStory.milestones.cloudLaunch"),
+      year: t("about.platformStory.milestones.glpYear"),
+      label: t("about.platformStory.milestones.glpCertified"),
     },
     {
-      year: t("about.platformStory.milestones.aiYear"),
-      label: t("about.platformStory.milestones.aiIntegration"),
+      year: t("about.platformStory.milestones.qcV1Year"),
+      label: t("about.platformStory.milestones.qcV1Launch"),
+    },
+    {
+      year: t("about.platformStory.milestones.qcV2Year"),
+      label: t("about.platformStory.milestones.qcV2Launch"),
     },
   ];
 

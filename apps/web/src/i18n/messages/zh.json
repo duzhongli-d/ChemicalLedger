@@ -349,16 +349,16 @@
       "body": "雅本化学QC平台旨在解决制药和化学行业实验室质量控制操作日益复杂的挑战。我们的平台将深厚的领域专业知识与现代技术相结合，打造统一的样品追踪、仪器集成和合规管理解决方案。我们致力于帮助QC专业人员实现卓越运营，同时保持最高标准的数据完整性和合规性。",
       "milestones": {
         "title": "发展里程碑",
-        "established": "平台建立",
-        "establishedYear": "2020",
         "gmpCertified": "GMP合规认证",
         "gmpYear": "2021",
         "isoCertified": "ISO 17025认可",
         "isoYear": "2022",
-        "cloudLaunch": "云平台上线",
-        "cloudYear": "2023",
-        "aiIntegration": "AI分析集成",
-        "aiYear": "2024"
+        "glpCertified": "GLP认证",
+        "glpYear": "2023",
+        "qcV1Launch": "QC平台V1上线",
+        "qcV1Year": "2026上",
+        "qcV2Launch": "QC平台V2上线",
+        "qcV2Year": "敬请期待"
       }
     },
     "technicalCapabilities": {

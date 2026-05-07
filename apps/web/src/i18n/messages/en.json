@@ -349,16 +349,16 @@
       "body": "Abachem QC Platform was developed to address the growing complexity of laboratory quality control operations in the pharmaceutical and chemical industries. Our platform combines deep domain expertise with modern technology to create a unified solution for sample tracking, instrument integration, and regulatory compliance. We are committed to helping QC professionals achieve operational excellence while maintaining the highest standards of data integrity and regulatory compliance.",
       "milestones": {
         "title": "Development Milestones",
-        "established": "Platform Established",
-        "establishedYear": "2020",
         "gmpCertified": "GMP Compliance Verified",
         "gmpYear": "2021",
         "isoCertified": "ISO 17025 Accredited",
         "isoYear": "2022",
-        "cloudLaunch": "Cloud Platform Launch",
-        "cloudYear": "2023",
-        "aiIntegration": "AI Analytics Integrated",
-        "aiYear": "2024"
+        "glpCertified": "GLP Certified",
+        "glpYear": "2023",
+        "qcV1Launch": "QC Platform V1 Launch",
+        "qcV1Year": "H1 2026",
+        "qcV2Launch": "QC Platform V2 Launch",
+        "qcV2Year": "Stay Tuned"
       }
     },
     "technicalCapabilities": {
