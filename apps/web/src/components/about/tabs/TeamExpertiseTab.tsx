@@ -157,7 +157,7 @@ function StatCard({ value, label, subtext, highlight }: StatCardProps) {
 
 export default function TeamExpertiseTab() {
   const t = useTranslations();
-  const { count: animatedPercent, start: startCounter } = useAnimatedCounter(60, 2000, false);
+  const { count: animatedPercent, start: startCounter } = useAnimatedCounter(40, 2000, false);
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 

@@ -259,8 +259,8 @@
     "team": {
       "title": "团队风貌",
       "professional": "专业团队",
-      "professionalDesc": "资深QC工程师领衔，硕博比例超过60%",
-      "professionalBadge": "硕博比例 >60%",
+      "professionalDesc": "资深QC工程师领衔，硕博比例超过40%",
+      "professionalBadge": "硕博比例 >40%",
       "professionalImageAlt": "专业团队照片",
       "innovation": "创新精神",
       "innovationDesc": "持续优化检测方法，驱动行业技术进步",
@@ -457,8 +457,8 @@
     },
     "team": {
       "title": "专业QC团队",
-      "professionalBadge": "60%+ 硕博比例",
-      "intro": "我们的团队由资深QC专业人员、资深化学家和法规专员组成，致力于提供准确、可靠的结果。团队硕博比例超过60%，平均行业经验8年以上，为每次分析带来深厚专业知识。",
+      "professionalBadge": "40%+ 硕博比例",
+      "intro": "我们的团队由资深QC专业人员、资深化学家和法规专员组成，致力于提供准确、可靠的结果。团队硕博比例超过40%，平均行业经验8年以上，为每次分析带来深厚专业知识。",
       "deptStructure": {
         "title": "部门架构",
         "chemistry": "化学分析",

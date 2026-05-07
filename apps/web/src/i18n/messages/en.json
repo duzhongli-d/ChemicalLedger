@@ -259,8 +259,8 @@
     "team": {
       "title": "Team Showcase",
       "professional": "Professional Team",
-      "professionalDesc": "Led by senior QC engineers, over 60% with master's/PhD degrees",
-      "professionalBadge": "Masters/PhDs >60%",
+      "professionalDesc": "Led by senior QC engineers, over 40% with master's/PhD degrees",
+      "professionalBadge": "Masters/PhDs >40%",
       "professionalImageAlt": "Professional team photo",
       "innovation": "Innovation Spirit",
       "innovationDesc": "Continuously optimizing detection methods, driving industry advancement",
@@ -457,8 +457,8 @@
     },
     "team": {
       "title": "Professional QC Team",
-      "professionalBadge": "60%+ Masters/PhDs",
-      "intro": "Our team comprises experienced QC professionals, senior chemists, and regulatory specialists dedicated to delivering accurate, reliable results. With over 60% holding master's or doctoral degrees and an average of 8+ years industry experience, our team brings deep expertise to every analysis.",
+      "professionalBadge": "40%+ Masters/PhDs",
+      "intro": "Our team comprises experienced QC professionals, senior chemists, and regulatory specialists dedicated to delivering accurate, reliable results. With over 40% holding master's or doctoral degrees and an average of 8+ years industry experience, our team brings deep expertise to every analysis.",
       "deptStructure": {
         "title": "Department Structure",
         "chemistry": "Chemistry Analysis",
