@@ -198,7 +198,7 @@ export default function AdminSettingsPage() {
         {isLoading && (
           <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
             <div className="w-8 h-8 mx-auto mb-3 rounded-full border-2 border-blue-600 border-t-transparent animate-spin"></div>
-            <p className="text-sm text-slate-500">{t("common.loading")}</p>
+            <p className="text-sm text-slate-500">{t("loading")}</p>
           </div>
         )}
 
@@ -273,7 +273,7 @@ export default function AdminSettingsPage() {
                   disabled={contactMutation.isPending}
                   className="px-6 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-mono-custom"
                 >
-                  {contactMutation.isPending ? t("common.loading") : t("settings.saveContact")}
+                  {contactMutation.isPending ? t("loading") : t("settings.saveContact")}
                 </button>
               </div>
             </form>
@@ -412,7 +412,7 @@ export default function AdminSettingsPage() {
                   disabled={smtpMutation.isPending}
                   className="px-6 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-mono-custom"
                 >
-                  {smtpMutation.isPending ? t("common.loading") : t("settings.saveSmtp")}
+                  {smtpMutation.isPending ? t("loading") : t("settings.saveSmtp")}
                 </button>
               </div>
             </form>
