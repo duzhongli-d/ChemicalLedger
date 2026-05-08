@@ -131,6 +131,7 @@
     }
   },
   "admin": {
+    "loading": "加载中...",
     "users": "用户管理",
     "categories": "品类管理",
     "ledgers": "台账管理",

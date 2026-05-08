@@ -131,6 +131,7 @@
     }
   },
   "admin": {
+    "loading": "Loading...",
     "users": "User Management",
     "categories": "Category Management",
     "ledgers": "Ledger Management",
