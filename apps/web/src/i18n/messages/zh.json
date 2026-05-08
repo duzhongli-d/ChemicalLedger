@@ -59,7 +59,7 @@
     "loginFailed": "登录失败",
     "loggingIn": "登录中...",
     "close": "关闭",
-    "loginRequiredForResearch": "登录后可使用 Deep Research 功能，包括笔记本管理、资料检索、AI 问答等"
+    "loginRequiredForResearch": "登录后可使用 Deep Research 功能，包括学术空间管理、资料检索、AI 问答等"
   },
   "ledger": {
     "create": "新建台账",
@@ -123,10 +123,10 @@
   "research": {
     "title": "QC深度调研",
     "quota": "今日可用次数",
-    "notebooks": "笔记本列表",
-    "newNotebook": "新建笔记本",
-    "notebookName": "笔记本名称",
-    "enterNotebookName": "请输入笔记本名称...",
+    "notebooks": "学术空间列表",
+    "newNotebook": "新建学术空间",
+    "notebookName": "学术空间名称",
+    "enterNotebookName": "请输入学术空间名称...",
     "cancel": "取消",
     "create": "创建",
     "creating": "创建中...",
@@ -139,14 +139,14 @@
     },
     "studio": {
       "title": "深度研究工作室",
-      "subtitle": "基于您的资料生成学习内容",
+      "subtitle": "基于您的资料生成内容",
       "learningGuide": "学习指南",
       "mindMap": "思维导图",
       "ppt": "PPT大纲",
       "topicPlaceholder": "输入主题...",
       "generate": "生成",
       "generating": "正在生成中...",
-      "noContent": "选择一个笔记本，输入主题，然后点击生成"
+      "noContent": "输入主题，然后点击生成"
     },
     "sources": "来源列表",
     "addSource": "添加来源",
