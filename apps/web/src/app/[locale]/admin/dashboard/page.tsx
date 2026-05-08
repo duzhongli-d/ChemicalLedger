@@ -580,7 +580,7 @@ function DashboardContent() {
                                   {badge.label}
                                 </span>
                                 <span className="text-xs text-slate-400 font-mono-custom" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                                  {log.target_id.slice(0, 8)}
+                                  {log.target_id?.slice(0, 8) ?? '-'}
                                 </span>
                               </div>
                               <p className="text-xs text-slate-500">
