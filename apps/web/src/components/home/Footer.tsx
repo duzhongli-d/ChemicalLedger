@@ -2,6 +2,8 @@
 import type { ComponentType } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { settingsApi, type PublicContactSettings } from "@/lib/api-client";
 
 function FlaskIcon() {
   return (
@@ -53,6 +55,16 @@ function PlatformEntryCard({
 export function Footer() {
   const t = useTranslations("home");
 
+  const { data: contactData } = useQuery<PublicContactSettings>({
+    queryKey: ["public-contact-settings"],
+    queryFn: settingsApi.getContactSettings,
+  });
+
+  // Fall back to i18n defaults
+  const contactAddress = contactData?.address || t("footer.contactInfo");
+  const contactPhone = contactData?.phone ? `电话：${contactData.phone}` : t("footer.phone");
+  const contactEmail = contactData?.email || t("footer.email");
+
   return (
     <footer id="contact" className="bg-background text-foreground">
       <div className="max-w-[1320px] mx-auto px-4 py-12">
@@ -60,11 +72,11 @@ export function Footer() {
           {/* Left: Contact & Docs */}
           <div>
             <h3 className="text-lg font-semibold text-foreground mb-4">{t("footer.contact")}</h3>
-            <p className="text-sm text-muted-foreground mb-2">{t("footer.contactInfo")}</p>
-            <p className="text-sm text-muted-foreground mt-1">{t("footer.phone")}</p>
+            <p className="text-sm text-muted-foreground mb-2">{contactAddress}</p>
+            <p className="text-sm text-muted-foreground mt-1">{contactPhone}</p>
             <p className="text-sm text-muted-foreground mb-4">
-              <a href={`mailto:${t("footer.email")}`} className="hover:text-orange-500 transition-colors">
-                {t("footer.email")}
+              <a href={`mailto:${contactEmail}`} className="hover:text-orange-500 transition-colors">
+                {contactEmail}
               </a>
             </p>
             <Link

@@ -237,4 +237,19 @@ export const adminAnnualSummaryApi = {
     api.delete(`/admin/annual-summaries/${id}`),
 };
 
+// ─── Settings ─────────────────────────────────────────────────────────────────
+
+export interface PublicContactSettings {
+  address?: string;
+  phone?: string;
+  email?: string;
+  wechat?: string;
+  business_hours?: string;
+}
+
+export const settingsApi = {
+  getContactSettings: () =>
+    api.get<PublicContactSettings>("/settings/contact").then((r) => r.data),
+};
+
 export default api;
