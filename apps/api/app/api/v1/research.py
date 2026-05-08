@@ -87,13 +87,13 @@ def list_sources(
     # Verify notebook belongs to user
     notebook = (
         db.query(ResearchNotebook)
-        .filter(ResearchNotebook.notebook_id == notebook_id, ResearchNotebook.user_id == current_user.id)
+        .filter(ResearchNotebook.notebook_id == str(notebook_id), ResearchNotebook.user_id == current_user.id)
         .first()
     )
     if not notebook:
         raise HTTPException(status_code=404, detail="Notebook not found")
 
-    sources = research_service.list_sources(db, notebook_id)
+    sources = research_service.list_sources(db, str(notebook_id))
     return sources
 
 
@@ -108,7 +108,7 @@ async def upload_source(
     # Verify notebook belongs to user
     notebook = (
         db.query(ResearchNotebook)
-        .filter(ResearchNotebook.notebook_id == notebook_id, ResearchNotebook.user_id == current_user.id)
+        .filter(ResearchNotebook.notebook_id == str(notebook_id), ResearchNotebook.user_id == current_user.id)
         .first()
     )
     if not notebook:
@@ -158,7 +158,7 @@ def add_url_source(
     # Verify notebook belongs to user
     notebook = (
         db.query(ResearchNotebook)
-        .filter(ResearchNotebook.notebook_id == notebook_id, ResearchNotebook.user_id == current_user.id)
+        .filter(ResearchNotebook.notebook_id == str(notebook_id), ResearchNotebook.user_id == current_user.id)
         .first()
     )
     if not notebook:
@@ -166,7 +166,7 @@ def add_url_source(
 
     source = research_service.create_source(
         db=db,
-        notebook_id=notebook_id,
+        notebook_id=str(notebook_id),
         source_type=ResearchSourceType.URL,
         file_url=url,
         file_name=title or url,
