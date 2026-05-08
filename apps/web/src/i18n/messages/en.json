@@ -127,7 +127,41 @@
     "ask": "Ask",
     "placeholder": "Ask a question...",
     "common": {
-      "noData": "No data"
+      "noData": "No data",
+      "loading": "Loading...",
+      "noSources": "No sources"
+    },
+    "studio": {
+      "learningGuide": "Learning Guide",
+      "mindMap": "Mind Map",
+      "ppt": "PPT Outline",
+      "topicPlaceholder": "Enter topic...",
+      "generate": "Generate",
+      "generating": "Generating...",
+      "noContent": "Select a notebook, enter a topic, and click Generate"
+    },
+    "sources": "Sources",
+    "addSource": "Add Source",
+    "uploadFile": "Upload File",
+    "addUrl": "Add URL",
+    "sourceType": "Source Type",
+    "dragDropFile": "Drag & drop file here, or click to select",
+    "urlAddress": "URL Address",
+    "clickToChange": "Click to change",
+    "uploading": "Uploading...",
+    "processing": "Processing...",
+    "uploadFailed": "Upload failed, please try again",
+    "confirmDelete": "Confirm Delete",
+    "confirmDeleteSource": "Are you sure you want to delete this source?",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "copyUrl": "Copy URL",
+    "copied": "Copied!",
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "ready": "Ready",
+      "error": "Error"
     }
   },
   "admin": {

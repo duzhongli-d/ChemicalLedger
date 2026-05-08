@@ -127,7 +127,41 @@
     "ask": "提问",
     "placeholder": "输入您的问题...",
     "common": {
-      "noData": "暂无数据"
+      "noData": "暂无数据",
+      "loading": "加载中...",
+      "noSources": "暂无来源"
+    },
+    "studio": {
+      "learningGuide": "学习指南",
+      "mindMap": "思维导图",
+      "ppt": "PPT大纲",
+      "topicPlaceholder": "输入主题...",
+      "generate": "生成",
+      "generating": "正在生成中...",
+      "noContent": "选择一个笔记本，输入主题，然后点击生成"
+    },
+    "sources": "来源列表",
+    "addSource": "添加来源",
+    "uploadFile": "上传文件",
+    "addUrl": "添加链接",
+    "sourceType": "来源类型",
+    "dragDropFile": "拖拽文件到此处，或点击选择",
+    "urlAddress": "链接地址",
+    "clickToChange": "点击更改文件",
+    "uploading": "正在上传...",
+    "processing": "处理中...",
+    "uploadFailed": "上传失败，请重试",
+    "confirmDelete": "确认删除",
+    "confirmDeleteSource": "确定要删除此来源吗？",
+    "delete": "删除",
+    "cancel": "取消",
+    "copyUrl": "复制链接",
+    "copied": "已复制！",
+    "status": {
+      "pending": "待处理",
+      "processing": "处理中",
+      "ready": "就绪",
+      "error": "错误"
     }
   },
   "admin": {
