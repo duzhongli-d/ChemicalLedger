@@ -36,7 +36,8 @@
     "aiAssistant": "AI台账管家",
     "deepResearch": "Deep Research 助手",
     "contact": "联系我们",
-    "brand": "雅本化学 "
+    "brand": "雅本化学 ",
+    "settings": "系统设置"
   },
   "auth": {
     "login": "登录",
@@ -54,7 +55,10 @@
     "rememberMe": "记住我",
     "forgotPassword": "忘记密码？",
     "orContinueWith": "或继续使用",
-    "contactAdminForAccount": "如需账号，请联系管理员申请"
+    "contactAdminForAccount": "如需账号，请联系管理员申请",
+    "loginFailed": "登录失败",
+    "loggingIn": "登录中...",
+    "close": "关闭"
   },
   "ledger": {
     "create": "新建台账",
