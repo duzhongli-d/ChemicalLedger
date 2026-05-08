@@ -86,11 +86,62 @@ export const notificationApi = {
 
 // ─── Research ────────────────────────────────────────────────────────────────
 
+export interface ResearchSource {
+  id: string;
+  notebook_id: string;
+  source_type: "PDF" | "URL" | "TEXT" | "VIDEO" | "AUDIO";
+  file_url: string | null;
+  file_name: string | null;
+  file_size: number | null;
+  status: "PENDING" | "PROCESSING" | "READY" | "ERROR";
+  notebooklm_id: string | null;
+  extra_data: Record<string, unknown> | null;
+  created_at: string;
+}
+
 export const researchApi = {
   getQuota: () => api.get("/research/quota"),
   listNotebooks: () => api.get("/research/notebooks"),
   createNotebook: (notebook_id: string, name: string) =>
     api.post("/research/notebooks", null, { params: { notebook_id, name } }),
+  listSources: (notebook_id: string) =>
+    api.get<ResearchSource[]>(`/research/sources/${notebook_id}`),
+  uploadSource: (notebook_id: string, file: File, source_type?: string) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    if (source_type) {
+      formData.append("source_type", source_type);
+    }
+    return api.post<ResearchSource>(`/research/sources/upload?notebook_id=${notebook_id}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  },
+  addUrlSource: (notebook_id: string, url: string, title?: string) =>
+    api.post<ResearchSource>(`/research/sources/add-url?notebook_id=${notebook_id}`, { url, title }),
+  deleteSource: (source_id: string) =>
+    api.delete(`/research/sources/${source_id}`),
+  chat: (notebook_id: string, question: string) => {
+    return api.post("/research/chat", { notebook_id, question }, {
+      responseType: "stream",
+    });
+  },
+  studio: {
+    generateLearningGuide: (notebook_id: string, topic: string) =>
+      api.post<{ title: string; sections: { heading: string; content: string }[] }>(
+        "/research/studio/learning-guide",
+        { notebook_id, topic }
+      ),
+    generateMindMap: (notebook_id: string, topic: string) =>
+      api.post<{ root: { id: string; text: string; children?: { id: string; text: string; children?: { id: string; text: string }[] }[] } }>(
+        "/research/studio/mindmap",
+        { notebook_id, topic }
+      ),
+    generatePPT: (notebook_id: string, topic: string) =>
+      api.post<{ title: string; slides: { title: string; bulletPoints: string[] }[] }>(
+        "/research/studio/ppt",
+        { notebook_id, topic }
+      ),
+  },
 };
 
 // ─── Users (admin) ────────────────────────────────────────────────────────────
