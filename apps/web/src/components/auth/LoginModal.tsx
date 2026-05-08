@@ -13,9 +13,11 @@ interface LoginModalProps {
   onLoginSuccess: (username: string) => void;
   // Optional: redirect after login success
   redirectTo?: string;
+  // Optional: contextual message shown when modal is triggered by feature gate
+  contextMessage?: string;
 }
 
-export function LoginModal({ isOpen, onClose, onLoginSuccess, redirectTo }: LoginModalProps) {
+export function LoginModal({ isOpen, onClose, onLoginSuccess, redirectTo, contextMessage }: LoginModalProps) {
   const t = useTranslations("auth");
   const router = useRouter();
   const locale = useLocale();
@@ -89,6 +91,18 @@ export function LoginModal({ isOpen, onClose, onLoginSuccess, redirectTo }: Logi
             {loginMode === "email" ? t("loginWithEmail") : t("loginWithUsername")}
           </p>
         </div>
+
+        {/* Context message banner - shown when modal is triggered by feature gate */}
+        {contextMessage && (
+          <div className="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl">
+            <div className="flex items-start gap-3">
+              <svg className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p className="text-sm text-amber-800 dark:text-amber-200">{contextMessage}</p>
+            </div>
+          </div>
+        )}
 
         {/* Login mode toggle - pill style */}
         <div className="flex rounded-xl bg-slate-200 dark:bg-slate-800 p-1 mb-6">

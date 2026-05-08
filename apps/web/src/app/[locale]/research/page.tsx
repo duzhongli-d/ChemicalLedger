@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { researchApi } from "@/lib/api-client";
@@ -60,6 +60,7 @@ function MessageContent({ text, sources, onCitationClick }: { text: string; sour
 
 export default function ResearchPage() {
   const t = useTranslations("research");
+  const tAuth = useTranslations("auth");
   const isAuth = useAuthStore((s) => !!s.user);
   const queryClient = useQueryClient();
   const [selectedNotebook, setSelectedNotebook] = useState<string | null>(null);
@@ -76,6 +77,14 @@ export default function ResearchPage() {
     }
     return true;
   };
+
+  // Sync login modal with auth state to handle Zustand persist hydration timing
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (isAuth) {
+      setLoginModalOpen(false);
+    }
+  }, [isAuth]);
 
   const handleCreateNotebook = useCallback(async (notebookId: string, notebookName: string) => {
     await queryClient.invalidateQueries({ queryKey: ["notebooks"] });
@@ -339,6 +348,7 @@ export default function ResearchPage() {
         onLoginSuccess={() => {
           setLoginModalOpen(false);
         }}
+        contextMessage={tAuth("loginRequiredForResearch")}
       />
 
       <NewNotebookModal

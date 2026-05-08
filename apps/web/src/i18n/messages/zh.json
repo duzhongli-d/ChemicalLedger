@@ -58,7 +58,8 @@
     "contactAdminForAccount": "如需账号，请联系管理员申请",
     "loginFailed": "登录失败",
     "loggingIn": "登录中...",
-    "close": "关闭"
+    "close": "关闭",
+    "loginRequiredForResearch": "登录后可使用 Deep Research 功能，包括笔记本管理、资料检索、AI 问答等"
   },
   "ledger": {
     "create": "新建台账",

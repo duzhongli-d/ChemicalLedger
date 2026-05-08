@@ -58,7 +58,8 @@
     "contactAdminForAccount": "Please contact the administrator to request an account",
     "loginFailed": "Login failed",
     "loggingIn": "Logging in...",
-    "close": "Close"
+    "close": "Close",
+    "loginRequiredForResearch": "Login to access Deep Research features: notebook management, source retrieval, AI Q&A, and more"
   },
   "ledger": {
     "create": "New Ledger",
