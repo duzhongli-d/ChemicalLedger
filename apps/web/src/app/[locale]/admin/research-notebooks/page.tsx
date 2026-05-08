@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import AdminLayout from "@/components/admin/AdminLayout";
@@ -36,30 +36,12 @@ function EmptyState() {
   );
 }
 
-function LoadingSkeleton() {
-  return (
-    <div className="bg-white rounded-xl border border-slate-200 p-5 animate-pulse">
-      <div className="flex items-center gap-4">
-        <div className="w-12 h-12 rounded-xl bg-slate-200" />
-        <div className="flex-1 space-y-2">
-          <div className="h-4 bg-slate-200 rounded w-24" />
-          <div className="h-3 bg-slate-200 rounded w-40" />
-        </div>
-        <div className="h-6 bg-slate-200 rounded w-16" />
-      </div>
-    </div>
-  );
-}
-
 export default function AdminResearchNotebooksPage() {
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [mounted, setMounted] = useState(false);
   const [actionMsg, setActionMsg] = useState("");
   const pageSize = 10;
-
-  useEffect(() => { setMounted(true); }, []);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-research-notebooks", page, search],
@@ -98,7 +80,7 @@ export default function AdminResearchNotebooksPage() {
       setActionMsg("学术空间已删除");
       setTimeout(() => setActionMsg(""), 3000);
     },
-    onError: (err: Error) => setActionMsg(err.message || "删除失败"),
+    onError: () => setActionMsg("删除失败"),
   });
 
   const handleSearch = () => {
@@ -111,26 +93,8 @@ export default function AdminResearchNotebooksPage() {
     }
   };
 
-  if (!mounted) return null;
-
   return (
     <AdminLayout>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
-        .font-mono-custom { font-family: 'JetBrains Mono', monospace; }
-        .font-body-custom { font-family: 'IBM Plex Sans', sans-serif; }
-        @keyframes cardEnter {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes headerSlideIn {
-          from { opacity: 0; transform: translateX(-16px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        .card-enter { animation: cardEnter 0.45s ease-out forwards; opacity: 0; }
-        .header-slide { animation: headerSlideIn 0.4s ease-out forwards; }
-      `}</style>
-
       <div className="min-h-screen bg-background font-body-custom">
         <div className="space-y-6">
           {/* Header */}
@@ -193,9 +157,7 @@ export default function AdminResearchNotebooksPage() {
                 ))}
               </div>
             ) : notebooks.length === 0 ? (
-              <div className="p-8 text-center">
-                <EmptyState />
-              </div>
+              <EmptyState />
             ) : (
               <>
                 <table className="w-full">
