@@ -105,6 +105,38 @@ class Notification(Base):
     ledger = relationship("Ledger")
 
 
+class ResearchSourceType(str):
+    PDF = "PDF"
+    URL = "URL"
+    TEXT = "TEXT"
+    VIDEO = "VIDEO"
+    AUDIO = "AUDIO"
+
+
+class ResearchSourceStatus(str):
+    PENDING = "PENDING"
+    PROCESSING = "PROCESSING"
+    READY = "READY"
+    ERROR = "ERROR"
+
+
+class ResearchSource(Base):
+    __tablename__ = "research_sources"
+
+    id = Column(Uuid, primary_key=True, default=uuid_lib.uuid4)
+    notebook_id = Column(Uuid, ForeignKey("research_notebooks.id"), nullable=False)
+    source_type = Column(String(20), nullable=False)
+    file_url = Column(Text, nullable=True)
+    file_name = Column(String(255), nullable=True)
+    file_size = Column(Integer, nullable=True)
+    status = Column(String(20), default=ResearchSourceStatus.PENDING)
+    notebooklm_id = Column(String(255), nullable=True)
+    extra_data = Column("metadata", JSON, nullable=True)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+    notebook = relationship("ResearchNotebook", back_populates="sources")
+
+
 class ResearchNotebook(Base):
     __tablename__ = "research_notebooks"
 
@@ -115,6 +147,7 @@ class ResearchNotebook(Base):
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     user = relationship("User", back_populates="notebooks")
+    sources = relationship("ResearchSource", back_populates="notebook", order_by="desc(ResearchSource.created_at)")
 
 
 class DailyUsage(Base):
