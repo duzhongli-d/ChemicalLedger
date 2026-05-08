@@ -124,7 +124,7 @@ class ResearchSource(Base):
     __tablename__ = "research_sources"
 
     id = Column(Uuid, primary_key=True, default=uuid_lib.uuid4)
-    notebook_id = Column(Uuid, ForeignKey("research_notebooks.id"), nullable=False)
+    notebook_id = Column(Uuid, ForeignKey("research_notebooks.id", ondelete="cascade"), nullable=False)
     source_type = Column(String(20), nullable=False)
     file_url = Column(Text, nullable=True)
     file_name = Column(String(255), nullable=True)
