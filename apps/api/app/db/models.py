@@ -202,3 +202,23 @@ class AnnualSummary(Base):
     __table_args__ = (
         UniqueConstraint('year', 'section', 'category', name='uq_annual_summary_year_section_category'),
     )
+
+
+class SystemSetting(Base):
+    __tablename__ = "system_settings"
+
+    id = Column(Uuid, primary_key=True, default=uuid_lib.uuid4)
+    category = Column(String(50), nullable=False, index=True)
+    key = Column(String(100), nullable=False)
+    value = Column(Text, nullable=True)
+    value_type = Column(String(20), server_default="string")
+    is_secret = Column(Boolean, default=False)
+    description = Column(String(255), nullable=True)
+    updated_by_id = Column(Uuid, ForeignKey("users.id"), nullable=True)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    updated_by = relationship("User", foreign_keys=[updated_by_id])
+
+    __table_args__ = (
+        UniqueConstraint("category", "key", name="uq_category_key"),
+    )
