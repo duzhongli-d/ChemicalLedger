@@ -138,6 +138,8 @@
       "noSources": "No sources"
     },
     "studio": {
+      "title": "Deep Research Studio",
+      "subtitle": "Generate learning content from your sources",
       "learningGuide": "Learning Guide",
       "mindMap": "Mind Map",
       "ppt": "PPT Outline",

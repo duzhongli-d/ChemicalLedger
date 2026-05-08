@@ -181,8 +181,8 @@ export default function ResearchPage() {
               className="border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
             >
               <option value="">-- {t("notebooks")} --</option>
-              {notebooks.map((nb: { id: string; name: string }) => (
-                <option key={nb.id} value={nb.id}>{nb.name}</option>
+              {notebooks.map((nb: { id: string; notebook_id: string; name: string }) => (
+                <option key={nb.id} value={nb.notebook_id}>{nb.name}</option>
               ))}
             </select>
           </div>

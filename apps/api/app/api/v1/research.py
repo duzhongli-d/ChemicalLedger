@@ -2,7 +2,7 @@ import os
 import asyncio
 import json
 import httpx
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Request
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Request, Body
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
@@ -93,7 +93,7 @@ def list_sources(
     if not notebook:
         raise HTTPException(status_code=404, detail="Notebook not found")
 
-    sources = research_service.list_sources(db, str(notebook_id))
+    sources = research_service.list_sources(db, notebook.id)
     return sources
 
 
@@ -136,7 +136,7 @@ async def upload_source(
     # Create source record
     source = research_service.create_source(
         db=db,
-        notebook_id=notebook_id,
+        notebook_id=notebook.id,
         source_type=source_type,
         file_url=relative_url,
         file_name=file.filename,
@@ -149,10 +149,10 @@ async def upload_source(
 @router.post("/sources/add-url")
 def add_url_source(
     notebook_id: UUID,
-    url: str,
-    title: Optional[str] = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user_required),
+    url: str = Body(...),
+    title: Optional[str] = Body(None),
 ):
     """Add a URL source."""
     # Verify notebook belongs to user
@@ -166,7 +166,7 @@ def add_url_source(
 
     source = research_service.create_source(
         db=db,
-        notebook_id=str(notebook_id),
+        notebook_id=notebook.id,
         source_type=ResearchSourceType.URL,
         file_url=url,
         file_name=title or url,
