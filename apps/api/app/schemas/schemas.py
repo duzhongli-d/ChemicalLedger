@@ -266,7 +266,7 @@ class SMTPConfigResponse(SMTPConfigBase):
 class ContactConfigBase(BaseModel):
     address: Optional[str] = None
     phone: Optional[str] = None
-    email: Optional[EmailStr] = None
+    email: Optional[str] = None
     wechat: Optional[str] = None
     business_hours: Optional[str] = None
 
