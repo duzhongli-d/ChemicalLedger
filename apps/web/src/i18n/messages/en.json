@@ -124,6 +124,11 @@
     "quota": "Questions remaining today",
     "notebooks": "Notebooks",
     "newNotebook": "New Notebook",
+    "notebookName": "Notebook Name",
+    "enterNotebookName": "Enter notebook name...",
+    "cancel": "Cancel",
+    "create": "Create",
+    "creating": "Creating...",
     "ask": "Ask",
     "placeholder": "Ask a question...",
     "common": {

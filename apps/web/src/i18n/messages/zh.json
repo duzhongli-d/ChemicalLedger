@@ -124,6 +124,11 @@
     "quota": "今日可用次数",
     "notebooks": "笔记本列表",
     "newNotebook": "新建笔记本",
+    "notebookName": "笔记本名称",
+    "enterNotebookName": "请输入笔记本名称...",
+    "cancel": "取消",
+    "create": "创建",
+    "creating": "创建中...",
     "ask": "提问",
     "placeholder": "输入您的问题...",
     "common": {

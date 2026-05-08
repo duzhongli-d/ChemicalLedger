@@ -2,10 +2,11 @@
 
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { researchApi } from "@/lib/api-client";
 import { useAuthStore } from "@/lib/auth-store";
 import { LoginModal } from "@/components/auth/LoginModal";
+import { NewNotebookModal } from "@/components/research/NewNotebookModal";
 import { SourcesPanel } from "@/components/research/SourcesPanel";
 import { StudioPanel } from "@/components/research/StudioPanel";
 
@@ -60,11 +61,13 @@ function MessageContent({ text, sources, onCitationClick }: { text: string; sour
 export default function ResearchPage() {
   const t = useTranslations("research");
   const isAuth = useAuthStore((s) => !!s.user);
+  const queryClient = useQueryClient();
   const [selectedNotebook, setSelectedNotebook] = useState<string | null>(null);
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [highlightedSourceIdx, setHighlightedSourceIdx] = useState<number | null>(null);
   const [loginModalOpen, setLoginModalOpen] = useState(!isAuth);
+  const [newNotebookModalOpen, setNewNotebookModalOpen] = useState(false);
 
   const requireAuth = () => {
     if (!isAuth) {
@@ -73,6 +76,11 @@ export default function ResearchPage() {
     }
     return true;
   };
+
+  const handleCreateNotebook = useCallback(async (notebookId: string, notebookName: string) => {
+    await queryClient.invalidateQueries({ queryKey: ["notebooks"] });
+    setSelectedNotebook(notebookId);
+  }, [queryClient]);
 
   const { data: quota } = useQuery({
     queryKey: ["quota"],
@@ -177,7 +185,7 @@ export default function ResearchPage() {
                 setLoginModalOpen(true);
                 return;
               }
-              // TODO: Create new notebook
+              setNewNotebookModalOpen(true);
             }}
             className="text-sm bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all shadow-sm"
           >
@@ -331,6 +339,12 @@ export default function ResearchPage() {
         onLoginSuccess={() => {
           setLoginModalOpen(false);
         }}
+      />
+
+      <NewNotebookModal
+        isOpen={newNotebookModalOpen}
+        onClose={() => setNewNotebookModalOpen(false)}
+        onSuccess={handleCreateNotebook}
       />
     </div>
   );
