@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import AdminLayout from "@/components/admin/AdminLayout";
 import api from "@/lib/api-client";
 
@@ -31,6 +32,7 @@ type SystemSettings = {
 
 export default function AdminSettingsPage() {
   const queryClient = useQueryClient();
+  const t = useTranslations("admin");
   const [activeTab, setActiveTab] = useState<"contact" | "smtp">("contact");
   const [saveMsg, setSaveMsg] = useState("");
 
@@ -146,7 +148,7 @@ export default function AdminSettingsPage() {
         <div className="flex items-center justify-between mb-8 header-slide">
           <div>
             <h1 className="text-2xl font-semibold text-slate-900 font-mono-custom tracking-tight">
-              系统设置
+              {t("settings.title")}
             </h1>
             <div className="flex items-center gap-2 mt-1">
               <span className="w-8 h-0.5 bg-gradient-to-r from-blue-600 to-transparent rounded"></span>
@@ -164,7 +166,7 @@ export default function AdminSettingsPage() {
                 : "bg-red-50 border border-red-200 text-red-700"
             }`}
           >
-            {saveMsg.includes("success") ? "保存成功" : "保存失败"}
+            {saveMsg.includes("success") ? t("settings.saveSuccess") : t("settings.saveFailed")}
           </div>
         )}
 
@@ -178,7 +180,7 @@ export default function AdminSettingsPage() {
                 : "bg-white text-slate-600 hover:bg-slate-50"
             }`}
           >
-            联系我们
+            {t("settings.contact")}
           </button>
           <button
             onClick={() => setActiveTab("smtp")}
@@ -188,7 +190,7 @@ export default function AdminSettingsPage() {
                 : "bg-white text-slate-600 hover:bg-slate-50"
             }`}
           >
-            SMTP 配置
+            {t("settings.smtp")}
           </button>
         </div>
 
@@ -196,7 +198,7 @@ export default function AdminSettingsPage() {
         {isLoading && (
           <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
             <div className="w-8 h-8 mx-auto mb-3 rounded-full border-2 border-blue-600 border-t-transparent animate-spin"></div>
-            <p className="text-sm text-slate-500">加载中...</p>
+            <p className="text-sm text-slate-500">{t("common.loading")}</p>
           </div>
         )}
 
@@ -204,64 +206,64 @@ export default function AdminSettingsPage() {
         {!isLoading && activeTab === "contact" && (
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden card-enter">
             <div className="px-6 py-5 border-b border-slate-100">
-              <h2 className="text-base font-semibold text-slate-900 font-mono-custom">联系信息配置</h2>
-              <p className="text-xs text-slate-500 mt-0.5">设置前端「联系我们」页面显示的信息</p>
+              <h2 className="text-base font-semibold text-slate-900 font-mono-custom">{t("settings.contactInfoConfig")}</h2>
+              <p className="text-xs text-slate-500 mt-0.5">{t("settings.contactInfoDesc")}</p>
             </div>
             <form onSubmit={handleContactSubmit} className="p-6 space-y-5">
               <div className="grid grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">地址</label>
+                  <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">{t("settings.address")}</label>
                   <input
                     type="text"
                     value={contactForm.address || ""}
                     onChange={(e) => setContactForm((f) => ({ ...f, address: e.target.value }))}
                     className="w-full bg-white border border-slate-200 px-3 py-2.5 rounded-lg text-sm text-slate-900 font-mono-custom focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                    placeholder="公司地址"
+                    placeholder={t("settings.addressPlaceholder")}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">电话</label>
+                  <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">{t("settings.phone")}</label>
                   <input
                     type="text"
                     value={contactForm.phone || ""}
                     onChange={(e) => setContactForm((f) => ({ ...f, phone: e.target.value }))}
                     className="w-full bg-white border border-slate-200 px-3 py-2.5 rounded-lg text-sm text-slate-900 font-mono-custom focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                    placeholder="联系电话"
+                    placeholder={t("settings.phonePlaceholder")}
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">邮箱</label>
+                  <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">{t("settings.email")}</label>
                   <input
                     type="email"
                     value={contactForm.email || ""}
                     onChange={(e) => setContactForm((f) => ({ ...f, email: e.target.value }))}
                     className="w-full bg-white border border-slate-200 px-3 py-2.5 rounded-lg text-sm text-slate-900 font-mono-custom focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                    placeholder="联系邮箱"
+                    placeholder={t("settings.emailPlaceholder")}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">微信</label>
+                  <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">{t("settings.wechat")}</label>
                   <input
                     type="text"
                     value={contactForm.wechat || ""}
                     onChange={(e) => setContactForm((f) => ({ ...f, wechat: e.target.value }))}
                     className="w-full bg-white border border-slate-200 px-3 py-2.5 rounded-lg text-sm text-slate-900 font-mono-custom focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                    placeholder="微信号"
+                    placeholder={t("settings.wechatPlaceholder")}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">营业时间</label>
+                <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">{t("settings.businessHours")}</label>
                 <input
                   type="text"
                   value={contactForm.business_hours || ""}
                   onChange={(e) => setContactForm((f) => ({ ...f, business_hours: e.target.value }))}
                   className="w-full bg-white border border-slate-200 px-3 py-2.5 rounded-lg text-sm text-slate-900 font-mono-custom focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                  placeholder="周一至周五 9:00-18:00"
+                  placeholder={t("settings.businessHoursPlaceholder")}
                 />
               </div>
 
@@ -271,7 +273,7 @@ export default function AdminSettingsPage() {
                   disabled={contactMutation.isPending}
                   className="px-6 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-mono-custom"
                 >
-                  {contactMutation.isPending ? "保存中..." : "保存联系方式"}
+                  {contactMutation.isPending ? t("common.loading") : t("settings.saveContact")}
                 </button>
               </div>
             </form>
@@ -282,15 +284,15 @@ export default function AdminSettingsPage() {
         {!isLoading && activeTab === "smtp" && (
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden card-enter">
             <div className="px-6 py-5 border-b border-slate-100">
-              <h2 className="text-base font-semibold text-slate-900 font-mono-custom">SMTP 邮件配置</h2>
-              <p className="text-xs text-slate-500 mt-0.5">配置系统发送邮件的 SMTP 服务器信息</p>
+              <h2 className="text-base font-semibold text-slate-900 font-mono-custom">{t("settings.smtpConfig")}</h2>
+              <p className="text-xs text-slate-500 mt-0.5">{t("settings.smtpConfigDesc")}</p>
             </div>
             <form onSubmit={handleSmtpSubmit} className="p-6 space-y-5">
               {/* Enabled switch */}
               <div className="flex items-center justify-between py-3 px-4 bg-slate-50 rounded-lg border border-slate-100">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 font-mono-custom">启用 SMTP</label>
-                  <p className="text-xs text-slate-500 mt-0.5">关闭后系统将不会发送邮件通知</p>
+                  <label className="block text-sm font-medium text-slate-700 font-mono-custom">{t("settings.enabled")}</label>
+                  <p className="text-xs text-slate-500 mt-0.5">{t("settings.enabledDesc")}</p>
                 </div>
                 <button
                   type="button"
@@ -309,7 +311,7 @@ export default function AdminSettingsPage() {
 
               <div className="grid grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">SMTP 主机</label>
+                  <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">{t("settings.host")}</label>
                   <input
                     type="text"
                     value={smtpForm.host || ""}
@@ -320,7 +322,7 @@ export default function AdminSettingsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">SMTP 端口</label>
+                  <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">{t("settings.port")}</label>
                   <input
                     type="number"
                     value={smtpForm.port || ""}
@@ -334,7 +336,7 @@ export default function AdminSettingsPage() {
 
               <div className="grid grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">用户名</label>
+                  <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">{t("settings.username")}</label>
                   <input
                     type="text"
                     value={smtpForm.username || ""}
@@ -345,7 +347,7 @@ export default function AdminSettingsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">密码</label>
+                  <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">{t("settings.password")}</label>
                   <input
                     type="password"
                     value={smtpForm.password || ""}
@@ -359,7 +361,7 @@ export default function AdminSettingsPage() {
 
               <div className="grid grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">发件人邮箱</label>
+                  <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">{t("settings.senderEmail")}</label>
                   <input
                     type="email"
                     value={smtpForm.sender_email || ""}
@@ -370,7 +372,7 @@ export default function AdminSettingsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">发件人名称</label>
+                  <label className="block text-xs text-slate-500 mb-1.5 font-mono-custom">{t("settings.senderName")}</label>
                   <input
                     type="text"
                     value={smtpForm.sender_name || ""}
@@ -385,8 +387,8 @@ export default function AdminSettingsPage() {
               {/* TLS switch */}
               <div className="flex items-center justify-between py-3 px-4 bg-slate-50 rounded-lg border border-slate-100">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 font-mono-custom">使用 TLS</label>
-                  <p className="text-xs text-slate-500 mt-0.5">建议开启以确保连接安全</p>
+                  <label className="block text-sm font-medium text-slate-700 font-mono-custom">{t("settings.useTls")}</label>
+                  <p className="text-xs text-slate-500 mt-0.5">{t("settings.tlsDesc")}</p>
                 </div>
                 <button
                   type="button"
@@ -410,7 +412,7 @@ export default function AdminSettingsPage() {
                   disabled={smtpMutation.isPending}
                   className="px-6 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-mono-custom"
                 >
-                  {smtpMutation.isPending ? "保存中..." : "保存 SMTP 配置"}
+                  {smtpMutation.isPending ? t("common.loading") : t("settings.saveSmtp")}
                 </button>
               </div>
             </form>
