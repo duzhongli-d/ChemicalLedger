@@ -18,6 +18,10 @@ class Settings(BaseSettings):
     NOTEBOOKLM_API_KEY: str = ""
     NOTEBOOKLM_BASE_URL: str = "https://notebooklm.google.com/api/v1"
 
+    # Gemini
+    GEMINI_API_KEY: str = ""
+    GEMINI_BASE_URL: str = "https://generativelanguage.googleapis.com"
+
     # SendGrid
     SENDGRID_API_KEY: str = ""
     SENDGRID_FROM_EMAIL: str = "noreply@abachem.com"
