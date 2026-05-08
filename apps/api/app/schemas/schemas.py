@@ -244,3 +244,37 @@ class PaginatedLedgerResponse(BaseModel):
     total: int
     page: int
     page_size: int
+
+
+# System Settings Schemas
+
+class SMTPConfigBase(BaseModel):
+    enabled: Optional[bool] = None
+    host: Optional[str] = None
+    port: Optional[int] = None
+    username: Optional[str] = None
+    password: Optional[str] = None
+    sender_email: Optional[str] = None
+    sender_name: Optional[str] = None
+    use_tls: Optional[bool] = None
+
+
+class SMTPConfigResponse(SMTPConfigBase):
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ContactConfigBase(BaseModel):
+    address: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[EmailStr] = None
+    wechat: Optional[str] = None
+    business_hours: Optional[str] = None
+
+
+class ContactConfigResponse(ContactConfigBase):
+    model_config = ConfigDict(from_attributes=True)
+
+
+class SystemSettingsResponse(BaseModel):
+    smtp: SMTPConfigResponse
+    contact: ContactConfigResponse
