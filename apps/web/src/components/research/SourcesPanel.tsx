@@ -40,7 +40,7 @@ export function SourcesPanel({ notebookId }: { notebookId: string }) {
   return (
     <div className="flex flex-col h-full rounded-2xl border border-gray-200 shadow-sm hover:border-orange-400/50 hover:shadow-lg transition-all duration-300 p-4">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold font-mono text-gray-900">{t("sources")}</h3>
+        {/* Title provided by parent page.tsx */}
         <button
           onClick={() => setUploadModalOpen(true)}
           className="flex items-center gap-1.5 text-sm bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-xl shadow-md hover:shadow-lg transition-all duration-200"

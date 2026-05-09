@@ -178,7 +178,7 @@ export default function ResearchPage() {
                 }
                 setSelectedNotebook(e.target.value || null);
               }}
-              className="border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+              className="border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all min-w-[240px]"
             >
               <option value="">-- {t("notebooks")} --</option>
               {notebooks.map((nb: { id: string; notebook_id: string; name: string }) => (
@@ -305,7 +305,7 @@ export default function ResearchPage() {
         {/* Studio Panel (right) */}
         <aside className="w-[520px] flex-shrink-0 bg-white rounded-2xl border border-gray-200 shadow-sm hover:border-orange-400/50 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col">
           <div className="px-5 py-4 border-b border-gray-100">
-            <h2 className="font-bold text-gray-900 font-mono">{t("studio.learningGuide")}</h2>
+            <h2 className="font-bold text-gray-900 font-mono">深度研究工作室</h2>
           </div>
           <div className="flex-1 overflow-y-auto">
             {selectedNotebook ? (
