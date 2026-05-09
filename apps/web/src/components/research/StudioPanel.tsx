@@ -160,7 +160,7 @@ export function StudioPanel({ notebookId }: { notebookId: string }) {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto min-h-[450px]">
+        <div className="flex-1 overflow-y-auto min-h-[280px] max-h-[400px]">
           {isGenerating && (
             <div className="flex flex-col items-center justify-center py-12">
               <div className="w-full max-w-md space-y-3">

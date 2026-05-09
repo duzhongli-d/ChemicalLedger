@@ -121,11 +121,23 @@ export default function ResearchPage() {
     setMessages((prev) => [...prev, { q, a: "..." }]);
 
     try {
-      const response = await researchApi.chat(selectedNotebook, q);
-      let fullText = "";
+      // Use native fetch for streaming since axios doesn't support stream in browser
+      const url = new URL(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'}/research/chat`);
+      url.searchParams.set('notebook_id', selectedNotebook);
+      url.searchParams.set('question', q);
 
-      const reader = response.data.getReader();
+      const response = await fetch(url.toString(), {
+        method: 'POST',
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const reader = response.body.getReader();
       const decoder = new TextDecoder();
+      let fullText = "";
 
       setMessages((prev) =>
         prev.map((m, i) => i === prev.length - 1 ? { ...m, a: "" } : m)
@@ -182,7 +194,7 @@ export default function ResearchPage() {
             >
               <option value="">-- {t("notebooks")} --</option>
               {notebooks.map((nb: { id: string; notebook_id: string; name: string }) => (
-                <option key={nb.id} value={nb.notebook_id}>{nb.name}</option>
+                <option key={nb.id} value={nb.id}>{nb.name}</option>
               ))}
             </select>
           </div>
@@ -265,7 +277,7 @@ export default function ResearchPage() {
             ))}
           </div>
 
-          <div className="p-5 border-t border-gray-100">
+          <div className="p-5 border-t border-gray-100 sticky bottom-0 bg-white z-10">
             <div className="flex gap-3">
               <input
                 type="text"
