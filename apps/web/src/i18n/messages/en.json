@@ -146,7 +146,8 @@
       "topicPlaceholder": "Enter topic...",
       "generate": "Generate",
       "generating": "Generating...",
-      "noContent": "Enter a topic, and click Generate"
+      "noContent": "Enter a topic, and click Generate",
+      "selectNotebook": "Please select a research notebook first"
     },
     "sources": "Sources",
     "addSource": "Add Source",

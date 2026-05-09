@@ -222,7 +222,7 @@ export default function ResearchPage() {
       {/* Main Content Area */}
       <div className="flex-1 flex gap-4 min-h-0">
         {/* Sources Panel (left) */}
-        <aside className="w-72 flex-shrink-0 bg-white rounded-2xl border border-gray-200 shadow-sm hover:border-orange-400/50 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col">
+        <aside className="w-96 flex-shrink-0 bg-white rounded-2xl border border-gray-200 shadow-sm hover:border-orange-400/50 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col">
           <div className="px-5 py-4 border-b border-gray-100">
             <h2 className="font-bold text-gray-900 font-mono">{t("sources")}</h2>
           </div>
@@ -231,7 +231,7 @@ export default function ResearchPage() {
               <SourcesPanel notebookId={selectedNotebook} />
             ) : (
               <div className="flex items-center justify-center h-full text-gray-400 text-sm p-6 text-center">
-                {t("studio.noContent")}
+                {t("studio.selectNotebook")}
               </div>
             )}
           </div>
@@ -246,7 +246,7 @@ export default function ResearchPage() {
           <div className="flex-1 overflow-y-auto p-6 space-y-4">
             {messages.length === 0 && (
               <div className="text-center text-gray-400 mt-12">
-                {selectedNotebook ? t("placeholder") : t("studio.noContent")}
+                {selectedNotebook ? t("placeholder") : t("studio.selectNotebook")}
               </div>
             )}
             {messages.map((m, i) => (
@@ -303,7 +303,7 @@ export default function ResearchPage() {
         </main>
 
         {/* Studio Panel (right) */}
-        <aside className="w-80 flex-shrink-0 bg-white rounded-2xl border border-gray-200 shadow-sm hover:border-orange-400/50 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col">
+        <aside className="w-[420px] flex-shrink-0 bg-white rounded-2xl border border-gray-200 shadow-sm hover:border-orange-400/50 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col">
           <div className="px-5 py-4 border-b border-gray-100">
             <h2 className="font-bold text-gray-900 font-mono">{t("studio.learningGuide")}</h2>
           </div>
@@ -312,7 +312,7 @@ export default function ResearchPage() {
               <StudioPanel notebookId={selectedNotebook} />
             ) : (
               <div className="flex items-center justify-center h-full text-gray-400 text-sm p-6 text-center">
-                {t("studio.noContent")}
+                {t("studio.selectNotebook")}
               </div>
             )}
           </div>
@@ -333,7 +333,7 @@ export default function ResearchPage() {
               </span>
             </>
           ) : (
-            <span className="text-gray-400">{t("studio.noContent")}</span>
+            <span className="text-gray-400">{t("studio.selectNotebook")}</span>
           )}
         </div>
         <div className="flex items-center gap-2">

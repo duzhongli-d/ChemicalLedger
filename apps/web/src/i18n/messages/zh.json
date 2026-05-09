@@ -146,7 +146,8 @@
       "topicPlaceholder": "输入主题...",
       "generate": "生成",
       "generating": "正在生成中...",
-      "noContent": "输入主题，然后点击生成"
+      "noContent": "输入主题，然后点击生成",
+      "selectNotebook": "请先选择一个学术空间"
     },
     "sources": "来源列表",
     "addSource": "添加来源",
