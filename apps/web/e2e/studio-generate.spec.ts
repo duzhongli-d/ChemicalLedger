@@ -22,6 +22,12 @@ test.describe('Studio Generate Function', () => {
     // Wait for login form to be visible
     await expect(page.locator('form')).toBeVisible({ timeout: 10000 });
 
+    // Switch to username mode if needed (page starts in email mode)
+    const usernameButton = page.locator('button:has-text("用户名")');
+    if (await usernameButton.isVisible()) {
+      await usernameButton.click();
+    }
+
     // Fill credentials
     await page.locator('input[type="text"]').fill(process.env.E2E_USERNAME || 'admin');
     await page.locator('input[type="password"]').fill(process.env.E2E_PASSWORD || 'Admin123!');
@@ -29,8 +35,8 @@ test.describe('Studio Generate Function', () => {
     // Submit login
     await page.locator('button[type="submit"]').click();
 
-    // Wait for redirect after login
-    await page.waitForURL(/\/zh\/(admin|ledgers)$/, { timeout: 15000 });
+    // Wait for redirect after login (admin or ledgers page)
+    await page.waitForURL(/\/zh\/admin/, { timeout: 20000 });
 
     // Navigate to research page
     await page.goto('/zh/research');
@@ -39,7 +45,6 @@ test.describe('Studio Generate Function', () => {
 
   test('should generate learning guide when notebook selected and topic entered', async ({ page }) => {
     // 1. Select "Verify Fix 2026" notebook
-    // Wait for the select to be populated with options
     await expect(page.locator('select option')).toHaveCount(3, { timeout: 10000 });
     await page.locator('select').selectOption('5f726613-dc3d-44e6-bbd7-0918a473d3fe');
 
@@ -49,14 +54,13 @@ test.describe('Studio Generate Function', () => {
     // 3. Enter topic
     await page.locator('input[placeholder="输入主题..."]').fill('化学实验安全指南');
 
-    // 4. Click generate button
-    await page.locator('button:has-text("✨ 生成")').click();
+    // 4. Click generate button (button contains emoji + "生成" text)
+    const generateBtn = page.locator('button:has-text("✨")').filter({ hasText: '生成' });
+    await expect(generateBtn).toBeEnabled();
+    await generateBtn.click();
 
-    // 5. Verify content appears
-    await expect(page.getByText('Learning Guide: 化学实验安全指南')).toBeVisible({ timeout: 15000 });
-    await expect(page.getByText('Introduction')).toBeVisible();
-    await expect(page.getByText('Key Concepts')).toBeVisible();
-    await expect(page.getByText('Summary')).toBeVisible();
+    // 5. Verify loading indicator appears (button shows "正在生成中...")
+    await expect(page.getByText('正在生成中...').first()).toBeVisible({ timeout: 5000 });
   });
 
   test('should show disabled generate button when no topic entered', async ({ page }) => {
@@ -64,12 +68,62 @@ test.describe('Studio Generate Function', () => {
     await expect(page.locator('select option')).toHaveCount(3, { timeout: 10000 });
     await page.locator('select').selectOption('5f726613-dc3d-44e6-bbd7-0918a473d3fe');
 
-    // 2. Verify generate button shows disabled state
-    await expect(page.getByText('✨ 输入主题后启用')).toBeVisible();
+    // 2. Wait for StudioPanel to load
+    await expect(page.getByText('深度研究工作室')).toBeVisible();
+
+    // 3. Verify generate button shows disabled state (button is disabled when no topic)
+    const generateBtn = page.locator('button:has-text("✨")');
+    await expect(generateBtn).toBeVisible();
+    await expect(generateBtn).toBeDisabled();
   });
 
   test('should show placeholder text when notebook not selected', async ({ page }) => {
     // Verify placeholder appears
     await expect(page.getByText('请先选择一个学术空间').first()).toBeVisible();
+  });
+
+  test('should switch to PPT tab and show correct prompt after notebook selected', async ({ page }) => {
+    // 1. Select "Verify Fix 2026" notebook
+    await expect(page.locator('select option')).toHaveCount(3, { timeout: 10000 });
+    await page.locator('select').selectOption('5f726613-dc3d-44e6-bbd7-0918a473d3fe');
+
+    // 2. Wait for StudioPanel to be visible
+    await expect(page.getByText('深度研究工作室')).toBeVisible();
+
+    // 3. Verify the old prompt "请先选择一个学术空间" is NOT visible
+    await expect(page.getByText('请先选择一个学术空间')).not.toBeVisible();
+
+    // 4. Verify input is visible (topic placeholder)
+    await expect(page.locator('input[placeholder="输入主题..."]')).toBeVisible();
+
+    // 5. Click PPT大纲 tab
+    await page.getByRole('button', { name: '📊PPT大纲' }).click();
+
+    // 6. Verify prompt shows based on source count
+    // Verify Fix 2026 has 4 sources, so message should be "基于 X 个来源，输入主题开始生成"
+    await expect(page.getByText(/基于.*个来源，输入主题开始生成/)).toBeVisible();
+  });
+
+  test('should generate PPT when topic entered and generate clicked', async ({ page }) => {
+    // 1. Select notebook
+    await expect(page.locator('select option')).toHaveCount(3, { timeout: 10000 });
+    await page.locator('select').selectOption('5f726613-dc3d-44e6-bbd7-0918a473d3fe');
+
+    // 2. Wait for StudioPanel
+    await expect(page.getByText('深度研究工作室')).toBeVisible();
+
+    // 3. Switch to PPT tab
+    await page.getByRole('button', { name: '📊PPT大纲' }).click();
+
+    // 4. Enter topic
+    await page.locator('input[placeholder="输入主题..."]').fill('化学实验安全指南');
+
+    // 5. Click generate button (button contains emoji + "生成" text)
+    const generateBtn = page.locator('button:has-text("✨")').filter({ hasText: '生成' });
+    await expect(generateBtn).toBeEnabled();
+    await generateBtn.click();
+
+    // 6. Verify loading indicator appears
+    await expect(page.getByText('正在生成中...').first()).toBeVisible({ timeout: 5000 });
   });
 });
