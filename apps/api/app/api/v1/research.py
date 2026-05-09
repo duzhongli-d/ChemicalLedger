@@ -74,6 +74,23 @@ def create_notebook(
     return nb
 
 
+@router.delete("/notebooks/{notebook_id}")
+def delete_notebook(
+    notebook_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user_required),
+):
+    nb = db.query(ResearchNotebook).filter(
+        ResearchNotebook.notebook_id == notebook_id,
+        ResearchNotebook.user_id == current_user.id,
+    ).first()
+    if not nb:
+        raise HTTPException(status_code=404, detail="Notebook not found")
+    db.delete(nb)
+    db.commit()
+    return {"ok": True}
+
+
 # ─── Sources ──────────────────────────────────────────────────────────────────
 
 
@@ -87,7 +104,7 @@ def list_sources(
     # Verify notebook belongs to user
     notebook = (
         db.query(ResearchNotebook)
-        .filter(ResearchNotebook.notebook_id == str(notebook_id), ResearchNotebook.user_id == current_user.id)
+        .filter(ResearchNotebook.id == notebook_id, ResearchNotebook.user_id == current_user.id)
         .first()
     )
     if not notebook:
@@ -108,7 +125,7 @@ async def upload_source(
     # Verify notebook belongs to user
     notebook = (
         db.query(ResearchNotebook)
-        .filter(ResearchNotebook.notebook_id == str(notebook_id), ResearchNotebook.user_id == current_user.id)
+        .filter(ResearchNotebook.id == notebook_id, ResearchNotebook.user_id == current_user.id)
         .first()
     )
     if not notebook:
@@ -158,7 +175,7 @@ def add_url_source(
     # Verify notebook belongs to user
     notebook = (
         db.query(ResearchNotebook)
-        .filter(ResearchNotebook.notebook_id == str(notebook_id), ResearchNotebook.user_id == current_user.id)
+        .filter(ResearchNotebook.id == notebook_id, ResearchNotebook.user_id == current_user.id)
         .first()
     )
     if not notebook:

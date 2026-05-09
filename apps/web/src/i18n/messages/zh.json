@@ -137,6 +137,7 @@
       "loading": "加载中...",
       "noSources": "暂无来源"
     },
+    "addFirstSource": "点击上方按钮添加第一个来源",
     "studio": {
       "title": "深度研究工作室",
       "subtitle": "基于您的资料生成内容",
