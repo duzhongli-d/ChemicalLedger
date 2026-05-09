@@ -60,7 +60,7 @@ export function SourcesPanel({ notebookId }: { notebookId: string }) {
         <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
           <div className="text-5xl mb-4">📚</div>
           <p className="text-sm text-gray-500 mb-2">{t("common.noSources")}</p>
-          <p className="text-xs text-gray-400">{t("addFirstSource") || "Click the button above to add your first source"}</p>
+          <p className="text-xs text-gray-400">{t("common.addFirstSource") || "点击上方按钮添加第一个来源"}</p>
         </div>
       ) : (
         <div className="flex-1 overflow-y-auto space-y-4">
