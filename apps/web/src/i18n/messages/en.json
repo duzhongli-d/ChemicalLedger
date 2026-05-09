@@ -135,7 +135,8 @@
     "common": {
       "noData": "No data",
       "loading": "Loading...",
-      "noSources": "No sources"
+      "noSources": "No sources",
+      "addFirstSource": "Click the button above to add your first source"
     },
     "studio": {
       "title": "Deep Research Studio",
