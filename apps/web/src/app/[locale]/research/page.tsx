@@ -162,7 +162,7 @@ export default function ResearchPage() {
   const questionsRemaining = quota ? quota.limit - quota.used_today : 0;
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)] gap-4">
+    <div className="flex flex-col min-h-screen gap-4 pb-4">
       {/* Header Bar */}
       <header className="flex-shrink-0 bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -220,7 +220,7 @@ export default function ResearchPage() {
       </header>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex gap-4 min-h-0">
+      <div className="flex-1 flex gap-4">
         {/* Sources Panel (left) */}
         <aside className="w-96 flex-shrink-0 bg-white rounded-2xl border border-gray-200 shadow-sm hover:border-orange-400/50 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col">
           <div className="px-5 py-4 border-b border-gray-100">
