@@ -303,7 +303,7 @@ export default function ResearchPage() {
         </main>
 
         {/* Studio Panel (right) */}
-        <aside className="w-[420px] flex-shrink-0 bg-white rounded-2xl border border-gray-200 shadow-sm hover:border-orange-400/50 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col">
+        <aside className="w-[520px] flex-shrink-0 bg-white rounded-2xl border border-gray-200 shadow-sm hover:border-orange-400/50 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col">
           <div className="px-5 py-4 border-b border-gray-100">
             <h2 className="font-bold text-gray-900 font-mono">{t("studio.learningGuide")}</h2>
           </div>
