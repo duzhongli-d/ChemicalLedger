@@ -127,7 +127,10 @@ export function SourcesPanel({ notebookId }: { notebookId: string }) {
 
       <SourceUploadModal
         isOpen={uploadModalOpen}
-        onClose={() => setUploadModalOpen(false)}
+        onClose={() => {
+          setUploadModalOpen(false);
+          queryClient.invalidateQueries({ queryKey: ["sources", notebookId] });
+        }}
         notebookId={notebookId}
       />
     </div>

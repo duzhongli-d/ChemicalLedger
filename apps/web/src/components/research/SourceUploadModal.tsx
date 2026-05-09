@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { researchApi } from "@/lib/api-client";
 
@@ -21,6 +21,7 @@ export function SourceUploadModal({ isOpen, onClose, notebookId }: SourceUploadM
   const [fileName, setFileName] = useState("");
   const [dragActive, setDragActive] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
@@ -69,6 +70,7 @@ export function SourceUploadModal({ isOpen, onClose, notebookId }: SourceUploadM
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setDragActive(false);
     const file = e.dataTransfer.files[0];
     if (file) handleFile(file);
@@ -174,6 +176,7 @@ export function SourceUploadModal({ isOpen, onClose, notebookId }: SourceUploadM
           {mode === "file" && (
             <div>
               <input
+                ref={fileInputRef}
                 type="file"
                 id="source-file-input"
                 className="hidden"
@@ -182,7 +185,7 @@ export function SourceUploadModal({ isOpen, onClose, notebookId }: SourceUploadM
                 disabled={uploadMutation.isPending}
               />
               <label
-                htmlFor="source-file-input"
+                onClick={() => fileInputRef.current?.click()}
                 onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
                 onDragLeave={() => setDragActive(false)}
                 onDrop={handleDrop}
