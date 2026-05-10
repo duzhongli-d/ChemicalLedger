@@ -196,13 +196,17 @@ export default function AdminLedgersPage() {
   const totalItems = paginatedData?.total ?? 0;
   const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
 
-  // Get unique level2 categories for filter
-  const categoryOptions = useMemo(() => {
-    const cats = new Set<string>();
+  // Group categories by level1 for optgroup display
+  const groupedCategories = useMemo(() => {
+    const result: Record<string, CategoryResponse[]> = {};
     (categoriesData ?? []).forEach((c: CategoryResponse) => {
-      if (c.level2) cats.add(c.level2);
+      if (!result[c.level1]) result[c.level1] = [];
+      result[c.level1].push(c);
     });
-    return Array.from(cats).sort();
+    return Object.keys(result).sort().reduce((acc, key) => {
+      acc[key] = result[key].sort((a, b) => a.level2.localeCompare(b.level2));
+      return acc;
+    }, {} as Record<string, CategoryResponse[]>);
   }, [categoriesData]);
 
   // Calculate counts for each tab from full dataset
@@ -409,13 +413,15 @@ export default function AdminLedgersPage() {
                 setCategoryFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-4 py-2.5 border border-slate-200 rounded-lg font-mono-custom text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all bg-white"
+              className="px-4 py-2.5 border border-slate-200 rounded-lg font-mono-custom text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 transition-all bg-white"
             >
               <option value="">全部品类</option>
-              {categoryOptions.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
+              {Object.entries(groupedCategories).map(([level1, cats]) => (
+                <optgroup key={level1} label={level1}>
+                  {cats.map((c) => (
+                    <option key={c.id} value={c.level2}>{c.level2}</option>
+                  ))}
+                </optgroup>
               ))}
             </select>
 
