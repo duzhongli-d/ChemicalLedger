@@ -7,6 +7,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { categoryApi, ledgerApi } from "@/lib/api-client";
 import { useAuthStore } from "@/lib/auth-store";
 import { Link } from "@/i18n/navigation";
+import { Header } from "@/components/nav/header";
 
 export default function CreateLedgerPage() {
   const t = useTranslations("ledger");
@@ -23,10 +24,11 @@ export default function CreateLedgerPage() {
     quantity: "1",
     category_id: "",
     cert_expiry_date: "",
-    open_date: "",
+    effective_expiry_date: "",
     remarks: "",
   });
   const [error, setError] = useState("");
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   const { data: categories = [] } = useQuery({
     queryKey: ["categories"],
@@ -41,14 +43,14 @@ export default function CreateLedgerPage() {
 
   const createMutation = useMutation({
     mutationFn: () => {
-      const { open_date, ...rest } = form;
-      const payload = { ...rest, quantity: Number(form.quantity) };
-      if (open_date) {
-        return ledgerApi.create({ ...payload, open_date });
-      }
+      const payload: Record<string, unknown> = { ...form, quantity: Number(form.quantity) };
+      Object.keys(payload).forEach((k) => payload[k] === "" && delete payload[k]);
       return ledgerApi.create(payload);
     },
-    onSuccess: () => router.push("/"),
+    onSuccess: () => {
+      setSaveSuccess(true);
+      setTimeout(() => router.push("/ledgers"), 1000);
+    },
     onError: (err: unknown) => setError(err instanceof Error ? err.message : "创建失败"),
   });
 
@@ -62,90 +64,267 @@ export default function CreateLedgerPage() {
   const set = (key: string, value: string) => setForm({ ...form, [key]: value });
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="flex items-center gap-4">
-        <Link href="/" className="text-gray-400 hover:text-gray-600">← {t("back")}</Link>
-        <h1 className="text-2xl font-bold text-gray-900">{t("createManual")}</h1>
-      </div>
+    <div className="min-h-screen bg-slate-100">
+      <Header />
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fields.productName")} *</label>
-              <input required type="text" value={form.product_name} onChange={(e) => set("product_name", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+      <main className="max-w-3xl mx-auto px-4 py-8 space-y-6">
+        {/* Page Header */}
+        <div className="flex items-center gap-4">
+          <Link
+            href="/ledgers"
+            className="group flex items-center gap-2 text-slate-400 hover:text-slate-600 transition-colors"
+          >
+            <div className="p-1.5 rounded-lg bg-white border border-slate-200 group-hover:border-slate-300 transition-colors">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
             </div>
+          </Link>
+
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-10 rounded-full bg-gradient-to-b from-teal-500 to-orange-500" />
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fields.batchNo")} *</label>
-              <input required type="text" value={form.batch_no} onChange={(e) => set("batch_no", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{t("createManual")}</h1>
+              <p className="text-sm text-slate-500">新建化学品台账记录</p>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fields.casNo")} *</label>
-              <input required type="text" value={form.cas_no} onChange={(e) => set("cas_no", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+          </div>
+        </div>
+
+        {/* Form Card */}
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <form onSubmit={handleSubmit} className="p-6 space-y-6">
+            {/* Basic Info Section */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
+                <div className="w-1 h-4 rounded-full bg-orange-500" />
+                <h3 className="text-sm font-semibold text-slate-700">基本信息</h3>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-medium text-slate-500 mb-1.5">
+                    {t("fields.productName")} *
+                  </label>
+                  <input
+                    required
+                    type="text"
+                    value={form.product_name}
+                    onChange={(e) => set("product_name", e.target.value)}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow"
+                    placeholder="输入产品名称"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-slate-500 mb-1.5">
+                    {t("fields.batchNo")} *
+                  </label>
+                  <input
+                    required
+                    type="text"
+                    value={form.batch_no}
+                    onChange={(e) => set("batch_no", e.target.value)}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 font-mono focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow"
+                    placeholder="批号"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-slate-500 mb-1.5">
+                    {t("fields.casNo")}
+                  </label>
+                  <input
+                    type="text"
+                    value={form.cas_no}
+                    onChange={(e) => set("cas_no", e.target.value)}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 font-mono focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow"
+                    placeholder="CAS号"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-slate-500 mb-1.5">
+                    {t("fields.weightCapacity")}
+                  </label>
+                  <input
+                    type="text"
+                    value={form.weight_capacity}
+                    onChange={(e) => set("weight_capacity", e.target.value)}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow"
+                    placeholder="规格/容量"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-slate-500 mb-1.5">
+                    {t("fields.supplier")}
+                  </label>
+                  <input
+                    type="text"
+                    value={form.supplier}
+                    onChange={(e) => set("supplier", e.target.value)}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow"
+                    placeholder="供应商"
+                  />
+                </div>
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fields.weightCapacity")} *</label>
-              <input required type="text" value={form.weight_capacity} onChange={(e) => set("weight_capacity", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fields.supplier")} *</label>
-              <input required type="text" value={form.supplier} onChange={(e) => set("supplier", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fields.quantity")}</label>
-              <input type="number" min="1" value={form.quantity} onChange={(e) => set("quantity", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fields.category")} *</label>
-              <select required value={form.category_id} onChange={(e) => set("category_id", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500">
-                <option value="">-- 选择品类 --</option>
-                {Object.entries(grouped).map(([level1, cats]) => (
-                  <optgroup key={level1} label={level1}>
-                    {cats.map((c: { id: string; level2: string }) => (
-                      <option key={c.id} value={c.id}>{c.level2}</option>
+
+            {/* Classification Section */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
+                <div className="w-1 h-4 rounded-full bg-teal-500" />
+                <h3 className="text-sm font-semibold text-slate-700">分类与库存</h3>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-slate-500 mb-1.5">
+                    {t("fields.category")} *
+                  </label>
+                  <select
+                    required
+                    value={form.category_id}
+                    onChange={(e) => set("category_id", e.target.value)}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow"
+                  >
+                    <option value="">-- 选择品类 --</option>
+                    {Object.entries(grouped).map(([level1, cats]) => (
+                      <optgroup key={level1} label={level1}>
+                        {(cats as { id: string; level2: string }[]).map((c) => (
+                          <option key={c.id} value={c.id}>{c.level2}</option>
+                        ))}
+                      </optgroup>
                     ))}
-                  </optgroup>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fields.certExpiryDate")} *</label>
-              <input required type="date" value={form.cert_expiry_date} onChange={(e) => set("cert_expiry_date", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fields.openDate")}</label>
-              <input type="date" value={form.open_date} onChange={(e) => set("open_date", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fields.remarks")}</label>
-              <textarea rows={3} value={form.remarks} onChange={(e) => set("remarks", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
-            </div>
-          </div>
+                  </select>
+                </div>
 
-          {error && <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-2 rounded-lg">{error}</div>}
+                <div>
+                  <label className="block text-xs font-medium text-slate-500 mb-1.5">
+                    {t("fields.quantity")}
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={form.quantity}
+                    onChange={(e) => set("quantity", e.target.value)}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow"
+                  />
+                </div>
+              </div>
+            </div>
 
-          <div className="flex gap-3 pt-2">
-            <button type="submit" disabled={createMutation.isPending}
-              className="flex-1 bg-blue-700 text-white py-2 rounded-lg font-medium hover:bg-blue-800 disabled:opacity-50">
-              {createMutation.isPending ? tCommon("loading") : tCommon("submit")}
-            </button>
-            <Link href="/"
-              className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg font-medium text-center hover:bg-gray-50">
-              {tCommon("cancel")}
-            </Link>
-          </div>
-        </form>
-      </div>
+            {/* Dates Section */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
+                <div className="w-1 h-4 rounded-full bg-amber-500" />
+                <h3 className="text-sm font-semibold text-slate-700">有效期信息</h3>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-slate-500 mb-1.5">
+                    {t("fields.certExpiryDate")} *
+                  </label>
+                  <input
+                    required
+                    type="date"
+                    value={form.cert_expiry_date}
+                    onChange={(e) => set("cert_expiry_date", e.target.value)}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-slate-500 mb-1.5">
+                    {t("fields.effectiveExpiryDate")}
+                  </label>
+                  <input
+                    type="date"
+                    value={form.effective_expiry_date}
+                    onChange={(e) => set("effective_expiry_date", e.target.value)}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Remarks Section */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
+                <div className="w-1 h-4 rounded-full bg-slate-400" />
+                <h3 className="text-sm font-semibold text-slate-700">{t("fields.remarks")}</h3>
+              </div>
+
+              <div>
+                <textarea
+                  rows={3}
+                  value={form.remarks}
+                  onChange={(e) => set("remarks", e.target.value)}
+                  className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow resize-none"
+                  placeholder="添加备注信息..."
+                />
+              </div>
+            </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {error}
+              </div>
+            )}
+
+            {/* Success Message */}
+            {saveSuccess && (
+              <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                创建成功，即将跳转...
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 pt-2">
+              <button
+                type="submit"
+                disabled={createMutation.isPending || saveSuccess}
+                className="flex-1 inline-flex items-center justify-center gap-2 bg-teal-500 hover:bg-teal-600 text-white py-3 rounded-xl font-semibold transition-colors shadow-lg shadow-teal-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {createMutation.isPending ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    {tCommon("loading")}
+                  </>
+                ) : saveSuccess ? (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    创建成功
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    {tCommon("submit")}
+                  </>
+                )}
+              </button>
+              <Link
+                href="/ledgers"
+                className="flex-1 inline-flex items-center justify-center gap-2 border border-slate-200 text-slate-600 py-3 rounded-xl font-semibold hover:bg-slate-50 transition-colors"
+              >
+                {tCommon("cancel")}
+              </Link>
+            </div>
+          </form>
+        </div>
+      </main>
     </div>
   );
 }
