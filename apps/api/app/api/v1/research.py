@@ -2,7 +2,7 @@ import os
 import asyncio
 import json
 import httpx
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Request, Body
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Request, Body, BackgroundTasks
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
@@ -10,10 +10,11 @@ from datetime import date
 from uuid import UUID
 from typing import Optional
 from app.db.session import get_db
-from app.db.models import User, ResearchNotebook, DailyUsage, UserRole, ResearchSource, ResearchSourceType, DailyUsage
+from app.db.models import User, ResearchNotebook, DailyUsage, UserRole, ResearchSource, ResearchSourceType, ResearchSourceStatus, DailyUsage
 from app.schemas.schemas import QuotaResponse
 from app.api.deps import get_current_user_required
 from app.services import research_service
+from app.services.background_processor import process_single_source
 from app.core.config import get_settings
 
 router = APIRouter()
@@ -120,6 +121,7 @@ async def upload_source(
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user_required),
+    background_tasks: BackgroundTasks = None,
 ):
     """Upload a file source (PDF, TEXT, VIDEO, AUDIO)."""
     # Verify notebook belongs to user
@@ -160,6 +162,7 @@ async def upload_source(
         file_size=file_size,
         extra_data={"content_type": content_type},
     )
+    background_tasks.add_task(process_single_source, source.id, db)
     return source
 
 
@@ -170,6 +173,7 @@ def add_url_source(
     current_user: User = Depends(get_current_user_required),
     url: str = Body(...),
     title: Optional[str] = Body(None),
+    background_tasks: BackgroundTasks = None,
 ):
     """Add a URL source."""
     # Verify notebook belongs to user
@@ -189,6 +193,7 @@ def add_url_source(
         file_name=title or url,
         extra_data={"url": url},
     )
+    background_tasks.add_task(process_single_source, source.id, db)
     return source
 
 
@@ -214,6 +219,75 @@ def delete_source(
 
     research_service.delete_source(db, source_id)
     return {"message": "Source deleted successfully"}
+
+
+@router.post("/sources/{source_id}/process")
+async def trigger_source_processing(
+    source_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user_required),
+    background_tasks: BackgroundTasks = None,
+):
+    """Manually trigger NotebookLM processing for a single source."""
+    source = db.query(ResearchSource).filter(ResearchSource.id == source_id).first()
+    if not source:
+        raise HTTPException(status_code=404, detail="Source not found")
+
+    notebook = db.query(ResearchNotebook).filter(
+        ResearchNotebook.id == source.notebook_id,
+        ResearchNotebook.user_id == current_user.id,
+    ).first()
+    if not notebook:
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    if source.status == ResearchSourceStatus.READY:
+        return {"message": "Already processed", "notebooklm_id": source.notebooklm_id}
+
+    # Reset ERROR status for manual retry
+    if source.status == ResearchSourceStatus.ERROR:
+        source.status = ResearchSourceStatus.PENDING
+        source.extra_data = {**(source.extra_data or {}), "retries": 0}
+        db.commit()
+
+    background_tasks.add_task(process_single_source, source_id, db)
+    return {"message": "Processing started"}
+
+
+@router.post("/sources/process-pending")
+async def trigger_all_pending(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user_required),
+    background_tasks: BackgroundTasks = None,
+):
+    """Batch trigger processing for all PENDING sources (admin only)."""
+    if current_user.role != UserRole.admin:
+        raise HTTPException(status_code=403, detail="Admin only")
+
+    pending = db.query(ResearchSource).filter(
+        ResearchSource.status == ResearchSourceStatus.PENDING
+    ).all()
+
+    for source in pending:
+        background_tasks.add_task(process_single_source, source.id, db)
+
+    return {"message": f"Queued {len(pending)} sources"}
+
+
+@router.get("/sources/{source_id}/status")
+def get_source_status(
+    source_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user_required),
+):
+    """Get current processing status of a source."""
+    source = db.query(ResearchSource).filter(ResearchSource.id == source_id).first()
+    if not source:
+        raise HTTPException(status_code=404, detail="Source not found")
+    return {
+        "status": source.status,
+        "notebooklm_id": source.notebooklm_id,
+        "extra_data": source.extra_data,
+    }
 
 
 # ─── Chat ─────────────────────────────────────────────────────────────────────

@@ -56,6 +56,13 @@ def get_source(db: Session, source_id: uuid.UUID) -> Optional[ResearchSource]:
     return db.query(ResearchSource).filter(ResearchSource.id == source_id).first()
 
 
+def get_pending_sources(db: Session) -> list[ResearchSource]:
+    """Get all sources with PENDING status."""
+    return db.query(ResearchSource).filter(
+        ResearchSource.status == ResearchSourceStatus.PENDING
+    ).all()
+
+
 def delete_source(db: Session, source_id: uuid.UUID) -> bool:
     """Delete a source."""
     source = get_source(db, source_id)
