@@ -94,7 +94,7 @@ export default function AdminLedgerCreatePage() {
           <div className="flex items-center gap-3">
             <div className="w-1 h-10 rounded-full bg-gradient-to-b from-blue-600 to-teal-500" />
             <div>
-              <h1 className="text-2xl font-bold text-slate-900 font-mono-custom tracking-tight">{t("create")}台账</h1>
+              <h1 className="text-2xl font-bold text-slate-900 font-mono-custom tracking-tight">{t("create")}</h1>
               <p className="text-sm text-slate-500 font-mono-custom">新建台账记录</p>
             </div>
           </div>
