@@ -7,6 +7,7 @@ interface SearchCreateBarProps {
   onSearchChange: (value: string) => void;
   isLoggedIn?: boolean;
   onProtectedAction?: () => void;
+  rightContent?: React.ReactNode;
   className?: string;
 }
 
@@ -15,6 +16,7 @@ export function SearchCreateBar({
   onSearchChange,
   isLoggedIn = false,
   onProtectedAction,
+  rightContent,
   className = "",
 }: SearchCreateBarProps) {
   const t = useTranslations("ledger");
@@ -45,6 +47,8 @@ export function SearchCreateBar({
           className="w-full pl-10 pr-4 py-2.5 bg-card border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
         />
       </div>
+
+      {rightContent}
 
       {/* Create Button */}
       <button

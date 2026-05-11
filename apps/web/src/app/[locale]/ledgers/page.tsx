@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ledgerApi } from "@/lib/api-client";
+import { ledgerApi, categoryApi, CategoryResponse } from "@/lib/api-client";
 import { Header } from "@/components/nav/header";
 import { StatCard } from "@/components/layout/StatCard";
 import { FilterTabs, FilterTabValue } from "@/components/layout/FilterTabs";
@@ -34,6 +34,7 @@ export default function LedgersPage() {
 
   const [activeTab, setActiveTab] = useState<FilterTabValue>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -50,6 +51,25 @@ export default function LedgersPage() {
     queryKey: ["ledgers"],
     queryFn: () => ledgerApi.list().then((r) => r.data),
   });
+
+  // Fetch categories for filter dropdown
+  const { data: categoriesData } = useQuery({
+    queryKey: ["categories-public"],
+    queryFn: () => categoryApi.list().then((r) => r.data as CategoryResponse[]),
+  });
+
+  // Group categories by level1 for optgroup display
+  const groupedCategories = useMemo(() => {
+    const result: Record<string, CategoryResponse[]> = {};
+    (categoriesData ?? []).forEach((c: CategoryResponse) => {
+      if (!result[c.level1]) result[c.level1] = [];
+      result[c.level1].push(c);
+    });
+    return Object.keys(result).sort().reduce((acc, key) => {
+      acc[key] = result[key].sort((a, b) => a.level2.localeCompare(b.level2));
+      return acc;
+    }, {} as Record<string, CategoryResponse[]>);
+  }, [categoriesData]);
 
   // Filter and compute stats
   const { filteredLedgers, counts } = useMemo(() => {
@@ -100,6 +120,11 @@ export default function LedgersPage() {
       );
     }
 
+    // Apply category filter
+    if (categoryFilter) {
+      filtered = filtered.filter((l: { category?: { level2?: string } }) => l.category?.level2 === categoryFilter);
+    }
+
     return {
       filteredLedgers: filtered,
       counts: {
@@ -111,7 +136,7 @@ export default function LedgersPage() {
         archived: archived.length,
       },
     };
-  }, [ledgersData, activeTab, searchQuery]);
+  }, [ledgersData, activeTab, searchQuery, categoryFilter]);
 
   // Pagination
   const totalPages = Math.ceil(filteredLedgers.length / PAGE_SIZE);
@@ -217,7 +242,7 @@ export default function LedgersPage() {
           counts={counts}
         />
 
-        {/* Search Bar */}
+        {/* Search Bar with Category Filter */}
         <SearchCreateBar
           searchValue={searchQuery}
           onSearchChange={(v) => {
@@ -226,6 +251,25 @@ export default function LedgersPage() {
           }}
           isLoggedIn={isAuthenticated()}
           onProtectedAction={handleProtectedAction}
+          rightContent={
+            <select
+              value={categoryFilter}
+              onChange={(e) => {
+                setCategoryFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="px-4 py-2.5 bg-card border border-border rounded-lg text-sm text-foreground font-mono-custom focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 transition-all min-w-[200px]"
+            >
+              <option value="">全部品类</option>
+              {Object.entries(groupedCategories).map(([level1, cats]) => (
+                <optgroup key={level1} label={level1}>
+                  {cats.map((c) => (
+                    <option key={c.id} value={c.level2}>{c.level2}</option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+          }
         />
 
         {/* Data Table */}
