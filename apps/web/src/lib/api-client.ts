@@ -186,6 +186,17 @@ export interface Ledger {
 export const adminLedgerApi = {
   list: (params?: { page?: number; page_size?: number; status?: string; search?: string; category?: string }) =>
     api.get<PaginatedResponse<Ledger>>("/admin/ledgers/", { params }),
+  create: (data: {
+    product_name: string;
+    batch_no: string;
+    cas_no?: string;
+    weight_capacity?: string;
+    supplier?: string;
+    quantity?: number;
+    category_id: string;
+    cert_expiry_date?: string;
+    remarks?: string;
+  }) => api.post<Ledger[]>("/admin/ledgers/", data),
   update: (id: string, data: Record<string, unknown>) =>
     api.patch(`/admin/ledgers/${id}`, data),
   batchArchive: (ledgerIds: string[]) =>

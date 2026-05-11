@@ -66,13 +66,14 @@ class CategoryResponse(BaseModel):
 class LedgerCreate(BaseModel):
     product_name: str
     batch_no: str
-    cas_no: str
-    weight_capacity: str
-    supplier: str
+    cas_no: Optional[str] = None
+    weight_capacity: Optional[str] = None
+    supplier: Optional[str] = None
     quantity: int = 1
     category_id: UUID
     cert_expiry_date: Optional[date] = None
     open_date: Optional[date] = None
+    remarks: Optional[str] = None
 
 
 class LedgerUpdate(BaseModel):

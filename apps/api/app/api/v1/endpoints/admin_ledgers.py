@@ -7,11 +7,32 @@ from datetime import datetime, date
 from app.db.session import get_db
 from app.api.deps import get_admin_user
 from app.db.models import Ledger, Category, User, LedgerStatus
-from app.schemas.schemas import BatchArchiveRequest, LedgerResponse, PaginatedLedgerResponse
+from app.schemas.schemas import BatchArchiveRequest, LedgerCreate, LedgerResponse, PaginatedLedgerResponse
 from app.services.audit_service import AuditService
-from app.services.ledger_service import import_ledger_batch
+from app.services.ledger_service import create_ledger, import_ledger_batch
 
 router = APIRouter()
+
+
+@router.post("/", response_model=list[LedgerResponse])
+def create_ledger_endpoint(
+    data: LedgerCreate,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_admin_user),
+):
+    """
+    Create one or more ledger entries (quantity > 1 creates sequential batch numbers).
+    Admin-only endpoint.
+    """
+    try:
+        ledgers = create_ledger(db, data.model_dump(), current_user.id)
+        db.commit()
+        return [LedgerResponse.model_validate(l) for l in ledgers]
+    except Exception as e:
+        db.rollback()
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.get("/", response_model=PaginatedLedgerResponse)

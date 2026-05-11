@@ -137,7 +137,7 @@ def create_ledger(db: Session, data: dict, created_by_id: UUID) -> list[Ledger]:
     if isinstance(category_id, str):
         category_id = UUID(category_id)
     created_at = datetime.now(timezone.utc)
-    cert_expiry = data.get("cert_expiry_date")
+    cert_expiry = data.get("cert_expiry_date") or date(2099, 12, 31)
     open_date = data.get("open_date")
 
     ledgers = []
@@ -149,9 +149,9 @@ def create_ledger(db: Session, data: dict, created_by_id: UUID) -> list[Ledger]:
             internal_batch_no=batch_no,
             product_name=data["product_name"],
             batch_no=data["batch_no"],
-            cas_no=data["cas_no"],
-            weight_capacity=data["weight_capacity"],
-            supplier=data["supplier"],
+            cas_no=data.get("cas_no") or "",
+            weight_capacity=data.get("weight_capacity") or "",
+            supplier=data.get("supplier") or "",
             quantity=1,
             category_id=category_id,
             cert_expiry_date=cert_expiry,
