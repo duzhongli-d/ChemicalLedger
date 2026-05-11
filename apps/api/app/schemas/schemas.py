@@ -71,7 +71,7 @@ class LedgerCreate(BaseModel):
     supplier: str
     quantity: int = 1
     category_id: UUID
-    cert_expiry_date: date
+    cert_expiry_date: Optional[date] = None
     open_date: Optional[date] = None
 
 

@@ -299,10 +299,9 @@ export default function EditLedgerPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-slate-500 mb-1.5">
-                    {t("fields.certExpiryDate")} *
+                    {t("fields.certExpiryDate")}
                   </label>
                   <input
-                    required
                     type="date"
                     value={form.cert_expiry_date}
                     onChange={(e) => set("cert_expiry_date", e.target.value)}

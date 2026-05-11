@@ -53,12 +53,14 @@ def create_ledger(db: Session, data: dict, created_by_id: UUID) -> list[Ledger]:
     if isinstance(category_id, str):
         category_id = UUID(category_id)
     created_at = datetime.now(timezone.utc)
-    cert_expiry = data["cert_expiry_date"]
+    cert_expiry = data.get("cert_expiry_date")
     open_date = data.get("open_date")
 
     ledgers = []
     for i, batch_no in enumerate(batch_nos):
-        expiry = calculate_expiry_date(db, category_id, created_at, open_date, cert_expiry)
+        # Use far-future sentinel so MIN(sop_expiry, date.max) = sop_expiry when cert_expiry is None
+        _sentinel = date.max if cert_expiry is None else cert_expiry
+        expiry = calculate_expiry_date(db, category_id, created_at, open_date, _sentinel)
         ledger = Ledger(
             internal_batch_no=batch_no,
             product_name=data["product_name"],

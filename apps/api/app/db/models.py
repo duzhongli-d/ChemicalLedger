@@ -72,7 +72,7 @@ class Ledger(Base):
     supplier = Column(String(255), nullable=False)
     quantity = Column(Integer, default=1)
     category_id = Column(Uuid, ForeignKey("categories.id"), nullable=False)
-    cert_expiry_date = Column(Date, nullable=False)
+    cert_expiry_date = Column(Date, nullable=True)
     open_date = Column(Date, nullable=True)
     effective_expiry_date = Column(Date, nullable=False)
     is_opened = Column(Boolean, default=False)
