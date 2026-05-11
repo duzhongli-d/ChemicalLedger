@@ -1,4 +1,5 @@
 import axios from "axios";
+import { format } from "date-fns";
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1",
@@ -189,6 +190,24 @@ export const adminLedgerApi = {
     api.patch(`/admin/ledgers/${id}`, data),
   batchArchive: (ledgerIds: string[]) =>
     api.post("/admin/ledgers/batch-archive", { ledger_ids: ledgerIds }),
+  importLedgers: (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return api.post("/admin/ledgers/import", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  },
+  downloadImportTemplate: () => {
+    const headers = ["product_name", "batch_no", "cas_no", "weight_capacity", "supplier", "category", "quantity", "cert_expiry_date", "open_date", "remarks"];
+    const sample = ["乙醇", "ETH-2026-001", "64-17-5", "500mL", "Sigma-Aldrich", "实验用溶液 / 一般限度试验用溶液", "1", "2028-12-31", "", ""];
+    const csvContent = [headers.join(","), sample.join(",")].join("\n");
+    const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `台账导入模板_${format(new Date(), "yyyyMMdd")}.csv`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  },
 };
 
 // ─── Admin Audit Logs ────────────────────────────────────────────────────────

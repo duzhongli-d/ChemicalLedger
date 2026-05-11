@@ -34,6 +34,12 @@ const tabIcons: Record<Tab, string> = {
   "ppt": "📊",
 };
 
+const getActiveContent = (tab: Tab, content: GeneratedContent | null) => {
+  if (tab === "learning-guide") return content?.learningGuide;
+  if (tab === "mindmap") return content?.mindmap;
+  return content?.ppt;
+};
+
 export function StudioPanel({ notebookId }: { notebookId: string }) {
   const t = useTranslations("research");
   const [activeTab, setActiveTab] = useState<Tab>("learning-guide");
@@ -172,7 +178,7 @@ export function StudioPanel({ notebookId }: { notebookId: string }) {
             </div>
           )}
 
-          {!isGenerating && !content && notebookId && (
+          {!isGenerating && !getActiveContent(activeTab, content) && notebookId && (
             <div className="flex flex-col items-center justify-center py-12">
               <div className="relative mb-6">
                 <div className="text-6xl">📚</div>

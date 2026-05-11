@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     NOTEBOOKLM_BASE_URL: str = "https://notebooklm.google.com/api/v1"
 
     # Gemini
-    GEMINI_API_KEY: str = ""
+    GEMINI_API_KEY: str = "AIzaSyAV75Lnnc8GPVIvpnAE05BJRjWhJSgvT0U"
     GEMINI_BASE_URL: str = "https://generativelanguage.googleapis.com"
 
     # SendGrid

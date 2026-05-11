@@ -124,7 +124,7 @@ function MetricCard({ metric, index, isVisible }: { metric: MetricCard; index: n
       </div>
 
       {/* Card content */}
-      <div className="relative z-10 bg-white rounded-2xl p-6 sm:p-8 text-center border border-slate-200 hover:border-orange-400/50 transition-colors shadow-sm">
+      <div className="relative z-10 bg-card rounded-2xl p-6 sm:p-8 text-center border border-border hover:border-orange-400/50 transition-colors shadow-sm">
         <div className="relative">
           <div className="mt-1">
             {metric.hasError ? (
@@ -311,7 +311,7 @@ export function TechMetrics() {
                 </div>
 
                 {/* Card content placeholder */}
-                <div className="relative z-10 bg-white rounded-2xl p-6 sm:p-8 text-center border border-slate-200 shadow-sm">
+                <div className="relative z-10 bg-card rounded-2xl p-6 sm:p-8 text-center border border-border shadow-sm">
                   <div className="h-[48px] w-full bg-slate-100 rounded-lg animate-pulse mb-2" />
                   <div className="h-[16px] w-24 bg-slate-100 rounded animate-pulse mx-auto" />
                 </div>

@@ -234,18 +234,6 @@ export default function CreateLedgerPage() {
                     className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow"
                   />
                 </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-slate-500 mb-1.5">
-                    {t("fields.effectiveExpiryDate")}
-                  </label>
-                  <input
-                    type="date"
-                    value={form.effective_expiry_date}
-                    onChange={(e) => set("effective_expiry_date", e.target.value)}
-                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow"
-                  />
-                </div>
               </div>
 
               {/* Effective Expiry Date Info */}

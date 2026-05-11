@@ -116,6 +116,8 @@
     "classification": "Classification",
     "metadata": "Metadata",
     "effectiveExpiryInfo": "Expiry Info",
+    "effectiveExpiryRule": "Calculation Rule",
+    "effectiveExpiryDesc": "Not opened: use cert expiry date; After opening: use the earlier of cert expiry date or 180 days from opening date",
     "operationLogs": "Operation Logs",
     "changedFields": "Changed Fields",
     "system": "System"

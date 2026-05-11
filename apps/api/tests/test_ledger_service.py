@@ -10,6 +10,7 @@ from app.services.ledger_service import (
     calculate_expiry_date,
     create_ledger,
     update_open_date,
+    parse_date,
 )
 
 
@@ -164,3 +165,19 @@ def test_update_open_date(db, category, user):
     assert updated.open_date_entered_by_id == user.id
     # category opened_shelf_months=3, so Mar 1 + 3mo = Jun 1 2026 (cert is 2028, so min=Jun1)
     assert updated.effective_expiry_date == date(2026, 6, 1)
+
+
+def test_parse_date_with_datetime():
+    assert parse_date(datetime(2026, 12, 31)) == date(2026, 12, 31)
+
+
+def test_parse_date_with_string():
+    assert parse_date("2026-12-31") == date(2026, 12, 31)
+    assert parse_date("2026/12/31") == date(2026, 12, 31)
+    assert parse_date("2026.12.31") == date(2026, 12, 31)
+
+
+def test_parse_date_with_none():
+    assert parse_date(None) is None
+    assert parse_date("") is None
+    assert parse_date("   ") is None

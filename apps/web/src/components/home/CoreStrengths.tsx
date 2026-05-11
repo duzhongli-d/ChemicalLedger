@@ -40,7 +40,7 @@ function StrengthCard({ strength, index, isVisible, t }: StrengthCardProps) {
   return (
     <div
       className={`
-        relative group overflow-hidden rounded-2xl p-8 bg-white border border-slate-200
+        relative group overflow-hidden rounded-2xl p-8 bg-card border border-border
         transition-all duration-500 ease-out
         hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02]
         ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'}

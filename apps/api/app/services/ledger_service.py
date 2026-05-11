@@ -5,6 +5,90 @@ from uuid import UUID
 from app.db.models import Ledger, Category, User, LedgerStatus
 
 
+def parse_date(value) -> date | None:
+    """Parse Excel datetime objects or string dates in multiple formats."""
+    if value is None or (isinstance(value, str) and not value.strip()):
+        return None
+    if isinstance(value, datetime):
+        return value.date()
+    for fmt in ("%Y-%m-%d", "%Y/%m/%d", "%Y.%m.%d"):
+        try:
+            return datetime.strptime(str(value).strip(), fmt).date()
+        except ValueError:
+            pass
+    return None
+
+
+def import_ledger_batch(db: Session, rows: list, user_id: UUID) -> dict:
+    """
+    Batch import ledgers from CSV/Excel rows.
+
+    Args:
+        db: Database session
+        rows: CSV/Excel row list, first row is header
+        user_id: Current admin user ID
+
+    Returns:
+        {"success_count": int, "skip_count": int, "errors": list[str]}
+    """
+    # Build category lookup: "level1 / level2" -> UUID
+    category_map: dict[str, UUID] = {}
+    for cat in db.query(Category).all():
+        key = f"{cat.level1} / {cat.level2}"
+        category_map[key] = cat.id
+
+    headers = [h.lower().strip() if isinstance(h, str) else "" for h in rows[0]]
+    col = {h: i for i, h in enumerate(headers)}
+
+    required = ["product_name", "batch_no", "cas_no", "weight_capacity", "supplier", "category"]
+    success_count = 0
+    skip_count = 0
+    errors = []
+
+    for row_idx, row in enumerate(rows[1:], start=2):
+        try:
+            # Field existence check
+            for field in required:
+                if field not in col:
+                    errors.append(f"第{row_idx}行: 缺少必填字段 '{field}'")
+                    skip_count += 1
+                    break
+                val = row[col[field]] if col[field] < len(row) else None
+                if not val or (isinstance(val, str) and not val.strip()):
+                    errors.append(f"第{row_idx}行: 字段 '{field}' 不能为空")
+                    skip_count += 1
+                    break
+            else:
+                # Category lookup
+                cat_name = str(row[col["category"]]).strip()
+                category_id = category_map.get(cat_name)
+                if not category_id:
+                    errors.append(f"第{row_idx}行: 品类 '{cat_name}' 不存在")
+                    skip_count += 1
+                    continue
+
+                data = {
+                    "product_name": str(row[col["product_name"]]).strip(),
+                    "batch_no": str(row[col["batch_no"]]).strip(),
+                    "cas_no": str(row[col["cas_no"]]).strip(),
+                    "weight_capacity": str(row[col["weight_capacity"]]).strip(),
+                    "supplier": str(row[col["supplier"]]).strip(),
+                    "quantity": int(row[col["quantity"]]) if "quantity" in col and col["quantity"] < len(row) and str(row[col["quantity"]]).strip() else 1,
+                    "category_id": category_id,
+                    "cert_expiry_date": parse_date(row[col["cert_expiry_date"]]) if "cert_expiry_date" in col and col["cert_expiry_date"] < len(row) else None,
+                    "open_date": parse_date(row[col["open_date"]]) if "open_date" in col and col["open_date"] < len(row) else None,
+                    "remarks": str(row[col["remarks"]]).strip() if "remarks" in col and col["remarks"] < len(row) and row[col["remarks"]] else None,
+                }
+                create_ledger(db, data, user_id)
+                success_count += 1
+        except Exception as e:
+            errors.append(f"第{row_idx}行: {str(e)}")
+            skip_count += 1
+
+    db.commit()
+    return {"success_count": success_count, "skip_count": skip_count, "errors": errors}
+
+
 def generate_internal_batch_no(db: Session, quantity: int) -> list[str]:
     """Generate YYYYMMMNNN format. If quantity>1, returns multiple with bottle numbers."""
     year = datetime.now().year

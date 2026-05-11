@@ -10,6 +10,7 @@ import { adminLedgerApi, categoryApi, Ledger, CategoryResponse } from "@/lib/api
 import { FilterTabs, FilterTabValue } from "@/components/layout/FilterTabs";
 import { Pagination } from "@/components/layout/Pagination";
 import { getDaysLeft } from "@/lib/date-utils";
+import { ImportLedgerModal } from "@/components/admin/ImportLedgerModal";
 
 const PAGE_SIZE = 20;
 
@@ -156,6 +157,7 @@ export default function AdminLedgersPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [viewingLedger, setViewingLedger] = useState<Ledger | null>(null);
+  const [showImport, setShowImport] = useState(false);
 
   // Fetch all data for tabCounts (page_size=100 to get most/all records)
   const { data: allLedgersData } = useQuery({
@@ -251,6 +253,21 @@ export default function AdminLedgersPage() {
     },
   });
 
+  // Import mutation
+  const importMutation = useMutation({
+    mutationFn: (file: File) => adminLedgerApi.importLedgers(file),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["admin-ledgers-all"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-ledgers"] });
+      setShowImport(false);
+      alert(`导入完成：成功 ${data.data.success_count} 条，跳过 ${data.data.skip_count} 条`);
+      if (data.data.errors?.length > 0) {
+        alert("错误：\n" + data.data.errors.slice(0, 10).join("\n"));
+      }
+    },
+    onError: (err: Error) => alert(err.message || "导入失败"),
+  });
+
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
       setSelectedIds(
@@ -340,6 +357,26 @@ export default function AdminLedgersPage() {
                 <span className="w-8 h-0.5 bg-gradient-to-r from-blue-600 to-transparent rounded"></span>
                 <span className="text-xs text-slate-500 font-mono-custom">LEDGER MANAGEMENT</span>
               </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setShowImport(true)}
+                className="inline-flex items-center justify-center gap-2 border border-slate-200 text-slate-600 py-2.5 px-4 rounded-xl font-semibold hover:bg-slate-50 transition-colors text-sm"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                导入
+              </button>
+              <Link
+                href="/admin/ledgers/create"
+                className="inline-flex items-center justify-center gap-2 bg-teal-600 text-white py-2.5 px-4 rounded-xl font-semibold hover:bg-teal-700 transition-colors text-sm"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                创建台账
+              </Link>
             </div>
           </div>
 
@@ -646,6 +683,14 @@ export default function AdminLedgersPage() {
       {viewingLedger && (
         <LedgerViewModal ledger={viewingLedger} onClose={() => setViewingLedger(null)} />
       )}
+
+      {/* Import Modal */}
+      <ImportLedgerModal
+        open={showImport}
+        onClose={() => setShowImport(false)}
+        onImport={(file) => importMutation.mutate(file)}
+        isPending={importMutation.isPending}
+      />
     </AdminLayout>
   );
 }

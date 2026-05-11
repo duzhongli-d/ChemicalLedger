@@ -33,6 +33,7 @@ export default function EditLedgerPage() {
   });
   const [error, setError] = useState("");
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [showExpiryInfo, setShowExpiryInfo] = useState(false);
 
   const { data: ledger, isLoading: ledgerLoading } = useQuery({
     queryKey: ["ledger", id],
@@ -314,14 +315,83 @@ export default function EditLedgerPage() {
                   <label className="block text-xs font-medium text-slate-500 mb-1.5">
                     {t("fields.effectiveExpiryDate")}
                   </label>
-                  <input
-                    type="date"
-                    value={form.effective_expiry_date}
-                    onChange={(e) => set("effective_expiry_date", e.target.value)}
-                    disabled={!canEdit}
-                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow disabled:bg-slate-50 disabled:text-slate-400"
-                  />
+                  <div className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 bg-slate-50">
+                    {form.effective_expiry_date
+                      ? new Date(form.effective_expiry_date).toLocaleDateString("zh-CN")
+                      : "—"}
+                  </div>
                 </div>
+              </div>
+
+              {/* Effective Expiry Date Info */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowExpiryInfo(!showExpiryInfo)}
+                  className="flex items-center gap-1.5 text-xs text-amber-600 hover:text-amber-700 transition-colors"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  有效截止日计算规则
+                  <svg className={`w-3 h-3 transition-transform ${showExpiryInfo ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {showExpiryInfo && (
+                  <div className="mt-3 p-4 bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200/60 rounded-xl">
+                    <div className="text-xs text-amber-900/90">
+                      <div className="mb-3">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="inline-flex items-center justify-center w-5 h-5 rounded-md bg-amber-200/70 text-amber-800 text-[10px] font-bold">1</span>
+                          <p className="font-semibold text-amber-800 text-[11px] tracking-wide uppercase">新建台账时</p>
+                        </div>
+                        <div className="ml-7 space-y-1.5">
+                          <div className="flex items-start gap-2">
+                            <span className="text-amber-400 mt-0.5">▸</span>
+                            <span>SOP有效截止日期 = 创建日期 + 对应品类未开封有效期(月数)</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="text-amber-400 mt-0.5">▸</span>
+                            <span>证书有效期未填 → <span className="font-medium text-amber-700">有效截止日=</span>SOP有效截止日期</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="text-amber-400 mt-0.5">▸</span>
+                            <span>证书有效期已填 → <span className="font-medium text-amber-700">有效截止日=</span>MIN(证书有效期, SOP有效截止日期)</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mb-3">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="inline-flex items-center justify-center w-5 h-5 rounded-md bg-orange-200/70 text-orange-800 text-[10px] font-bold">2</span>
+                          <p className="font-semibold text-orange-800 text-[11px] tracking-wide uppercase">开封后动态更新</p>
+                        </div>
+                        <div className="ml-7 space-y-1.5">
+                          <div className="flex items-start gap-2">
+                            <span className="text-orange-400 mt-0.5">▸</span>
+                            <span>新SOP有效截止日期 = 开封日期 + 对应品类已开封有效期(月数)</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="text-orange-400 mt-0.5">▸</span>
+                            <span>SOP有效截止日期 = MIN(原SOP有效截止日期, 新SOP有效截止日期)</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="text-orange-400 mt-0.5">▸</span>
+                            <span>有效截止日 = MIN(原有效截止日, 新SOP有效截止日期)</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-3 pt-2 border-t border-amber-200/50">
+                        <div className="flex items-center gap-2 px-2 py-1.5 bg-amber-100/60 rounded-lg">
+                          <span className="text-amber-500">★</span>
+                          <span className="font-medium text-amber-700 text-[11px]">核心原则：</span>
+                          <span className="text-amber-600 text-[11px]">始终取最早失效时间（最小截止日）</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 

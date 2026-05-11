@@ -1,13 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session, joinedload
-from typing import List, Optional
+from typing import Optional
+import io, csv, openpyxl
 from uuid import UUID
-from datetime import datetime
+from datetime import datetime, date
 from app.db.session import get_db
 from app.api.deps import get_admin_user
-from app.db.models import Ledger
+from app.db.models import Ledger, Category, User, LedgerStatus
 from app.schemas.schemas import BatchArchiveRequest, LedgerResponse, PaginatedLedgerResponse
 from app.services.audit_service import AuditService
+from app.services.ledger_service import import_ledger_batch
 
 router = APIRouter()
 
@@ -86,3 +88,53 @@ def batch_archive(
         {"count": archived_count, "errors": errors},
     )
     return {"archived_count": archived_count, "errors": errors}
+
+
+@router.post("/import")
+def import_ledgers(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user=Depends(get_admin_user),
+):
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="未提供文件名")
+
+    content = file.file.read()
+
+    if file.filename.endswith((".xlsx", ".xls")):
+        wb = openpyxl.load_workbook(io.BytesIO(content))
+        ws = wb.active
+        rows = list(ws.iter_rows(values_only=True))
+    elif file.filename.endswith(".csv"):
+        decoded = content.decode("utf-8")
+        reader = csv.reader(io.StringIO(decoded))
+        rows = list(reader)
+    else:
+        raise HTTPException(status_code=400, detail="仅支持 .xlsx、.xls、.csv 文件")
+
+    if len(rows) < 2:
+        raise HTTPException(status_code=400, detail="文件为空或无数据行")
+
+    result = import_ledger_batch(db, rows, current_user.id)
+    AuditService(db).log(
+        current_user.id, "LEDGER_IMPORT", "ledger", None,
+        {"success": result["success_count"], "skipped": result["skip_count"]},
+    )
+    return result
+
+
+@router.get("/import-template")
+def download_import_template(
+    db: Session = Depends(get_db),
+    current_user=Depends(get_admin_user),
+):
+    headers = ["product_name", "batch_no", "cas_no", "weight_capacity", "supplier", "category", "quantity", "cert_expiry_date", "open_date", "remarks"]
+    sample = ["乙醇", "ETH-2026-001", "64-17-5", "500mL", "Sigma-Aldrich", "实验用溶液 / 一般限度试验用溶液", "1", "2028-12-31", "", ""]
+    csv_content = ",".join(headers) + "\n" + ",".join(sample)
+    buffer = io.BytesIO(("\ufeff" + csv_content).encode("utf-8"))
+    from fastapi.responses import StreamingResponse
+    return StreamingResponse(
+        buffer,
+        media_type="text/csv; charset=utf-8",
+        headers={"Content-Disposition": "attachment; filename=台账导入模板.csv"},
+    )

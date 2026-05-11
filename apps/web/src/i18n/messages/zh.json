@@ -116,6 +116,8 @@
     "classification": "分类信息",
     "metadata": "元数据",
     "effectiveExpiryInfo": "有效期信息",
+    "effectiveExpiryRule": "计算规则",
+    "effectiveExpiryDesc": "未开封时：取证书到期日；开封后：取证书到期日与开封日期起180天两者中较早者",
     "operationLogs": "操作日志",
     "changedFields": "变更字段",
     "system": "系统"

@@ -33,7 +33,7 @@ interface InstrumentCardProps {
 
 function InstrumentCard({ inst, t }: InstrumentCardProps) {
   return (
-    <div className="flex-shrink-0 w-[260px] sm:w-[280px] h-[180px] relative rounded-2xl overflow-hidden group transition-all duration-300 mx-3 bg-white border border-slate-200 hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02]">
+    <div className="flex-shrink-0 w-[260px] sm:w-[280px] h-[180px] relative rounded-2xl overflow-hidden group transition-all duration-300 mx-3 bg-card border border-border hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-500/10 hover:scale-[1.02]">
       {/* Subtle dot grid pattern */}
       <div className="absolute inset-0 opacity-[0.03]" style={{
         backgroundImage: 'linear-gradient(rgba(249, 115, 22, 1) 1px, transparent 1px), linear-gradient(90deg, rgba(249, 115, 22, 1) 1px, transparent 1px)',
@@ -46,7 +46,7 @@ function InstrumentCard({ inst, t }: InstrumentCardProps) {
       {/* Content */}
       <div className="relative z-10 p-5 h-full flex flex-col justify-between items-center text-center">
         <div>
-          <div className="text-2xl font-bold text-slate-800 mb-1 tracking-wide font-mono">{inst.name}</div>
+          <div className="text-2xl font-bold text-foreground mb-1 tracking-wide font-mono">{inst.name}</div>
           <div className="text-orange-500 font-mono text-xs">{inst.model}</div>
         </div>
         <div className="space-y-1">

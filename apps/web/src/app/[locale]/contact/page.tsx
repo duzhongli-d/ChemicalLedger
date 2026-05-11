@@ -7,7 +7,7 @@ import { Footer } from "@/components/home/Footer";
 export default function ContactPage() {
   return (
     <main>
-      <div className="min-h-screen bg-slate-50 dark:bg-background">
+      <div className="min-h-screen bg-background">
         {/* Hero */}
         <ContactHeroHeader />
 

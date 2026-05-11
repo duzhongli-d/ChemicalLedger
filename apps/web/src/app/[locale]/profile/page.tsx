@@ -69,7 +69,7 @@ export default function ProfilePage() {
             </div>
             <div className="flex items-center justify-between text-xs text-gray-400">
               <span>已使用 {quota.used_today} 次</span>
-              <span>笔记本 {quota.notebooks_count} / {quota.notebooks_limit}</span>
+              <span>学术空间 {quota.notebooks_count} / {quota.notebooks_limit}</span>
             </div>
           </div>
         ) : (
