@@ -445,7 +445,7 @@ export default function AdminLedgerEditPage() {
               <button
                 type="submit"
                 disabled={updateMutation.isPending || saveSuccess}
-                className="flex-1 inline-flex items-center justify-center gap-2 bg-teal-500 hover:bg-teal-600 text-white py-3 rounded-xl font-semibold transition-colors shadow-lg shadow-teal-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 inline-flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {updateMutation.isPending ? (
                   <>

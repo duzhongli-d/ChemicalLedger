@@ -176,7 +176,7 @@ export default function AdminSettingsPage() {
             onClick={() => setActiveTab("contact")}
             className={`px-6 py-2.5 text-sm font-medium font-mono-custom transition-colors ${
               activeTab === "contact"
-                ? "bg-blue-600 text-white"
+                ? "bg-teal-600 text-white"
                 : "bg-white text-slate-600 hover:bg-slate-50"
             }`}
           >
@@ -186,7 +186,7 @@ export default function AdminSettingsPage() {
             onClick={() => setActiveTab("smtp")}
             className={`px-6 py-2.5 text-sm font-medium font-mono-custom transition-colors ${
               activeTab === "smtp"
-                ? "bg-blue-600 text-white"
+                ? "bg-teal-600 text-white"
                 : "bg-white text-slate-600 hover:bg-slate-50"
             }`}
           >
@@ -271,7 +271,7 @@ export default function AdminSettingsPage() {
                 <button
                   type="submit"
                   disabled={contactMutation.isPending}
-                  className="px-6 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-mono-custom"
+                  className="px-6 py-2.5 rounded-xl text-sm font-medium bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-mono-custom"
                 >
                   {contactMutation.isPending ? t("loading") : t("settings.saveContact")}
                 </button>
@@ -410,7 +410,7 @@ export default function AdminSettingsPage() {
                 <button
                   type="submit"
                   disabled={smtpMutation.isPending}
-                  className="px-6 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-mono-custom"
+                  className="px-6 py-2.5 rounded-xl text-sm font-medium bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-mono-custom"
                 >
                   {smtpMutation.isPending ? t("loading") : t("settings.saveSmtp")}
                 </button>

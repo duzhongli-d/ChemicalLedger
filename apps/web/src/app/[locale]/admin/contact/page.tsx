@@ -126,7 +126,7 @@ export default function AdminContactPage() {
                 className={clsx(
                   "px-4 py-2 text-sm font-medium transition-colors font-mono-custom",
                   activeTab === tab
-                    ? "bg-blue-600 text-white"
+                    ? "bg-teal-600 text-white"
                     : "bg-white text-slate-600 hover:bg-slate-50"
                 )}
               >

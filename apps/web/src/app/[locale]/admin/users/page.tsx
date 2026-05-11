@@ -87,7 +87,7 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
       <p className="text-sm text-slate-500 mb-4">创建第一个用户开始管理您的团队</p>
       <button
         onClick={onAdd}
-        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium font-mono-custom transition-all"
+        className="inline-flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-xl hover:bg-teal-700 text-sm font-semibold transition-colors"
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -378,7 +378,7 @@ function UserFormModal({
           <button
             type="submit"
             disabled={isPending}
-            className="flex-1 bg-blue-600 text-white py-2.5 rounded-lg font-medium font-mono-custom hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+            className="flex-1 bg-teal-600 text-white py-2.5 rounded-xl font-semibold hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
           >
             {isPending ? (
               <>
@@ -713,7 +713,7 @@ function ImportModal({
               if (fileRef.current?.files?.[0]) onImport(fileRef.current.files[0]);
             }}
             disabled={isPending || !fileName}
-            className="flex-1 bg-blue-600 text-white py-2.5 rounded-lg font-medium font-mono-custom hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+            className="flex-1 bg-teal-600 text-white py-2.5 rounded-xl font-semibold hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
           >
             {isPending ? (
               <>
@@ -947,7 +947,7 @@ export default function AdminUsersPage() {
               </button>
               <button
                 onClick={() => setShowCreate(true)}
-                className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium font-mono-custom transition-all flex items-center gap-2 shadow-sm shadow-blue-600/30"
+                className="px-4 py-2 text-sm bg-teal-600 text-white rounded-xl hover:bg-teal-700 font-semibold transition-colors flex items-center gap-2"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -988,7 +988,7 @@ export default function AdminUsersPage() {
                   className={clsx(
                     "px-4 py-2 text-sm font-medium transition-colors font-mono-custom",
                     roleFilter === tab
-                      ? "bg-blue-600 text-white"
+                      ? "bg-teal-600 text-white"
                       : "bg-white text-slate-600 hover:bg-slate-50"
                   )}
                 >

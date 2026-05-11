@@ -145,7 +145,7 @@ export default function AdminLedgerDetailPage() {
             <div className="flex items-center gap-2">
               <Link
                 href={`/admin/ledgers/${id}/edit`}
-                className="inline-flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors shadow-lg shadow-teal-500/25"
+                className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -523,7 +523,7 @@ export default function AdminLedgerDetailPage() {
                 <button
                   onClick={() => archiveMutation.mutate()}
                   disabled={archiveMutation.isPending}
-                  className="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-red-500 hover:bg-red-600 rounded-xl transition-colors disabled:opacity-50"
+                  className="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl transition-colors disabled:opacity-50"
                 >
                   {archiveMutation.isPending ? t("loading") : t("confirm")}
                 </button>

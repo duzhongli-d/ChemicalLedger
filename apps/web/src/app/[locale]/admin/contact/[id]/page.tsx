@@ -208,7 +208,7 @@ export default function AdminContactDetailPage() {
               <button
                 onClick={() => replyContent.trim() && replyMutation.mutate(replyContent)}
                 disabled={!replyContent.trim() || replyMutation.isPending}
-                className="ml-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-blue-500/20"
+                className="ml-auto px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-teal-500/20"
               >
                 {replyMutation.isPending ? "发送中..." : "发送回复"}
               </button>

@@ -387,7 +387,7 @@ export default function AdminAnnualSummaryPage() {
                       </div>
                       <button
                         onClick={() => handleEditSection(section.key)}
-                        className="px-4 py-1.5 rounded-lg text-sm font-medium font-mono-custom bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                        className="px-4 py-1.5 rounded-xl text-sm font-medium font-mono-custom bg-teal-600 text-white hover:bg-teal-700 transition-colors"
                       >
                         编辑
                       </button>
@@ -580,7 +580,7 @@ export default function AdminAnnualSummaryPage() {
               <button
                 onClick={handleSave}
                 disabled={createMutation.isPending || deleteMutation.isPending}
-                className="px-5 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="px-5 py-2.5 rounded-xl text-sm font-medium bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 保存
               </button>

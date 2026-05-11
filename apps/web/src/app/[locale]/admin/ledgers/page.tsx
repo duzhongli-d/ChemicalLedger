@@ -467,7 +467,7 @@ export default function AdminLedgersPage() {
               <button
                 onClick={handleBatchArchive}
                 disabled={batchArchiveMutation.isPending}
-                className="px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors font-mono-custom text-sm"
+                className="px-4 py-2.5 bg-teal-600 text-white rounded-xl hover:bg-teal-700 disabled:opacity-50 transition-colors font-mono-custom text-sm"
               >
                 {batchArchiveMutation.isPending
                   ? "归档中..."

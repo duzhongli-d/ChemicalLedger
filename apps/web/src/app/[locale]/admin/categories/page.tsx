@@ -113,7 +113,7 @@ function DeleteConfirmModal({
             <button
               onClick={onConfirm}
               disabled={isPending}
-              className="flex-1 bg-red-600 text-white py-2.5 rounded-lg font-medium hover:bg-red-700 disabled:opacity-50 transition-all"
+              className="flex-1 bg-red-600 text-white py-2.5 rounded-xl font-medium hover:bg-red-700 disabled:opacity-50 transition-colors"
             >
               {isPending ? "删除中..." : "确认删除"}
             </button>
@@ -263,7 +263,7 @@ function CreateModal({
           <button
             onClick={() => onSubmit(form)}
             disabled={isPending || !form.level1.trim() || !form.level2.trim()}
-            className="px-5 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="px-5 py-2.5 rounded-xl text-sm font-medium bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isPending ? "创建中..." : "创建"}
           </button>
@@ -364,7 +364,7 @@ function EditModal({
           <button
             onClick={onSave}
             disabled={isPending}
-            className="px-5 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="px-5 py-2.5 rounded-xl text-sm font-medium bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isPending ? "保存中..." : "保存"}
           </button>
@@ -513,7 +513,7 @@ export default function AdminCategoriesPage() {
 
             <button
               onClick={() => setCreateModalOpen(true)}
-              className="px-4 py-2.5 rounded-lg text-sm font-medium font-mono-custom bg-blue-600 text-white hover:bg-blue-700 transition-colors flex items-center gap-2"
+              className="px-4 py-2.5 rounded-xl text-sm font-medium font-mono-custom bg-teal-600 text-white hover:bg-teal-700 transition-colors flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -660,7 +660,7 @@ export default function AdminCategoriesPage() {
                               <button
                                 onClick={saveEdit}
                                 disabled={updateMutation.isPending}
-                                className="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors font-medium"
+                                className="px-3 py-1.5 text-xs bg-teal-600 text-white rounded-xl hover:bg-teal-700 disabled:opacity-50 transition-colors font-medium"
                               >
                                 {updateMutation.isPending ? "保存中..." : "保存"}
                               </button>

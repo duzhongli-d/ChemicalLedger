@@ -460,7 +460,7 @@ function DashboardContent() {
                       className={clsx(
                         "px-3 py-1 text-sm rounded-lg transition-all duration-200 font-mono-custom",
                         expiryFilter === days
-                          ? "bg-blue-600 text-white shadow-sm"
+                          ? "bg-teal-600 text-white"
                           : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                       )}
                     >
