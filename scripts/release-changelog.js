@@ -29,7 +29,7 @@ const COMMIT_REGEX = /^(\w+)(\([^)]+\))?(!)?:\s*(.+)$/;
 
 function getLastTag(packageName) {
   try {
-    const pattern = packageName ? `v${packageName}-*` : 'v*';
+    const pattern = packageName ? `${packageName}/v*` : 'v*';
     return execSync(`git describe --tags --abbrev=0 --match="${pattern}"`, {
       encoding: 'utf-8',
       cwd: path.resolve(__dirname, '..'),
@@ -94,10 +94,23 @@ function buildUnreleasedSection(groups) {
   return lines.join('\n');
 }
 
+function buildVersionSection(version, groups) {
+  const today = new Date().toISOString().slice(0, 10);
+  const lines = [`## [${version}] - ${today}\n`];
+  const order = ['Added', 'Changed', 'Deprecated', 'Removed', 'Fixed', 'Security'];
+  for (const cat of order) {
+    const section = formatSection(cat, groups[cat] || []);
+    if (section) lines.push(section + '\n');
+  }
+  return lines.join('\n');
+}
+
 function main() {
   const args = process.argv.slice(2);
   const dryRun = args.includes('--dry-run');
   const packageFilter = args.find(a => !a.startsWith('--') && a !== 'web' && a !== 'api');
+  // Last non-flag arg is the version (passed during release-prepare)
+  const versionArg = args.find((a, i) => !a.startsWith('--') && i > 0 && a !== packageFilter);
 
   const packages = packageFilter
     ? [{ name: packageFilter, path: `apps/${packageFilter}` }]
@@ -122,8 +135,17 @@ function main() {
     console.log(`${pkg.name}: ${commits.length} commits since ${lastTag || 'beginning'}`);
   }
 
-  const unreleased = buildUnreleasedSection(allGroups);
-  const newChangelog = `${cleanChangelog.trim()}\n\n${unreleased}\n`;
+  let newChangelog;
+  if (versionArg) {
+    // During release: move [Unreleased] to versioned section, leave empty [Unreleased]
+    const versionSection = buildVersionSection(versionArg, allGroups);
+    const unreleasedSection = buildUnreleasedSection({ Added: [], Changed: [], Fixed: [], Security: [], Removed: [], Deprecated: [] });
+    newChangelog = `${cleanChangelog.trim()}\n\n${versionSection}\n${unreleasedSection}`;
+  } else {
+    // During check: show all commits under [Unreleased]
+    const unreleased = buildUnreleasedSection(allGroups);
+    newChangelog = `${cleanChangelog.trim()}\n\n${unreleased}\n`;
+  }
 
   if (dryRun) {
     console.log('\n--- DRY RUN: Would write to CHANGELOG.md ---');

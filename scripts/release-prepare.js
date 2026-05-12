@@ -61,7 +61,7 @@ function main() {
   // Step 3: Update changelog
   console.log('\n[3/6] Updating CHANGELOG.md...');
   if (!dryRun) {
-    run(`node scripts/release-changelog.js ${pkg}`);
+    run(`node scripts/release-changelog.js ${pkg} ${version}`);
   }
 
   // Step 4: Git add

@@ -33,7 +33,7 @@ const COMMIT_REGEX = /^(\w+)(\([^)]+\))?(!)?:\s*(.+)$/;
 
 function getLastTag(packageName) {
   try {
-    const pattern = packageName ? `v${packageName}-*` : 'v*';
+    const pattern = packageName ? `${packageName}/v*` : 'v*';
     const tag = execSync(`git describe --tags --abbrev=0 --match="${pattern}"`, {
       encoding: 'utf-8',
       cwd: path.resolve(__dirname, '..'),
