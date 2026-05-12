@@ -57,6 +57,12 @@ export function LoginModal({ isOpen, onClose, onLoginSuccess, redirectTo, contex
       setAuth(data.user);
       // Notify parent component
       onLoginSuccess(data.user.username || data.user.email || "");
+      // Redirect based on user role
+      if (data.user.role === "admin") {
+        router.push(`/${locale}/admin/dashboard`);
+      } else {
+        router.push("/");
+      }
       onClose();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : t("loginFailed"));
