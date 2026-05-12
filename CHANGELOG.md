@@ -10,18 +10,228 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+  - feat(admin/ledgers): add POST endpoint and create page for admin ledger creation
+  - feat(research): add learning guide and PPT generation views
+  - feat(research): improve Studio Panel UX with context-aware sources badge
+  - feat(research): increase Studio Panel width from 420px to 520px
+  - feat(admin): add research notebooks management page
+  - feat(admin): add research notebooks sidebar item
+  - feat(research): add inline citations, source preview cards, and interactive mind map
+  - feat(contact): sync contact page with admin settings via public API
+  - feat(web): add admin settings page with SMTP and contact config
+  - feat(web): add Settings menu in admin sidebar
+  - feat(web): add template download button in ImportModal
+  - feat(web): show login modal on /research page for unauthenticated users
+  - feat(web): redesign LoginModal to match login page style
+  - feat(web): reorder login toggle to show Email before Username
+  - feat(web): show instrument-specific descriptions on About page instruments
+  - feat(web): add dark mode support to About page components
+  - feat(web): enhance HeroSection metrics display with i18n labels
+  - feat(api): register public_annual_summaries router refactor(web): replace TeamShowcase SVG animations with images
+  - feat(web): replace hero hardcoded stats with API-driven data
+  - feat(web): add i18n keys for hero metrics
+  - feat(web): add Footer component to contact page
+  - feat(web): link InstrumentGallery "view all" to technical tab
+  - feat(admin): add annual summary data management feature
+  - feat(admin): add contact submissions management
+  - feat(admin/dashboard): redesign with industrial lab aesthetic
+  - feat(admin): add operation logs timeline to ledger detail page
+  - feat(admin): add ledger view and edit pages
+  - feat(web): redesign ledger view and edit pages with industrial lab aesthetic
+  - feat(admin): implement server-side pagination for /admin/ledgers
+  - feat(web): add open date feature to /ledgers page
+  - feat(web): add API error feedback to LedgerDataTable
+  - feat(web): replace LedgersTopBar with Header on /ledgers page
+  - feat(web): enhance /verify skill and add /preflight skill
+  - feat(web): upgrade contact page hero with layered design
+  - feat(web): add standalone /about page with tabbed sections
+  - feat(web): update nav to point /contact instead of /#contact
+  - feat(web): add /contact page
+  - feat(web): add ContactForm component
+  - feat(web): add QuickInfoPanel component
+  - feat: add ContactInfoCards component
+  - feat(web): add contactApi.submit to api client
+  - feat(i18n): add contact page translations
+  - feat: add hero banner image carousel with crossfade auto-play
+  - feat: add i18n translations for ledgers page
+  - feat: add login protection props to LedgerDataTable
+  - feat: add LoginModal component for authentication
+  - feat: add LedgersTopBar component for public ledgers page
+  - feat: add '返回首页' link to admin sidebar for easy navigation
+  - feat: implement professional admin backend dashboard
+  - feat: create admin dashboard page with stats cards
+  - feat: add admin ledgers page and audit log page
+  - feat: add full CRUD to admin users page
+  - feat: add inline editing for category management page
+  - feat: create Admin layout and sidebar components
+  - feat: redesign login page with email authentication support
+  - feat: migrate auth from localStorage to HttpOnly cookies
+  - feat: update color scheme to orange primary with teal accent
+  - feat: redesign homepage with professional tech-clean aesthetic
+  - feat: implement scroll-hide header and expand instrument gallery to 14
+  - feat: redesign homepage with precision-lab aesthetic
+  - feat: add Playwright E2E test suite with login, dashboard, create and archive journeys
+  - feat: add missing frontend pages and route protection
+  - feat: scaffold QC platform monorepo
+  - feat(admin/ledgers): add POST endpoint and create page for admin ledger creation
+  - feat(research): add learning guide and PPT generation views
+  - feat(research): implement NotebookLM background processing for sources
+  - feat(research): add inline citations, source preview cards, and interactive mind map
+  - feat(research): add ResearchSource model with column name mapping fix
+  - feat(contact): sync contact page with admin settings via public API
+  - feat(api): add admin settings API endpoints
+  - feat(api): add SystemSettings schemas
+  - feat(api): add SystemSetting model
+  - feat(api): add system_settings table for SMTP and contact config
+  - feat(api): add script to create expiry test data for dashboard verification
+  - feat(api): register public_annual_summaries router refactor(web): replace TeamShowcase SVG animations with images
+  - feat(api): add public by-category annual summaries endpoint
+  - feat(api): add PublicAnnualSummaryByCategoryResponse schema
+  - feat(admin): add annual summary data management feature
+  - feat(admin): add contact submissions management
+  - feat(admin): add operation logs timeline to ledger detail page
+  - feat(admin): implement server-side pagination for /admin/ledgers
+  - feat(api): add contact_submissions table migration
+  - feat(api): add contact submission endpoint
+  - feat(api): add send_contact_email to notification service
+  - feat(api): add ContactSubmission model
+  - feat: add admin password update script
+  - feat: implement professional admin backend dashboard
+  - feat: implement ledger management API endpoints
+  - feat: implement user management API with CRUD and Excel/CSV import
+  - feat: implement admin dashboard stats and trends API
+  - feat: implement category management API (PATCH/DELETE)
+  - feat: implement audit log list API endpoint
+  - feat: create admin router skeleton with 5 sub-routers
+  - feat: add AuditService for audit logging in admin operations
+  - feat: add AuditLog, UserUpdate, CategoryUpdate, BatchArchiveRequest schemas
+  - feat: add AuditLog and DailyStats SQLAlchemy models
+  - feat: add audit_logs and daily_stats tables migration
+  - feat: redesign login page with email authentication support
+  - feat: migrate auth from localStorage to HttpOnly cookies
+  - feat: scaffold QC platform monorepo
+
 ### Changed
-### Deprecated
-### Removed
+  - refactor(admin): unify button styles across all admin pages
+  - refactor(admin/ledgers): update expiry info button label and info box content
+  - refactor(ledger): make cert_expiry_date optional, use SOP expiry directly when blank
+  - refactor(ledgers): integrate category filter into SearchCreateBar
+  - refactor(admin/ledgers): group category dropdown by level1 using optgroup
+  - refactor: unify create ledger page styling with edit page
+  - test(e2e): add PPT outline tests and fix studio-generate tests
+  - test(e2e): add studio generate function tests
+  - refactor(admin): optimize research-notebooks page styling
+  - refactor(web): remove /research from middleware protected paths
+  - refactor(web): update About page milestones to QC platform progression
+  - refactor(web): redesign StatCard to Clinical Minimal style
+  - refactor(web): simplify admin dashboard header to text-only style
+  - refactor(web): redesign TechMetrics cards with prominent numbers and subdued units
+  - refactor(web): extract PlatformEntryCard to eliminate duplicate card markup
+  - refactor(about): unify TeamExpertiseTab with PlatformStoryTab visual layout
+  - refactor(admin): fix sidebar active route matching and remove dead code
+  - refactor(admin): elevate sidebar with gradient dark theme and blue glow effects
+  - refactor(admin): unify contact page theme with blue accent color
+  - refactor(admin): unify admin pages with light theme and consistent UI
+  - refactor(admin): redesign dashboard with blue-primary theme
+  - refactor(admin): unify dashboard design with annual-summary light theme
+  - chore: update company address from Suzhou to Shanghai
+  - refactor(admin/ledgers): use categoryApi.list() for filter dropdown
+  - refactor(web): split expiring tab into 3细粒度 categories
+  - refactor(web): align /admin/ledgers columns with /ledgers table
+  - docs(web): add project-specific rules to CLAUDE.md
+  - refactor: redesign BrandLogo with molecular aesthetic and update InstrumentGallery styling
+  - chore: sync missing components from main branch
+  - refactor(ledgers): replace sidebar/header with topbar and login modal
+  - refactor: unify homepage to light theme with modern typography
+  - test: admin categories, ledgers, and audit-log E2E tests
+  - test: admin dashboard page E2E tests
+  - test: admin users page E2E tests
+  - test: fix error message regex in login E2E test
+  - test: add frontend E2E login tests with UI behavior validation
+  - refactor: simplify and quality improvements
+  - refactor(alembic): clean up migration files
+  - refactor(ledger): make cert_expiry_date optional, use SOP expiry directly when blank
+  - test(research): add background_processor unit tests
+  - merge: unify alembic migration branches
+  - test: add backend login API tests
+  - refactor: simplify and quality improvements
+
 ### Fixed
-### Security
+  - fix(auth): redirect users to correct page after login modal success
+  - fix(admin/ledgers): correct page title and add missing i18n keys
+  - fix: resolve SourceUploadModal drag-drop modal close and stale sources list
+  - fix: resolve SourceUploadModal dropzone non-responsive issue
+  - fix: make "提问" button visible above fold on research page
+  - fix: change studio API calls to use query params instead of request body
+  - fix: correct addFirstSource translation key path to common.addFirstSource
+  - fix(i18n): move addFirstSource key into common namespace in research translations
+  - fix(research): correct notebook lookup in source endpoints to use UUID id
+  - fix(research): fill viewport height with flex layout
+  - fix(research): distinguish hint messages for no notebook vs no content
+  - fix(admin): resolve code quality issues in research notebooks page
+  - fix: update studio.noContent prompt since notebook is already selected
+  - fix: resolve research source upload failures from notebook_id mismatch
+  - fix(research): sync login modal with auth state + add context message
+  - fix(research): implement "新建笔记本" button to open creation modal
+  - fix(web): add defensive null check for log.target_id on admin dashboard
+  - fix(web): add missing admin.loading translation key
+  - fix(web): fix i18n loading key in settings page
+  - fix(web): use i18n for settings page instead of hardcoded Chinese
+  - fix(web): call backend logout API to clear HttpOnly cookie
+  - fix(web): ensure admin pages redirect to login when unauthenticated
+  - fix(web): re-open login modal when unauthenticated user interacts
+  - fix(web): add dark mode support to LoginModal component
+  - fix(web): update team Masters/PhDs ratio from 60% to 40%
+  - fix(web): add missing i18n keys for TeamIntroduction stats and certifications
+  - fix(web): pass locale prop to NextIntlClientProvider to sync Link with URL
+  - fix(web): enforce localePrefix always in next-intl routing
+  - fix(web): unify hero badge orange accent color with Contact page
+  - fix(web): unify About Hero styling with Contact Hero design
+  - fix(web): replace hardcoded colors with CSS variables for dark mode on About page
+  - fix(web): replace hardcoded colors with CSS variables for dark mode on ledgers page
+  - fix(web): use CSS variables for StatCard clinical variant dark mode
+  - fix(admin): change expiring soon card subtitle to 10天内
+  - fix(admin): change expiry filter from 30/60/90 to 10/20/30 days
+  - fix(web): use absolute API URL in HeroSection (matching TechMetrics pattern)
+  - fix(web): use useSearchParams for URL tab state instead of window.location
+  - fix(admin): use project_count instead of parsing project_names string
+  - fix(i18n): add phone translation keys to en.json
+  - fix: require login before create/archive actions on public ledgers page
+  - fix: improve LoginModal backdrop click and ESC key handling
+  - fix: redirect admin logout to admin login page instead of user login
+  - fix: redirect admin routes to admin login and improve error messages
+  - fix: resolve admin redirect issues and root layout html/body tags
+  - fix: hide public header on admin pages to avoid dual navigation
+  - fix: add AdminLayout with ml-60 offset to prevent sidebar overlap
+  - fix: resolve route matching bug, extract shared utilities, and improve data handling
+  - fix: prevent instrument gallery hover overlay text duplication
+  - fix: resolve hydration mismatches and improve homepage components
+  - fix: resolve React hydration mismatches in homepage components
+  - fix: remove tech/capabilities from top nav menu
+  - fix: remove notifications and admin from top nav menu
+  - fix: restore favicon and fix pre-existing E2E tests
+  - fix: audit log page page_size exceeds API limit
+  - fix: admin dashboard page API URL and data matching
+  - fix: role-based redirect after login and fix middleware token check
+  - fix: remove duplicate platform entry cards from homepage
+  - fix: use window.location.pathname for locale toggle URL construction
+  - fix: resolve homepage menu truncation and side margin issues
+  - fix: resolve language toggle mechanism and i18n content issues
+  - fix: expand mobile nav to 6 items and improve toggle visibility
+  - fix: omit empty open_date from ledger create payload to avoid 422
+  - fix: add missing back/cancel/confirm/loading i18n keys in ledger detail page
+  - fix: add missing ledger.fields.status i18n key for table column header
+  - fix(alembic): correct migration chain and remove placeholder revision
+  - fix: add error handling for mindmap API with graceful degradation
+  - fix(research): correct notebook lookup in source endpoints to use UUID id
+  - fix(db): add cascade delete for research_sources on notebook deletion
+  - fix(admin): resolve code quality issues in research notebooks API
+  - fix: resolve research source upload failures from notebook_id mismatch
+  - fix(research): convert notebook_id UUID to string for database query
+  - fix(research): fix notebook_id column mismatch in sources endpoints
+  - fix(api): remove EmailStr validation from ContactConfigBase email field
+  - fix(api): use Literal for category, improve schema tests
+  - fix: add AdminUserCreate schema without required password
+  - fix: correct import path for get_admin_user and hash_password
+  - fix: commit archive changes to DB and use timezone-aware datetime
 
-## [0.1.0] - 2026-01-01
-
-### Added
-- Initial web application release
-
-## [0.0.1] - 2025-01-01
-
-### Added
-- Initial API release
