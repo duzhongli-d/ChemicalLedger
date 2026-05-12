@@ -78,7 +78,7 @@ function main() {
 
   // Step 5: Git commit
   console.log('\n[5/6] Creating commit...');
-  const tagName = `v${pkg}-${version}`;
+  const tagName = `${pkg}/v${version}`;
   if (!dryRun) {
     run(`git commit -m "release(${pkg}): bump to ${version}"`);
     console.log(`  Created commit: release(${pkg}): bump to ${version}`);
