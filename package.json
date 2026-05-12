@@ -1,11 +1,16 @@
 {
   "name": "qc-platform",
+  "version": "0.1.0",
   "private": true,
   "workspaces": ["apps/*", "packages/*"],
   "scripts": {
     "dev": "pnpm --parallel -r dev",
     "build": "pnpm --parallel -r build",
     "lint": "pnpm --parallel -r lint",
-    "test": "pnpm --parallel -r test"
+    "test": "pnpm --parallel -r test",
+    "release:check": "node scripts/release-check.js",
+    "release:bump": "node scripts/release-bump.js",
+    "release:changelog": "node scripts/release-changelog.js",
+    "release:prepare": "node scripts/release-prepare.js"
   }
 }

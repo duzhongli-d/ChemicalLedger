@@ -1,0 +1,85 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '**/v*.*.*'
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Package name (web, api, shared)'
+        required: true
+        type: choice
+        options:
+          - web
+          - api
+          - shared
+      version:
+        description: 'Version (e.g., 0.2.0)'
+        required: true
+
+jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract package and version from tag
+        id: parse-tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "package=${{ inputs.package }}" >> $GITHUB_OUTPUT
+            echo "version=${{ inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            TAG_NAME="${GITHUB_REF#refs/tags/}"
+            PACKAGE="${TAG_NAME%%/*}"
+            VERSION="${TAG_NAME#*/}"
+            echo "package=${PACKAGE}" >> $GITHUB_OUTPUT
+            echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Extract changelog for release
+        id: changelog
+        run: |
+          python3 << 'PYEOF'
+          import re
+          import os
+
+          tag_name = os.getenv('GITHUB_REF_NAME', '')
+          if '/' in tag_name:
+            version = tag_name.split('/')[-1]
+          else:
+            version = os.getenv('INPUT_VERSION', '0.0.0')
+
+          with open('CHANGELOG.md', 'r') as f:
+            content = f.read()
+
+          # Match: ## [X.Y.Z] - YYYY-MM-DD ... until next ## or end
+          pattern = rf'## \[{re.escape(version)}\][\s\S]*?(?=\n## |\Z)'
+          match = re.search(pattern, content)
+
+          body = ""
+          if match:
+            section = match.group(0).strip()
+            # Replace version header format for cleaner release body
+            section = re.sub(rf'## \[{re.escape(version)}\].*\n', f'## {version}\n', section)
+            body = section
+
+          with open('.github/release_body.txt', 'w') as f:
+            f.write(body)
+          print(f"Extracted release notes: {len(body)} chars")
+          PYEOF
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_file: .github/release_body.txt
+          draft: false
+          prerelease: false
+          tag_name: ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
