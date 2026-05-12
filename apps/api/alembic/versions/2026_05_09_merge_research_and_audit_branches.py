@@ -1,7 +1,7 @@
 """merge research/contact branches with audit branch
 
 Revision ID: 9a3c4d2e1f00
-Revises: ('7f798208f193', 'xxxxx_add_cascade_delete')
+Revises: ('7f798208f193', '98cb77efe7cc')
 Create Date: 2026-05-09
 
 """
@@ -9,7 +9,7 @@ from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = '9a3c4d2e1f00'
-down_revision = ('7f798208f193', 'xxxxx_add_cascade_delete')
+down_revision = ('7f798208f193', '98cb77efe7cc')
 branch_labels = None
 depends_on = None
 
