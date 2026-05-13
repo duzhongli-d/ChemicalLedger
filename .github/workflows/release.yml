@@ -80,7 +80,6 @@ jobs:
 
       - name: Create GitHub Release
         run: |
-          body=$(cat .github/changelog_body.txt)
-          gh release create ${{ github.ref_name }} --draft=false --prerelease=false --title="${{ github.ref_name }}" --body "${body}"
+          gh release create ${{ github.ref_name }} --draft=false --prerelease=false --title="${{ github.ref_name }}" --body-file ".github/changelog_body.txt"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
