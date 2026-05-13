@@ -37,40 +37,39 @@ jobs:
           python3 << 'PYEOF'
           import urllib.request
           import json
-          import re
           import os
 
           tag_name = os.getenv('GITHUB_REF_NAME', '')
           repo = os.getenv('GITHUB_REPOSITORY')
 
-          # Extract version from tag (e.g., "web/v0.2.0" -> "0.2.0")
           if '/' in tag_name:
             version = tag_name.split('/')[-1].lstrip('v')
           else:
             version = '0.0.0'
 
-          print(f"Processing tag: {tag_name}, version: {version}")
+          version_header = f'## [{version}]'
 
           with open('CHANGELOG.md', 'r', encoding='utf-8') as f:
-            content = f.read()
+            lines = f.readlines()
 
-          # First try to find versioned section
-          pattern = rf'## \[{re.escape(version)}\][\s\S]*?(?=\n## |\Z)'
-          match = re.search(pattern, content)
+          # Find the line containing the version header
+          start_idx = None
+          end_idx = None
 
-          if match:
-            body = match.group(0).strip()
-            print(f"Found versioned section for {version}, {len(body)} chars")
+          for i, line in enumerate(lines):
+            if line.strip() == version_header:
+              start_idx = i
+            elif start_idx is not None and line.strip().startswith('## ['):
+              end_idx = i
+              break
+
+          if start_idx is not None:
+            body = ''.join(lines[start_idx:end_idx if end_idx else None]).strip()
+            print(f"Found version section at line {start_idx}, end at {end_idx}, body len={len(body)}")
+            print(f"First 100 chars: {body[:100]}")
           else:
-            # Fall back to Unreleased section
-            unreleased_start = content.find('## [Unreleased]')
-            if unreleased_start != -1:
-              unreleased_end = content.find('\n## ', unreleased_start + 1)
-              body = content[unreleased_start:unreleased_end if unreleased_end != -1 else None].strip()
-              print(f"No version section found, using [Unreleased]: {len(body)} chars")
-            else:
-              body = f"Release {tag_name}"
-              print(f"No Unreleased section, using default: {body}")
+            body = f"Release {tag_name}"
+            print(f"Version section not found, using default: {body}")
 
           # Create release via GitHub API
           url = f'https://api.github.com/repos/{repo}/releases'
