@@ -30,18 +30,26 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Extract changelog body
+      - name: Create GitHub Release via API
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python3 << 'PYEOF'
+          import urllib.request
+          import json
           import re
           import os
 
           tag_name = os.getenv('GITHUB_REF_NAME', '')
+          repo = os.getenv('GITHUB_REPOSITORY')
+
+          # Extract version from tag
           if '/' in tag_name:
             version = tag_name.split('/')[-1].lstrip('v')
           else:
             version = '0.0.0'
 
+          # Read CHANGELOG.md and extract section for this version
           with open('CHANGELOG.md', 'r', encoding='utf-8') as f:
             content = f.read()
 
@@ -49,65 +57,53 @@ jobs:
           match = re.search(pattern, content)
           body = match.group(0).strip() if match else ""
 
-          # Write to a shared state file
-          with open('.release_body.json', 'w') as f:
-            import json
-            json.dump({'body': body, 'version': version, 'tag': tag_name}, f)
+          # Write release data to a temp JSON file
+          payload = {
+              'tag_name': tag_name,
+              'name': tag_name,
+              'draft': False,
+              'prerelease': False,
+              'body': body
+          }
 
-          print(f"Extracted {len(body)} chars for version {version}")
+          with open('.release_payload.json', 'w', encoding='utf-8') as f:
+              json.dump(payload, f, ensure_ascii=False)
+
+          print(f"Payload prepared: version={version}, body_len={len(body)}")
+          print(f"First 200 chars of body: {body[:200]}")
+          print(f"Payload file exists: {os.path.exists('.release_payload.json')}")
           PYEOF
 
-      - name: Create release via GitHub CLI
+      - name: Upload release payload and create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cat .release_body.json
-
-      - name: Debug gh auth
-        run: |
-          gh auth status
-
-      - name: Debug body file
-        run: |
-          ls -la .release_body.json
-          python3 -c "import json; d=json.load(open('.release_body.json')); print('body length:', len(d['body'])); print('first 200:', d['body'][:200])"
-
-      - name: Create GitHub Release with gh
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
+          # Read payload and make API call
           python3 << 'PYEOF'
+          import urllib.request
           import json
-          import subprocess
           import os
 
-          with open('.release_body.json', 'r') as f:
-            data = json.load(f)
+          with open('.release_payload.json', 'r', encoding='utf-8') as f:
+              payload = json.load(f)
 
-          tag_name = data['tag']
-          body = data['body']
+          repo = os.getenv('GITHUB_REPOSITORY')
+          url = f'https://api.github.com/repos/{repo}/releases'
 
-          # Write to notes file
-          notes_path = '.github/RELEASE_NOTES.md'
-          os.makedirs('.github', exist_ok=True)
-          with open(notes_path, 'w', encoding='utf-8', newline='\n') as f:
-            f.write(body)
+          data = json.dumps(payload).encode('utf-8')
+          req = urllib.request.Request(url, data=data, method='POST')
+          req.add_header('Authorization', f"token {os.getenv('GITHUB_TOKEN')}")
+          req.add_header('Accept', 'application/vnd.github+json')
+          req.add_header('Content-Type', 'application/json')
+          req.add_header('X-GitHub-Api-Version', '2022-11-28')
 
-          print(f"Notes file written. Size: {len(body)} chars")
-
-          # Verify file exists
-          with open(notes_path, 'r') as f:
-            verify = f.read()
-          print(f"Verification read: {len(verify)} chars")
-
-          # Call gh
-          result = subprocess.run(
-              ['gh', 'release', 'create', tag_name,
-               '--title', tag_name,
-               '--notes-file', notes_path],
-              capture_output=True, text=True
-          )
-          print(f"gh output: {result.stdout}")
-          print(f"gh stderr: {result.stderr}")
-          print(f"gh return code: {result.returncode}")
+          try:
+              with urllib.request.urlopen(req) as resp:
+                  result = json.loads(resp.read())
+                  print(f"SUCCESS: Created release at {result.get('html_url')}")
+                  print(f"Body length in response: {len(result.get('body', ''))}")
+          except urllib.request.HTTPError as e:
+              error_body = e.read().decode('utf-8')
+              print(f"HTTP Error {e.code}: {error_body}")
+              exit(1)
           PYEOF
