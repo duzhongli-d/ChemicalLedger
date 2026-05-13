@@ -30,7 +30,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Create GitHub Release via API
+      - name: Create GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -43,21 +43,37 @@ jobs:
           tag_name = os.getenv('GITHUB_REF_NAME', '')
           repo = os.getenv('GITHUB_REPOSITORY')
 
-          # Extract version from tag
+          # Extract version from tag (e.g., "web/v0.2.0" -> "0.2.0")
           if '/' in tag_name:
             version = tag_name.split('/')[-1].lstrip('v')
           else:
             version = '0.0.0'
 
-          # Read CHANGELOG.md and extract section for this version
+          print(f"Processing tag: {tag_name}, version: {version}")
+
           with open('CHANGELOG.md', 'r', encoding='utf-8') as f:
             content = f.read()
 
+          # First try to find versioned section
           pattern = rf'## \[{re.escape(version)}\][\s\S]*?(?=\n## |\Z)'
           match = re.search(pattern, content)
-          body = match.group(0).strip() if match else ""
 
-          # Write release data to a temp JSON file
+          if match:
+            body = match.group(0).strip()
+            print(f"Found versioned section for {version}, {len(body)} chars")
+          else:
+            # Fall back to Unreleased section
+            unreleased_start = content.find('## [Unreleased]')
+            if unreleased_start != -1:
+              unreleased_end = content.find('\n## ', unreleased_start + 1)
+              body = content[unreleased_start:unreleased_end if unreleased_end != -1 else None].strip()
+              print(f"No version section found, using [Unreleased]: {len(body)} chars")
+            else:
+              body = f"Release {tag_name}"
+              print(f"No Unreleased section, using default: {body}")
+
+          # Create release via GitHub API
+          url = f'https://api.github.com/repos/{repo}/releases'
           payload = {
               'tag_name': tag_name,
               'name': tag_name,
@@ -65,30 +81,6 @@ jobs:
               'prerelease': False,
               'body': body
           }
-
-          with open('.release_payload.json', 'w', encoding='utf-8') as f:
-              json.dump(payload, f, ensure_ascii=False)
-
-          print(f"Payload prepared: version={version}, body_len={len(body)}")
-          print(f"First 200 chars of body: {body[:200]}")
-          print(f"Payload file exists: {os.path.exists('.release_payload.json')}")
-          PYEOF
-
-      - name: Upload release payload and create release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Read payload and make API call
-          python3 << 'PYEOF'
-          import urllib.request
-          import json
-          import os
-
-          with open('.release_payload.json', 'r', encoding='utf-8') as f:
-              payload = json.load(f)
-
-          repo = os.getenv('GITHUB_REPOSITORY')
-          url = f'https://api.github.com/repos/{repo}/releases'
 
           data = json.dumps(payload).encode('utf-8')
           req = urllib.request.Request(url, data=data, method='POST')
