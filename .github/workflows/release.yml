@@ -40,40 +40,37 @@ jobs:
           import os
 
           tag_name = os.getenv('GITHUB_REF_NAME', '')
-          repo = os.getenv('GITHUB_REPOSITORY')
 
           if '/' in tag_name:
             version = tag_name.split('/')[-1].lstrip('v')
           else:
             version = '0.0.0'
 
-          # We look for "## [version] - date" line
-          version_line = f'## [{version}]'
+          print(f"Processing tag: {tag_name}, version: {version}")
 
           with open('CHANGELOG.md', 'r', encoding='utf-8') as f:
-            lines = f.readlines()
+            content = f.read()
 
-          # Find start and end of section
-          start_idx = None
-          end_idx = None
-
-          for i, line in enumerate(lines):
-            stripped = line.strip()
-            if stripped.startswith(version_line):
-              start_idx = i
-            elif start_idx is not None and stripped.startswith('## ['):
-              end_idx = i
-              break
-
-          if start_idx is not None:
-            body = ''.join(lines[start_idx:end_idx if end_idx else None]).strip()
-            print(f"Found section starting at line {start_idx}, ending at line {end_idx}, body len={len(body)}")
-            print(f"First 100 chars: {body[:100]}")
+          # Find the Unreleased section
+          unreleased_start = content.find('## [Unreleased]')
+          if unreleased_start != -1:
+            # Find the next version section or end of file
+            next_section = content.find('\n## [', unreleased_start + 1)
+            if next_section == -1:
+              next_section = len(content)
+            body = content[unreleased_start:next_section].strip()
+            print(f"Found [Unreleased] section, body length: {len(body)}")
+            if not body or body == '## [Unreleased]':
+              print("WARNING: [Unreleased] section is empty. Using default.")
+              body = f"Release {tag_name}"
           else:
             body = f"Release {tag_name}"
-            print(f"Version section not found, using default: {body}")
+            print(f"No [Unreleased] section found, using: {body}")
+
+          print(f"Body preview: {body[:200]}...")
 
           # Create release via GitHub API
+          repo = os.getenv('GITHUB_REPOSITORY')
           url = f'https://api.github.com/repos/{repo}/releases'
           payload = {
               'tag_name': tag_name,
@@ -94,7 +91,6 @@ jobs:
               with urllib.request.urlopen(req) as resp:
                   result = json.loads(resp.read())
                   print(f"SUCCESS: Created release at {result.get('html_url')}")
-                  print(f"Body length in response: {len(result.get('body', ''))}")
           except urllib.request.HTTPError as e:
               error_body = e.read().decode('utf-8')
               print(f"HTTP Error {e.code}: {error_body}")
