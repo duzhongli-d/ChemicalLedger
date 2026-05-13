@@ -50,7 +50,6 @@ jobs:
           python3 << 'PYEOF'
           import re
           import os
-          import urllib.parse
 
           tag_name = os.getenv('GITHUB_REF_NAME', '')
           if '/' in tag_name:
@@ -68,8 +67,9 @@ jobs:
           if match:
             body = match.group(0).strip()
 
-          with open('.github/changelog_body.txt', 'w') as f:
-            f.write(body)
+          # Use GITHUB_OUTPUT heredoc syntax for multiline values
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+            f.write(f'body<<EOF\n{body}\nEOF\n')
 
           print(f"Extracted {len(body)} chars")
           PYEOF
@@ -77,9 +77,9 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          body: ${{ steps.changelog.outputs.body }}
           draft: false
           prerelease: false
           tag_name: ${{ github.ref_name }}
-          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
