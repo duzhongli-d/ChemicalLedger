@@ -45,15 +45,18 @@ jobs:
           fi
 
       - name: Extract changelog for release
+        id: changelog
         run: |
           python3 << 'PYEOF'
           import re
+          import json
+          import os
 
-          tag_name = "${{ github.ref_name }}"
+          tag_name = os.getenv('GITHUB_REF_NAME', '')
           if '/' in tag_name:
             version = tag_name.split('/')[-1].lstrip('v')
           else:
-            version = "${{ inputs.version }}"
+            version = os.getenv('INPUT_VERSION', '0.0.0')
 
           with open('CHANGELOG.md', 'r', encoding='utf-8') as f:
             content = f.read()
@@ -62,16 +65,18 @@ jobs:
           match = re.search(pattern, content)
           body = match.group(0).strip() if match else ""
 
-          with open('.github/release_body.txt', 'w', encoding='utf-8') as f:
-            f.write(body)
+          # Write JSON-encoded body to GITHUB_OUTPUT
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as f:
+            json_str = json.dumps(body)
+            f.write(f"body={json_str}\n")
 
-          print(f"Wrote {len(body)} chars to .github/release_body.txt")
+          print(f"Extracted {len(body)} chars for version {version}")
           PYEOF
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          body_path: .github/release_body.txt
+          body: ${{ fromJson(steps.changelog.outputs.body) }}
           draft: false
           prerelease: false
           tag_name: ${{ github.ref_name }}
