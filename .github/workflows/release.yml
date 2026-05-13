@@ -75,11 +75,11 @@ jobs:
           PYEOF
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          generate_release_notes: true
-          draft: false
-          prerelease: false
-          tag_name: ${{ github.ref_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.ref_name }}"
+          BODY=$(cat .github/changelog_body.txt)
+          curl -s -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Content-Type: application/json" \
+            https://api.github.com/repos/$GITHUB_REPOSITORY/releases \
+            -d "{\"tag_name\":\"$TAG\",\"name\":\"$TAG\",\"body\":$(echo "$BODY" | jq -Rs '.'),\"draft\":false,\"prerelease\":false}"
