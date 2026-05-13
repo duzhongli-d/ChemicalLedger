@@ -156,4 +156,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - test: add backend login API tests
   - refactor: simplify and quality improvements
 
+## [0.3.0] - 2026-05-13
+
 ## [Unreleased]
