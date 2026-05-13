@@ -35,10 +35,6 @@ export async function GET(request: Request) {
 
   const filePath = path.join(process.cwd(), "public/downloads", targetFile);
 
-  if (!fs.existsSync(filePath)) {
-    return NextResponse.json({ error: "File not found" }, { status: 404 });
-  }
-
   const ext = path.extname(targetFile).toLowerCase();
   const contentType = CONTENT_TYPES[ext] || "application/octet-stream";
 
@@ -51,6 +47,9 @@ export async function GET(request: Request) {
       },
     });
   } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return NextResponse.json({ error: "File not found" }, { status: 404 });
+    }
     console.error("File read error:", error);
     return NextResponse.json({ error: "Failed to read file" }, { status: 500 });
   }
