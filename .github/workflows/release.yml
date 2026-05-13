@@ -50,11 +50,11 @@ jobs:
           python3 << 'PYEOF'
           import re
           import os
-          import json
+          import urllib.parse
 
           tag_name = os.getenv('GITHUB_REF_NAME', '')
           if '/' in tag_name:
-            version = tag_name.split('/')[-1].lstrip('v')  # e.g. "0.2.0"
+            version = tag_name.split('/')[-1].lstrip('v')
           else:
             version = os.getenv('INPUT_VERSION', '0.0.0')
 
@@ -71,15 +71,16 @@ jobs:
           with open('.github/changelog_body.txt', 'w') as f:
             f.write(body)
 
-          # Output for next step
-          with open(os.getenv('GITHUB_OUTPUT', ''), 'a') as f:
-            f.write(f"body<<EOF\n{body}\nEOF\n")
-
           print(f"Extracted {len(body)} chars")
           PYEOF
 
       - name: Create GitHub Release
-        run: |
-          gh release create ${{ github.ref_name }} --draft=false --prerelease=false --title="${{ github.ref_name }}" --body-file ".github/changelog_body.txt"
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: .github/changelog_body.txt
+          draft: false
+          prerelease: false
+          tag_name: ${{ github.ref_name }}
+          overwrite: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
