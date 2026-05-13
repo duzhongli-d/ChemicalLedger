@@ -60,32 +60,24 @@ jobs:
           with open('CHANGELOG.md', 'r') as f:
             content = f.read()
 
-          # First try version with 'v' prefix (from release-changelog.js format)
-          # e.g. ## [v0.2.0] - 2026-05-13
-          pattern_v = rf'## \[v?{re.escape(version)}\][\s\S]*?(?=\n## |\Z)'
-          match = re.search(pattern_v, content)
+          pattern = rf'## \[{re.escape(version)}\][\s\S]*?(?=\n## |\Z)'
+          match = re.search(pattern, content)
 
           body = ""
           if match:
-            section = match.group(0).strip()
-            # Normalize header to "v0.2.0" format
-            section = re.sub(rf'## \[v?{re.escape(version)}\].*\n', f'## {version}\n', section)
-            body = section
-          else:
-            # Fallback: extract [Unreleased] section for early releases
-            unreleased_match = re.search(r'## \[Unreleased\][\s\S]*?(?=\n## |\Z)', content)
-            if unreleased_match:
-              body = "## Unreleased\n" + unreleased_match.group(0).replace('## [Unreleased]\n', '').strip()
+            body = match.group(0).strip()
 
-          with open('.github/release_body.txt', 'w') as f:
+          # Write to file for action
+          with open('release_body.md', 'w') as f:
             f.write(body)
-          print(f"Extracted release notes: {len(body)} chars")
+
+          print(f"Extracted {len(body)} chars to release_body.md")
           PYEOF
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          body_path: .github/release_body.txt
+          body_path: release_body.md
           draft: false
           prerelease: false
           tag_name: ${{ github.ref_name }}
