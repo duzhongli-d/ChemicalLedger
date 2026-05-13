@@ -44,12 +44,13 @@ jobs:
             echo "version=${VERSION}" >> $GITHUB_OUTPUT
           fi
 
-      - name: Extract changelog for release
-        id: changelog
+      - name: Create release with gh CLI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python3 << 'PYEOF'
+          import subprocess
           import re
-          import json
           import os
 
           tag_name = os.getenv('GITHUB_REF_NAME', '')
@@ -65,21 +66,22 @@ jobs:
           match = re.search(pattern, content)
           body = match.group(0).strip() if match else ""
 
-          # Write JSON-encoded body to GITHUB_OUTPUT
-          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as f:
-            json_str = json.dumps(body)
-            f.write(f"body={json_str}\n")
+          # Write body to temp file
+          body_path = '.github/release_body.txt'
+          with open(body_path, 'w', encoding='utf-8', newline='\n') as f:
+            f.write(body)
 
-          print(f"Extracted {len(body)} chars for version {version}")
+          print(f"Body file size: {len(body)} chars")
+          print(f"First 100 chars: {body[:100]}")
+
+          # Run gh CLI
+          cmd = [
+              'gh', 'release', 'create', tag_name,
+              '--title', tag_name,
+              '--notes-file', body_path
+          ]
+          result = subprocess.run(cmd, capture_output=True, text=True)
+          print(f"STDOUT: {result.stdout}")
+          print(f"STDERR: {result.stderr}")
+          print(f"Return code: {result.returncode}")
           PYEOF
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          body: ${{ fromJson(steps.changelog.outputs.body) }}
-          draft: false
-          prerelease: false
-          tag_name: ${{ github.ref_name }}
-          generate_release_notes: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
