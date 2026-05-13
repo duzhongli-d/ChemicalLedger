@@ -50,6 +50,7 @@ jobs:
           python3 << 'PYEOF'
           import re
           import os
+          import json
 
           tag_name = os.getenv('GITHUB_REF_NAME', '')
           if '/' in tag_name:
@@ -67,19 +68,19 @@ jobs:
           if match:
             body = match.group(0).strip()
 
-          # Write to file for action
-          with open('release_body.md', 'w') as f:
+          with open('.github/changelog_body.txt', 'w') as f:
             f.write(body)
 
-          print(f"Extracted {len(body)} chars to release_body.md")
+          # Output for next step
+          with open(os.getenv('GITHUB_OUTPUT', ''), 'a') as f:
+            f.write(f"body<<EOF\n{body}\nEOF\n")
+
+          print(f"Extracted {len(body)} chars")
           PYEOF
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          body_path: release_body.md
-          draft: false
-          prerelease: false
-          tag_name: ${{ github.ref_name }}
+        run: |
+          body=$(cat .github/changelog_body.txt)
+          gh release create ${{ github.ref_name }} --draft=false --prerelease=false --title="${{ github.ref_name }}" --body "${body}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
