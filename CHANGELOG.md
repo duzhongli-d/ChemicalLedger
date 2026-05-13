@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- TAGS: Added | Changed | Deprecated | Removed | Fixed | Security -->
 
-## [Unreleased]
+## [0.2.0] - 2026-05-13
 
 ### Added
   - feat(admin/ledgers): add POST endpoint and create page for admin ledger creation
@@ -156,82 +156,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - test: add backend login API tests
   - refactor: simplify and quality improvements
 
-### Fixed
-  - fix(auth): redirect users to correct page after login modal success
-  - fix(admin/ledgers): correct page title and add missing i18n keys
-  - fix: resolve SourceUploadModal drag-drop modal close and stale sources list
-  - fix: resolve SourceUploadModal dropzone non-responsive issue
-  - fix: make "提问" button visible above fold on research page
-  - fix: change studio API calls to use query params instead of request body
-  - fix: correct addFirstSource translation key path to common.addFirstSource
-  - fix(i18n): move addFirstSource key into common namespace in research translations
-  - fix(research): correct notebook lookup in source endpoints to use UUID id
-  - fix(research): fill viewport height with flex layout
-  - fix(research): distinguish hint messages for no notebook vs no content
-  - fix(admin): resolve code quality issues in research notebooks page
-  - fix: update studio.noContent prompt since notebook is already selected
-  - fix: resolve research source upload failures from notebook_id mismatch
-  - fix(research): sync login modal with auth state + add context message
-  - fix(research): implement "新建笔记本" button to open creation modal
-  - fix(web): add defensive null check for log.target_id on admin dashboard
-  - fix(web): add missing admin.loading translation key
-  - fix(web): fix i18n loading key in settings page
-  - fix(web): use i18n for settings page instead of hardcoded Chinese
-  - fix(web): call backend logout API to clear HttpOnly cookie
-  - fix(web): ensure admin pages redirect to login when unauthenticated
-  - fix(web): re-open login modal when unauthenticated user interacts
-  - fix(web): add dark mode support to LoginModal component
-  - fix(web): update team Masters/PhDs ratio from 60% to 40%
-  - fix(web): add missing i18n keys for TeamIntroduction stats and certifications
-  - fix(web): pass locale prop to NextIntlClientProvider to sync Link with URL
-  - fix(web): enforce localePrefix always in next-intl routing
-  - fix(web): unify hero badge orange accent color with Contact page
-  - fix(web): unify About Hero styling with Contact Hero design
-  - fix(web): replace hardcoded colors with CSS variables for dark mode on About page
-  - fix(web): replace hardcoded colors with CSS variables for dark mode on ledgers page
-  - fix(web): use CSS variables for StatCard clinical variant dark mode
-  - fix(admin): change expiring soon card subtitle to 10天内
-  - fix(admin): change expiry filter from 30/60/90 to 10/20/30 days
-  - fix(web): use absolute API URL in HeroSection (matching TechMetrics pattern)
-  - fix(web): use useSearchParams for URL tab state instead of window.location
-  - fix(admin): use project_count instead of parsing project_names string
-  - fix(i18n): add phone translation keys to en.json
-  - fix: require login before create/archive actions on public ledgers page
-  - fix: improve LoginModal backdrop click and ESC key handling
-  - fix: redirect admin logout to admin login page instead of user login
-  - fix: redirect admin routes to admin login and improve error messages
-  - fix: resolve admin redirect issues and root layout html/body tags
-  - fix: hide public header on admin pages to avoid dual navigation
-  - fix: add AdminLayout with ml-60 offset to prevent sidebar overlap
-  - fix: resolve route matching bug, extract shared utilities, and improve data handling
-  - fix: prevent instrument gallery hover overlay text duplication
-  - fix: resolve hydration mismatches and improve homepage components
-  - fix: resolve React hydration mismatches in homepage components
-  - fix: remove tech/capabilities from top nav menu
-  - fix: remove notifications and admin from top nav menu
-  - fix: restore favicon and fix pre-existing E2E tests
-  - fix: audit log page page_size exceeds API limit
-  - fix: admin dashboard page API URL and data matching
-  - fix: role-based redirect after login and fix middleware token check
-  - fix: remove duplicate platform entry cards from homepage
-  - fix: use window.location.pathname for locale toggle URL construction
-  - fix: resolve homepage menu truncation and side margin issues
-  - fix: resolve language toggle mechanism and i18n content issues
-  - fix: expand mobile nav to 6 items and improve toggle visibility
-  - fix: omit empty open_date from ledger create payload to avoid 422
-  - fix: add missing back/cancel/confirm/loading i18n keys in ledger detail page
-  - fix: add missing ledger.fields.status i18n key for table column header
-  - fix(alembic): correct migration chain and remove placeholder revision
-  - fix: add error handling for mindmap API with graceful degradation
-  - fix(research): correct notebook lookup in source endpoints to use UUID id
-  - fix(db): add cascade delete for research_sources on notebook deletion
-  - fix(admin): resolve code quality issues in research notebooks API
-  - fix: resolve research source upload failures from notebook_id mismatch
-  - fix(research): convert notebook_id UUID to string for database query
-  - fix(research): fix notebook_id column mismatch in sources endpoints
-  - fix(api): remove EmailStr validation from ContactConfigBase email field
-  - fix(api): use Literal for category, improve schema tests
-  - fix: add AdminUserCreate schema without required password
-  - fix: correct import path for get_admin_user and hash_password
-  - fix: commit archive changes to DB and use timezone-aware datetime
-
+## [Unreleased]
