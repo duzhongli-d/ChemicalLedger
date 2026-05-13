@@ -44,7 +44,7 @@ jobs:
             echo "version=${VERSION}" >> $GITHUB_OUTPUT
           fi
 
-      - name: Extract changelog body to file
+      - name: Extract changelog for release
         run: |
           python3 << 'PYEOF'
           import re
@@ -66,31 +66,15 @@ jobs:
             f.write(body)
 
           print(f"Wrote {len(body)} chars to .github/release_body.txt")
-          print(f"First 100: {body[:100] if body else 'EMPTY'}")
           PYEOF
 
-      - name: Create GitHub Release with gh cli
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: .github/release_body.txt
+          draft: false
+          prerelease: false
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Use a tempfile to safely pass multiline body
-          BODY_FILE=".github/release_body.txt"
-
-          # Verify file exists and has content
-          if [ -f "$BODY_FILE" ]; then
-            echo "Body file size: $(wc -c < "$BODY_FILE") bytes"
-            echo "First 100 chars of body:"
-            head -c 100 "$BODY_FILE"
-            echo ""
-          else
-            echo "ERROR: Body file not found"
-            exit 1
-          fi
-
-          gh release create "${{ github.ref_name }}" \
-            --title "${{ github.ref_name }}" \
-            --notes-file "$BODY_FILE"
-
-      - name: Verify release created
-        run: |
-          echo "Release URL: https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}"
