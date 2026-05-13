@@ -108,9 +108,11 @@ function buildVersionSection(version, groups) {
 function main() {
   const args = process.argv.slice(2);
   const dryRun = args.includes('--dry-run');
-  const packageFilter = args.find(a => !a.startsWith('--') && a !== 'web' && a !== 'api');
-  // Last non-flag arg is the version (passed during release-prepare)
-  const versionArg = args.find((a, i) => !a.startsWith('--') && i > 0 && a !== packageFilter);
+  // packageFilter must be one of the known packages
+  const knownPkgs = ['web', 'api', 'shared'];
+  const packageFilter = args.find(a => !a.startsWith('--') && knownPkgs.includes(a));
+  // version is the non-flag arg that is NOT the package name
+  const versionArg = args.find((a, i) => !a.startsWith('--') && a !== packageFilter && i > 0);
 
   const packages = packageFilter
     ? [{ name: packageFilter, path: `apps/${packageFilter}` }]
@@ -137,8 +139,29 @@ function main() {
 
   let newChangelog;
   if (versionArg) {
-    // During release: move [Unreleased] to versioned section, leave empty [Unreleased]
-    const versionSection = buildVersionSection(versionArg, allGroups);
+    // During release: extract commits from [Unreleased] section (already populated
+    // with all commits up to this release, since tag was just created)
+    const unreleasedStart = changelog.indexOf('## [Unreleased]');
+    const unreleasedEnd = changelog.indexOf('\n## ', unreleasedStart + 1);
+    const unreleasedContent = unreleasedStart !== -1
+      ? changelog.slice(unreleasedStart, unreleasedEnd > -1 ? unreleasedEnd : undefined)
+      : '';
+
+    // Parse [Unreleased] content to extract commits into groups
+    const groups = { Added: [], Changed: [], Fixed: [], Security: [], Removed: [], Deprecated: [] };
+    const sectionMatch = changelog.match(/### (Added|Changed|Fixed|Security|Removed|Deprecated)\n([\s\S]*?)(?=### |\Z)/g);
+    if (sectionMatch) {
+      for (const block of sectionMatch) {
+        const catMatch = block.match(/### (Added|Changed|Fixed|Security|Removed|Deprecated)/);
+        if (catMatch) {
+          const cat = catMatch[1];
+          const items = block.match(/  - \S+(\([^)]+\))?: .*/g) || [];
+          groups[cat] = items;
+        }
+      }
+    }
+
+    const versionSection = buildVersionSection(versionArg, groups);
     const unreleasedSection = buildUnreleasedSection({ Added: [], Changed: [], Fixed: [], Security: [], Removed: [], Deprecated: [] });
     newChangelog = `${cleanChangelog.trim()}\n\n${versionSection}\n${unreleasedSection}`;
   } else {
