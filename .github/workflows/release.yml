@@ -53,23 +53,29 @@ jobs:
 
           tag_name = os.getenv('GITHUB_REF_NAME', '')
           if '/' in tag_name:
-            version = tag_name.split('/')[-1]
+            version = tag_name.split('/')[-1]  # e.g. "v0.2.0"
           else:
             version = os.getenv('INPUT_VERSION', '0.0.0')
 
           with open('CHANGELOG.md', 'r') as f:
             content = f.read()
 
-          # Match: ## [X.Y.Z] - YYYY-MM-DD ... until next ## or end
-          pattern = rf'## \[{re.escape(version)}\][\s\S]*?(?=\n## |\Z)'
-          match = re.search(pattern, content)
+          # First try version with 'v' prefix (from release-changelog.js format)
+          # e.g. ## [v0.2.0] - 2026-05-13
+          pattern_v = rf'## \[v?{re.escape(version)}\][\s\S]*?(?=\n## |\Z)'
+          match = re.search(pattern_v, content)
 
           body = ""
           if match:
             section = match.group(0).strip()
-            # Replace version header format for cleaner release body
-            section = re.sub(rf'## \[{re.escape(version)}\].*\n', f'## {version}\n', section)
+            # Normalize header to "v0.2.0" format
+            section = re.sub(rf'## \[v?{re.escape(version)}\].*\n', f'## {version}\n', section)
             body = section
+          else:
+            # Fallback: extract [Unreleased] section for early releases
+            unreleased_match = re.search(r'## \[Unreleased\][\s\S]*?(?=\n## |\Z)', content)
+            if unreleased_match:
+              body = "## Unreleased\n" + unreleased_match.group(0).replace('## [Unreleased]\n', '').strip()
 
           with open('.github/release_body.txt', 'w') as f:
             f.write(body)
@@ -79,7 +85,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          body_file: .github/release_body.txt
+          body_path: .github/release_body.txt
           draft: false
           prerelease: false
           tag_name: ${{ github.ref_name }}
