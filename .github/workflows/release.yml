@@ -44,54 +44,53 @@ jobs:
             echo "version=${VERSION}" >> $GITHUB_OUTPUT
           fi
 
-      - name: Create GitHub Release via Python
+      - name: Extract changelog body to file
+        run: |
+          python3 << 'PYEOF'
+          import re
+
+          tag_name = "${{ github.ref_name }}"
+          if '/' in tag_name:
+            version = tag_name.split('/')[-1].lstrip('v')
+          else:
+            version = "${{ inputs.version }}"
+
+          with open('CHANGELOG.md', 'r', encoding='utf-8') as f:
+            content = f.read()
+
+          pattern = rf'## \[{re.escape(version)}\][\s\S]*?(?=\n## |\Z)'
+          match = re.search(pattern, content)
+          body = match.group(0).strip() if match else ""
+
+          with open('.github/release_body.txt', 'w', encoding='utf-8') as f:
+            f.write(body)
+
+          print(f"Wrote {len(body)} chars to .github/release_body.txt")
+          print(f"First 100: {body[:100] if body else 'EMPTY'}")
+          PYEOF
+
+      - name: Create GitHub Release with gh cli
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python3 << 'PYEOF'
-import urllib.request
-import urllib.parse
-import json
-import re
-import os
+        run: |
+          # Use a tempfile to safely pass multiline body
+          BODY_FILE=".github/release_body.txt"
 
-tag_name = os.getenv('GITHUB_REF_NAME', '')
-if '/' in tag_name:
-    version = tag_name.split('/')[-1].lstrip('v')
-else:
-    version = os.getenv('INPUT_VERSION', '0.0.0')
+          # Verify file exists and has content
+          if [ -f "$BODY_FILE" ]; then
+            echo "Body file size: $(wc -c < "$BODY_FILE") bytes"
+            echo "First 100 chars of body:"
+            head -c 100 "$BODY_FILE"
+            echo ""
+          else
+            echo "ERROR: Body file not found"
+            exit 1
+          fi
 
-with open('CHANGELOG.md', 'r', encoding='utf-8') as f:
-    content = f.read()
+          gh release create "${{ github.ref_name }}" \
+            --title "${{ github.ref_name }}" \
+            --notes-file "$BODY_FILE"
 
-pattern = rf'## \[{re.escape(version)}\][\s\S]*?(?=\n## |\Z)'
-match = re.search(pattern, content)
-body = match.group(0).strip() if match else ""
-
-repo = os.getenv('GITHUB_REPOSITORY')
-url = f'https://api.github.com/repos/{repo}/releases'
-
-payload = json.dumps({
-    'tag_name': tag_name,
-    'name': tag_name,
-    'draft': False,
-    'prerelease': False,
-    'body': body
-})
-
-data = payload.encode('utf-8')
-req = urllib.request.Request(url, data=data, method='POST')
-req.add_header('Authorization', f'token {os.getenv("GITHUB_TOKEN")}')
-req.add_header('Accept', 'application/vnd.github+json')
-req.add_header('X-GitHub-Api-Version', '2022-11-28')
-req.add_header('Content-Type', 'application/json')
-
-try:
-    with urllib.request.urlopen(req) as resp:
-        result = json.loads(resp.read())
-        print(f"Created release: {result.get('html_url', 'no url')}")
-        print(f"Body length: {len(result.get('body', ''))}")
-except urllib.request.HTTPError as e:
-    error_body = e.read().decode('utf-8')
-    print(f"HTTP Error {e.code}: {error_body}")
-    exit(1)
-PYEOF
+      - name: Verify release created
+        run: |
+          echo "Release URL: https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}"
