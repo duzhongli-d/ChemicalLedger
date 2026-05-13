@@ -52,7 +52,7 @@ export function MobileMenu() {
         <div className="fixed inset-0 z-50 lg:hidden">
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-background/80 backdrop-blur-md"
+            className="absolute inset-0 bg-background/95 backdrop-blur-md"
             onClick={() => setOpen(false)}
           />
 
