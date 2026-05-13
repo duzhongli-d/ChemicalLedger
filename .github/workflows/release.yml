@@ -51,23 +51,31 @@ jobs:
           with open('CHANGELOG.md', 'r', encoding='utf-8') as f:
             content = f.read()
 
-          # Find the Unreleased section
-          unreleased_start = content.find('## [Unreleased]')
-          if unreleased_start != -1:
-            # Find the next version section or end of file
-            next_section = content.find('\n## [', unreleased_start + 1)
+          # Find the versioned section (e.g., ## [0.2.0]) matching this version
+          version_header = f'## [{version}]'
+          version_pos = content.find(version_header)
+
+          if version_pos != -1:
+            # Found the version section - find where it ends
+            next_section = content.find('\n## [', version_pos + len(version_header))
             if next_section == -1:
               next_section = len(content)
-            body = content[unreleased_start:next_section].strip()
-            print(f"Found [Unreleased] section, body length: {len(body)}")
-            if not body or body == '## [Unreleased]':
-              print("WARNING: [Unreleased] section is empty. Using default.")
-              body = f"Release {tag_name}"
+            body = content[version_pos:next_section].strip()
+            print(f"Found version section, body length: {len(body)}")
           else:
-            body = f"Release {tag_name}"
-            print(f"No [Unreleased] section found, using: {body}")
+            # Fall back to Unreleased section
+            unreleased_start = content.find('## [Unreleased]')
+            if unreleased_start != -1:
+              next_section = content.find('\n## [', unreleased_start + 1)
+              if next_section == -1:
+                next_section = len(content)
+              body = content[unreleased_start:next_section].strip()
+              print(f"Version section not found, using [Unreleased], body length: {len(body)}")
+            else:
+              body = f"Release {tag_name}"
+              print(f"No [Unreleased] section found, using: {body}")
 
-          print(f"Body preview: {body[:200]}...")
+          print(f"Body preview: {body[:200] if body else '(empty)'}...")
 
           # Create release via GitHub API
           repo = os.getenv('GITHUB_REPOSITORY')
@@ -77,7 +85,7 @@ jobs:
               'name': tag_name,
               'draft': False,
               'prerelease': False,
-              'body': body
+              'body': body if body else f"Release {tag_name}"
           }
 
           data = json.dumps(payload).encode('utf-8')
@@ -91,6 +99,7 @@ jobs:
               with urllib.request.urlopen(req) as resp:
                   result = json.loads(resp.read())
                   print(f"SUCCESS: Created release at {result.get('html_url')}")
+                  print(f"Response body length: {len(result.get('body', ''))}")
           except urllib.request.HTTPError as e:
               error_body = e.read().decode('utf-8')
               print(f"HTTP Error {e.code}: {error_body}")
