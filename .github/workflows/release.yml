@@ -44,47 +44,47 @@ jobs:
             echo "version=${VERSION}" >> $GITHUB_OUTPUT
           fi
 
-      - name: Extract changelog for release
-        id: changelog
+      - name: Write changelog body to file
         run: |
           python3 << 'PYEOF'
           import re
-          import os
-          import json
 
-          tag_name = os.getenv('GITHUB_REF_NAME', '')
+          tag_name = "${{ github.ref_name }}"
           if '/' in tag_name:
             version = tag_name.split('/')[-1].lstrip('v')
           else:
-            version = os.getenv('INPUT_VERSION', '0.0.0')
+            version = "0.0.0"
 
-          with open('CHANGELOG.md', 'r') as f:
+          with open('CHANGELOG.md', 'r', encoding='utf-8') as f:
             content = f.read()
 
           pattern = rf'## \[{re.escape(version)}\][\s\S]*?(?=\n## |\Z)'
           match = re.search(pattern, content)
-
           body = match.group(0).strip() if match else ""
 
-          # Use JSON to safely encode multiline string for GITHUB_OUTPUT
-          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-            f.write(f"body={json.dumps(body)}\n")
+          # Normalize line endings to LF
+          body = body.replace('\r\n', '\n').replace('\r', '\n')
 
-          print(f"Extracted {len(body)} chars for version {version}")
-          print(f"First 100 chars: {body[:100] if body else 'EMPTY'}")
+          with open('.github/release_body.md', 'w', encoding='utf-8', newline='\n') as f:
+            f.write(body)
+
+          print(f"Wrote {len(body)} chars to .github/release_body.md")
+          print(f"Preview: {body[:200] if body else 'EMPTY'}")
           PYEOF
 
-      - name: Debug changelog output
+      - name: Debug release body file
         run: |
-          echo "Body length: ${{ steps.changelog.outputs.body && length(steps.changelog.outputs.body) || 0 }}"
-          echo "Body first 200 chars: ${{ steps.changelog.outputs.body && substring(steps.changelog.outputs.body, 0, 200) || 'NOT SET' }}"
+          echo "File exists: $(test -f .github/release_body.md && echo YES || echo NO)"
+          echo "File size: $(wc -c < .github/release_body.md 2>/dev/null || echo 'N/A')"
+          echo "First 200 chars:"
+          head -c 200 .github/release_body.md
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          body: ${{ steps.changelog.outputs.body }}
           draft: false
           prerelease: false
           tag_name: ${{ github.ref_name }}
+          body_path: .github/release_body.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
