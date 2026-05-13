@@ -53,7 +53,7 @@ jobs:
 
           tag_name = os.getenv('GITHUB_REF_NAME', '')
           if '/' in tag_name:
-            version = tag_name.split('/')[-1]  # e.g. "v0.2.0"
+            version = tag_name.split('/')[-1].lstrip('v')  # e.g. "0.2.0"
           else:
             version = os.getenv('INPUT_VERSION', '0.0.0')
 
