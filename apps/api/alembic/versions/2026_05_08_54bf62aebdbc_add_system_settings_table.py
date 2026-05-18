@@ -44,7 +44,7 @@ def upgrade():
         ('smtp', 'use_tls', 'true', 'bool', False, '是否使用 TLS'),
     ]
     for cat, k, v, vt, secret, desc in smtp_defaults:
-        op.execute(f"INSERT INTO system_settings (category, key, value, value_type, is_secret, description) VALUES ('{cat}', '{k}', '{v}', '{vt}', {secret}, '{desc}')")
+        op.execute(f"INSERT INTO system_settings (id, category, key, value, value_type, is_secret, description) VALUES ('{uuid.uuid4()}', '{cat}', '{k}', '{v}', '{vt}', {secret}, '{desc}')")
 
     # 插入默认联系信息
     contact_defaults = [
@@ -55,7 +55,7 @@ def upgrade():
         ('contact', 'business_hours', '', 'string', False, '营业时间'),
     ]
     for cat, k, v, vt, secret, desc in contact_defaults:
-        op.execute(f"INSERT INTO system_settings (category, key, value, value_type, is_secret, description) VALUES ('{cat}', '{k}', '{v}', '{vt}', {secret}, '{desc}')")
+        op.execute(f"INSERT INTO system_settings (id, category, key, value, value_type, is_secret, description) VALUES ('{uuid.uuid4()}', '{cat}', '{k}', '{v}', '{vt}', {secret}, '{desc}')")
 
 
 def downgrade():
