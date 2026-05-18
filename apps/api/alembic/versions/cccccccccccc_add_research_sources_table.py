@@ -1,23 +1,25 @@
 """add research_sources table
 
-Revision ID: 98cb77efe7cc
+Revision ID: cccccccccccc
 Revises: 54bf62aebdbc
 Create Date: 2026-05-08
 
 """
+from typing import Sequence, Union
+
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 
-# revision identifiers
-revision = '98cb77efe7cc'
-down_revision = '54bf62aebdbc'
-branch_labels = None
-depends_on = None
+# revision identifiers, used by Alembic.
+revision: str = 'cccccccccccc'
+down_revision: Union[str, None] = '54bf62aebdbc'
+branch_labels: Union[str, Sequence[str], None] = None
+depends_on: Union[str, Sequence[str], None] = None
 
 
-def upgrade():
+def upgrade() -> None:
     op.create_table(
         'research_sources',
         sa.Column('id', UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
@@ -35,7 +37,7 @@ def upgrade():
     op.create_index('ix_research_sources_status', 'research_sources', ['status'])
 
 
-def downgrade():
+def downgrade() -> None:
     op.drop_index('ix_research_sources_status')
     op.drop_index('ix_research_sources_notebook_id')
     op.drop_table('research_sources')

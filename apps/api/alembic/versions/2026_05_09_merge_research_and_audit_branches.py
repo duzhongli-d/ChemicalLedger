@@ -1,22 +1,27 @@
 """merge research/contact branches with audit branch
 
 Revision ID: 9a3c4d2e1f00
-Revises: ('7f798208f193', '98cb77efe7cc')
+Revises: ('7f798208f193', 'bbbbbbbbbbbb')
 Create Date: 2026-05-09
 
 """
+from typing import Sequence, Union
+
 from alembic import op
 
-revision = '9a3c4d2e1f00'
-down_revision = ('7f798208f193', '98cb77efe7cc')
+# revision identifiers, used by Alembic.
+revision: str = '9a3c4d2e1f00'
+down_revision: Union[str, Sequence[str], None] = ('7f798208f193', 'bbbbbbbbbbbb')
+branch_labels: Union[str, Sequence[str], None] = None
+depends_on: Union[str, Sequence[str], None] = None
 
 
-def upgrade():
+def upgrade() -> None:
     # No schema changes - this is a history merge to unify two parallel branches:
     # Branch 1: 001_initial_tables -> 7f798208f193 (audit_logs, daily_stats, timezone columns)
-    # Branch 2: 001_initial_tables -> ... -> xxxxx_add_cascade_delete (contact, annual_summaries, research_sources, cascade)
+    # Branch 2: 001_initial_tables -> ... -> bbbbbbbbbbbb (cascade delete on research_sources)
     pass
 
 
-def downgrade():
+def downgrade() -> None:
     pass
