@@ -5,7 +5,16 @@ Revises: 473b8d5568a
 Create Date: 2026-05-09
 
 """
+from typing import Sequence, Union
+
 from alembic import op
+import sqlalchemy as sa
+
+# revision identifiers, used by Alembic.
+revision: str = "98cb77efe7cc"
+down_revision: Union[str, None] = "473b8d5568a"
+branch_labels: Union[str, Sequence[str], None] = None
+depends_on: Union[str, Sequence[str], None] = None
 
 # Constants for maintainability
 TABLE_NAME = 'research_sources'
