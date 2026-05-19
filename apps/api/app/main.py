@@ -4,12 +4,14 @@ from app.api.v1 import auth, ledgers, users, categories, notifications, research
 from app.api.v1.endpoints.admin_router import admin_router
 from app.api.v1.endpoints import settings
 from app.api.v1.endpoints import public_annual_summaries
+from app.core.config import get_settings
 
 app = FastAPI(title="QC Platform API")
 
+settings = get_settings()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

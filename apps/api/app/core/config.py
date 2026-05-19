@@ -32,6 +32,10 @@ class Settings(BaseSettings):
     # Daily quota
     DAILY_QUESTION_LIMIT: int = 10
 
+    # CORS - allowed origins for distributed deployment
+    # Example for production: ["http://192.168.1.10:3000", "https://web.example.com"]
+    CORS_ORIGINS: list[str] = ["http://localhost:3000", "http://127.0.0.1:3000"]
+
     model_config = SettingsConfigDict(env_file=".env", extra="allow")
 
 
