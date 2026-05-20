@@ -8,10 +8,10 @@ from app.core.config import get_settings
 
 app = FastAPI(title="QC Platform API")
 
-settings = get_settings()
+app_settings = get_settings()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
+    allow_origins=app_settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
