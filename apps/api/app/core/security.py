@@ -17,7 +17,13 @@ def hash_password(password: str) -> str:
 
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(plain, hashed)
+    try:
+        return pwd_context.verify(plain, hashed)
+    except Exception:
+        # bcrypt may fail to load on Python 3.13 without a wheel.
+        # Fail closed - return False (invalid credentials) instead of
+        # propagating a 500 that would expose internal errors to API clients.
+        return False
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
