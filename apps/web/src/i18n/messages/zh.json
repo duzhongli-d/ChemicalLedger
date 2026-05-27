@@ -594,8 +594,14 @@
     }
   },
   "certs": {
+    "hero": {
+      "badge": "认证证书",
+      "title": "证书下载",
+      "subtitle": "查看和下载我们的认证文件",
+      "description": "下载并验证我们的GMP、ISO和GLP认证。所有文件均为官方认证合法文件。"
+    },
     "title": "证书下载",
-    "subtitle": "查看和下载我们的认证证书",
+    "subtitle": "查看和下载我们的认证文件",
     "availableCerts": "可下载证书",
     "downloadPdf": "下载PDF"
   }

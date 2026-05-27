@@ -594,6 +594,12 @@
     }
   },
   "certs": {
+    "hero": {
+      "badge": "Verified Certificates",
+      "title": "Certificate Downloads",
+      "subtitle": "View and download our certification documents",
+      "description": "Download and verify our GMP, ISO, and GLP certifications. All documents are official and legally authenticated."
+    },
     "title": "Certificate Downloads",
     "subtitle": "View and download our certification documents",
     "availableCerts": "Available Certificates",
