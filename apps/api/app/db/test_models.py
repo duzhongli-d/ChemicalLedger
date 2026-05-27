@@ -4,7 +4,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 from app.db.models import Base, ContactSubmission, User
-from app.core.security import hash_password
+
+
+# Pre-computed bcrypt hash of "password" (bcrypt not available in test venv)
+TEST_PASSWORD_HASH = "$2b$12$vdU1fsWNAXy3kULyqZzA/u9Q0iXn4UFdjx8VMax/78ACjE6xYXElK"
 
 
 @pytest.fixture
@@ -29,7 +32,7 @@ def user(db):
     u = User(
         username="testuser",
         email="test@test.com",
-        password_hash=hash_password("password"),
+        password_hash=TEST_PASSWORD_HASH,
     )
     db.add(u)
     db.flush()

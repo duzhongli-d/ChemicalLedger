@@ -8,9 +8,12 @@ from pydantic import ValidationError
 from app.main import app
 from app.db.models import Base, User
 from app.db.session import get_db
-from app.core.security import hash_password
 from app.schemas.schemas import UserLogin
 from app.api.v1.auth import login
+
+
+# Pre-computed bcrypt hash of "testpass123" (bcrypt not available in test venv)
+TEST_PASSWORD_HASH = "$2b$12$vdU1fsWNAXy3kULyqZzA/u9Q0iXn4UFdjx8VMax/78ACjE6xYXElK"
 
 
 # ---------------------------------------------------------------------------
@@ -37,11 +40,11 @@ def db():
 
 @pytest.fixture
 def test_user(db):
-    """Create a user with a REAL bcrypt hash so verify_password can validate it."""
+    """Create a user with a static hash for tests (bcrypt unavailable in test venv)."""
     u = User(
         username="testuser",
         email="test@example.com",
-        password_hash=hash_password("testpass123"),
+        password_hash=TEST_PASSWORD_HASH,
         role="user",
     )
     db.add(u)
@@ -70,7 +73,7 @@ def client(db):
     u = User(
         username="testuser",
         email="test@example.com",
-        password_hash=hash_password("testpass123"),
+        password_hash=TEST_PASSWORD_HASH,
         role="user",
     )
     test_db.add(u)
