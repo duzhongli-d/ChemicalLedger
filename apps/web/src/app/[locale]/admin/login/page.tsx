@@ -214,11 +214,6 @@ export default function AdminLoginPage() {
             </button>
           </div>
 
-          {/* Admin contact hint */}
-          <p className="text-sm text-slate-500 dark:text-slate-400 text-center">
-            {t("contactAdminForAccount")}
-          </p>
-
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Identity input - switches between email and username */}
