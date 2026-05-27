@@ -592,5 +592,11 @@
         "description": "Our team members hold certifications including ISO 17025 Assessor, GMP Practitioner, and ICH Guideline Training, ensuring the highest standards in quality control operations and regulatory compliance."
       }
     }
+  },
+  "certs": {
+    "title": "Certificate Downloads",
+    "subtitle": "View and download our certification documents",
+    "availableCerts": "Available Certificates",
+    "downloadPdf": "Download PDF"
   }
 }

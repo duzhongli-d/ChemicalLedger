@@ -592,5 +592,11 @@
         "description": "团队成员持有ISO 17025评审员、GMP执业药师、ICH指南培训等专业资质，确保质量控制操作和合规审计达到最高标准。"
       }
     }
+  },
+  "certs": {
+    "title": "证书下载",
+    "subtitle": "查看和下载我们的认证证书",
+    "availableCerts": "可下载证书",
+    "downloadPdf": "下载PDF"
   }
 }
