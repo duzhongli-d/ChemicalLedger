@@ -94,7 +94,7 @@ def forgot_password(data: ForgotPasswordRequest, db: Session = Depends(get_db)):
         return ForgotPasswordResponse()
 
     token = secrets.token_urlsafe(32)
-    expires_at = datetime.utcnow() + timedelta(hours=1)
+    expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
 
     user.reset_token = token
     user.reset_token_expires_at = expires_at
@@ -115,7 +115,7 @@ def reset_password(data: ResetPasswordConfirmRequest, db: Session = Depends(get_
     if not user or not user.reset_token_expires_at:
         raise HTTPException(400, "Invalid or expired reset token")
 
-    if datetime.utcnow() > user.reset_token_expires_at:
+    if datetime.now(timezone.utc).replace(tzinfo=None) > user.reset_token_expires_at:
         raise HTTPException(400, "Reset token has expired")
 
     if len(data.new_password) < 8:
@@ -124,7 +124,7 @@ def reset_password(data: ResetPasswordConfirmRequest, db: Session = Depends(get_
     user.password_hash = hash_password(data.new_password)
     user.reset_token = None
     user.reset_token_expires_at = None
-    user.last_login_at = datetime.utcnow()
+    user.last_login_at = datetime.now(timezone.utc)
     db.commit()
     db.refresh(user)
 

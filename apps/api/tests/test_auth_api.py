@@ -221,7 +221,7 @@ def test_reset_password_valid_token(client):
 
     token = secrets.token_urlsafe(32)
     user.reset_token = token
-    user.reset_token_expires_at = datetime.utcnow() + timedelta(hours=1)
+    user.reset_token_expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
     test_db.commit()
 
     response = client.post("/api/v1/auth/reset-password", json={
@@ -255,7 +255,7 @@ def test_reset_password_expired_token(client):
 
     token = secrets.token_urlsafe(32)
     user.reset_token = token
-    user.reset_token_expires_at = datetime.utcnow() - timedelta(hours=1)
+    user.reset_token_expires_at = datetime.now(timezone.utc) - timedelta(hours=1)
     test_db.commit()
 
     response = client.post("/api/v1/auth/reset-password", json={
@@ -277,7 +277,7 @@ def test_reset_password_short_password(client):
 
     token = secrets.token_urlsafe(32)
     user.reset_token = token
-    user.reset_token_expires_at = datetime.utcnow() + timedelta(hours=1)
+    user.reset_token_expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
     test_db.commit()
 
     response = client.post("/api/v1/auth/reset-password", json={
