@@ -53,6 +53,8 @@
     "hasAccount": "Already have an account?",
     "loginWithEmail": "Use email login",
     "loginWithUsername": "Use username login",
+    "backToUserLogin": "Back to user login",
+    "clickHere": "click here",
     "rememberMe": "Remember me",
     "forgotPassword": "Forgot password?",
     "orContinueWith": "or continue with",

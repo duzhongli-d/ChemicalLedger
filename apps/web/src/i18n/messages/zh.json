@@ -53,6 +53,8 @@
     "hasAccount": "已有账号？",
     "loginWithEmail": "使用邮箱登录",
     "loginWithUsername": "使用用户名登录",
+    "backToUserLogin": "返回普通用户登录",
+    "clickHere": "点击这里",
     "rememberMe": "记住我",
     "forgotPassword": "忘记密码？",
     "orContinueWith": "或继续使用",

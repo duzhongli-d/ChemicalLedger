@@ -1,15 +1,23 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import { authApi } from "@/lib/api-client";
 import { useAuthStore } from "@/lib/auth-store";
 
+type LoginMode = "email" | "username";
+
 export default function AdminLoginPage() {
+  const t = useTranslations("auth");
   const router = useRouter();
-  const { setAuth } = useAuthStore();
-  const [form, setForm] = useState({ username: "", password: "" });
+  const locale = useLocale();
+  const { setAuth, isAdmin } = useAuthStore();
+  const [loginMode, setLoginMode] = useState<LoginMode>("email");
+  const [form, setForm] = useState({ username: "", email: "", password: "" });
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -18,10 +26,10 @@ export default function AdminLoginPage() {
     setError("");
     setLoading(true);
     try {
-      const { data } = await authApi.login({
-        username: form.username,
-        password: form.password,
-      });
+      const payload = loginMode === "email"
+        ? { email: form.email, password: form.password }
+        : { username: form.username, password: form.password };
+      const { data } = await authApi.login(payload);
 
       // Check if user has admin role
       if (data.user.role !== "admin") {
@@ -30,7 +38,7 @@ export default function AdminLoginPage() {
       }
 
       setAuth(data.user);
-      router.push("/admin/dashboard");
+      router.push(`/${locale}/admin/dashboard`);
     } catch (err: unknown) {
       // Handle Axios error response
       if (typeof err === 'object' && err !== null && 'response' in err) {
@@ -174,27 +182,67 @@ export default function AdminLoginPage() {
 
           {/* Header */}
           <div className="text-center lg:text-left">
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">管理员登录</h2>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t("loginTitle")}</h2>
             <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-              输入管理员账户信息登录
+              {loginMode === "email" ? t("loginWithEmail") : t("loginWithUsername")}
             </p>
           </div>
 
+          {/* Login mode toggle */}
+          <div className="flex rounded-xl bg-slate-200 dark:bg-slate-800 p-1">
+            <button
+              type="button"
+              onClick={() => setLoginMode("email")}
+              className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
+                loginMode === "email"
+                  ? "bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              }`}
+            >
+              {t("email")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setLoginMode("username")}
+              className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
+                loginMode === "username"
+                  ? "bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              }`}
+            >
+              {t("username")}
+            </button>
+          </div>
+
+          {/* Admin contact hint */}
+          <p className="text-sm text-slate-500 dark:text-slate-400 text-center">
+            {t("contactAdminForAccount")}
+          </p>
+
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Username input */}
+            {/* Identity input - switches between email and username */}
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  {loginMode === "email" ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  )}
                 </svg>
               </div>
               <input
-                type="text"
+                type={loginMode === "email" ? "email" : "text"}
                 required
-                value={form.username}
-                onChange={(e) => setForm({ ...form, username: e.target.value })}
-                placeholder="用户名"
+                value={loginMode === "email" ? form.email : form.username}
+                onChange={(e) =>
+                  setForm(loginMode === "email"
+                    ? { ...form, email: e.target.value }
+                    : { ...form, username: e.target.value }
+                  )
+                }
+                placeholder={loginMode === "email" ? t("email") : t("username")}
                 className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-200"
               />
               {/* Glow effect on focus */}
@@ -213,10 +261,28 @@ export default function AdminLoginPage() {
                 required
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
-                placeholder="密码"
+                placeholder={t("password")}
                 className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-200"
               />
               <div className="absolute inset-0 rounded-xl opacity-0 focus-within:opacity-100 pointer-events-none transition-opacity duration-200" style={{ boxShadow: '0 0 20px rgba(59,130,246,0.15)' }} />
+            </div>
+
+            {/* Remember me & forgot password */}
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-2 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500/50 cursor-pointer"
+                />
+                <span className="text-sm text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
+                  {t("rememberMe")}
+                </span>
+              </label>
+              <a href="#" className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
+                {t("forgotPassword")}
+              </a>
             </div>
 
             {/* Error message */}
@@ -258,7 +324,7 @@ export default function AdminLoginPage() {
                     <span>登录中...</span>
                   </>
                 ) : (
-                  "登录"
+                  t("login")
                 )}
               </span>
             </button>
@@ -266,9 +332,9 @@ export default function AdminLoginPage() {
 
           {/* Back to user login */}
           <p className="text-center text-sm text-slate-500 dark:text-slate-400">
-            返回普通用户登录{" "}
+            {t("backToUserLogin")}{" "}
             <Link href="/login" className="text-blue-600 dark:text-blue-400 font-medium hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
-              点击这里
+              {t("clickHere")}
             </Link>
           </p>
         </div>
