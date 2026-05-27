@@ -28,6 +28,12 @@ dev = [
     "pytest-asyncio==0.23.3",
 ]
 
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::pytest.PytestUnraisableExceptionWarning",
+]
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["app*"]
