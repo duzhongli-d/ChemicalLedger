@@ -180,6 +180,41 @@ def send_contact_reply_email(
         return False
 
 
+def send_password_reset_email(user_email: str, reset_link: str) -> bool:
+    """
+    Send password reset email via SendGrid.
+    Returns True if sent, False if skipped (no API key or failure).
+    """
+    settings = get_settings()
+    if not settings.SENDGRID_API_KEY:
+        return False
+    try:
+        from sendgrid import SendGridAPIClient
+        from sendgrid.helpers.mail import Mail
+
+        sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
+        message_obj = Mail(
+            from_email=settings.SENDGRID_FROM_EMAIL,
+            to_emails=user_email,
+            subject="【雅本化学QC平台】密码重置链接",
+            html_content=f"""
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #ea580c;">密码重置请求</h2>
+              <p>您好，</p>
+              <p>您收到了这封邮件，因为收到了您账户的密码重置请求。</p>
+              <p>请点击以下链接重置您的密码：</p>
+              <p><a href="{reset_link}" style="color: #ea580c; font-weight: bold;">点击这里重置密码</a></p>
+              <p>此链接将在 <strong>1 小时</strong>后过期。</p>
+              <p>如果您没有请求重置密码，请忽略此邮件。</p>
+            </div>
+            """,
+        )
+        sg.send(message_obj)
+        return True
+    except Exception:
+        return False
+
+
 def check_and_create_notifications(db: Session) -> dict:
     """
     Scan all active ledgers, create in-app notifications and send emails

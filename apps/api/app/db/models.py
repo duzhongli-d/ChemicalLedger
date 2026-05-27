@@ -37,6 +37,9 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     last_login_at = Column(DateTime(timezone=True), nullable=True)
 
+    reset_token = Column(String(64), nullable=True, index=True)
+    reset_token_expires_at = Column(DateTime(timezone=True), nullable=True)
+
     ledgers = relationship("Ledger", back_populates="creator", foreign_keys="Ledger.created_by_id")
     notifications = relationship("Notification", back_populates="user")
     notebooks = relationship("ResearchNotebook", back_populates="user")

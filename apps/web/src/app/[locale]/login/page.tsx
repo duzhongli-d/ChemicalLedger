@@ -288,9 +288,9 @@ export default function LoginPage() {
                   {t("rememberMe")}
                 </span>
               </label>
-              <a href="#" className="text-sm text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 transition-colors">
+              <Link href="/forgot-password" className="text-sm text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 transition-colors">
                 {t("forgotPassword")}
-              </a>
+              </Link>
             </div>
 
             {/* Error message */}

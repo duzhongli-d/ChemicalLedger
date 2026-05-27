@@ -182,6 +182,19 @@ class BatchArchiveRequest(BaseModel):
     ledger_ids: List[UUID]
 
 
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordConfirmRequest(BaseModel):
+    token: str
+    new_password: str = Field(..., min_length=8, max_length=128)
+
+
+class ForgotPasswordResponse(BaseModel):
+    message: str = "If that email is registered, a password reset link has been sent."
+
+
 class ResetPasswordRequest(BaseModel):
     new_password: str
 
