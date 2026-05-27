@@ -32,8 +32,6 @@ def send_expiry_warning_email(
             to_emails=user_email,
             subject=(
                 f"【雅本化学QC平台】台账到期{'紧急' if is_alert else '预警'}提醒"
-                if is_alert
-                else f"【雅本化学QC平台】台账即将过期提醒"
             ),
             html_content=f"""
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -229,7 +227,7 @@ def check_and_create_notifications(db: Session) -> dict:
     warning_window = today + timedelta(days=30)
     ledgers = (
         db.query(Ledger)
-        .options(joinedload(Ledger.category), joinedload(Ledger.created_by))
+        .options(joinedload(Ledger.category), joinedload(Ledger.creator))
         .filter(Ledger.status == "active")
         .filter(Ledger.effective_expiry_date <= warning_window)
         .filter(Ledger.effective_expiry_date >= today)
@@ -286,7 +284,7 @@ def check_and_create_notifications(db: Session) -> dict:
         notified += 1
 
         # User already loaded via joinedload
-        user = ledger.created_by
+        user = ledger.creator
         if user and user.email:
             sent = send_expiry_warning_email(
                 user_email=user.email,
