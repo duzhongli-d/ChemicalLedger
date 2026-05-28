@@ -39,7 +39,9 @@ export default function AdminLoginPage() {
 
       // Set cookie manually since backend Set-Cookie header is stripped by nginx
       // Secure + SameSite=None for cross-origin HTTPS
-      document.cookie = `access_token=${data.access_token}; path=/; max-age=${60*60*24*7}; Secure; SameSite=None`;
+      const token = encodeURIComponent(data.access_token);
+      document.cookie = `access_token=${token}; path=/; max-age=${60*60*24*7}; Secure; SameSite=None`;
+      console.log("DEBUG: Cookie set, now:", document.cookie);
       setAuth(data.user);
       router.push(`/${locale}/admin/dashboard`);
     } catch (err: unknown) {
