@@ -22,8 +22,10 @@ def _create_token_response(user: User) -> TokenResponse:
     return TokenResponse(access_token=token, user=UserResponse.model_validate(user))
 
 
-def _set_auth_cookie(response: Response, token: str) -> None:
+def _set_auth_cookie(response: Response | None, token: str) -> None:
     """Set HTTP-only auth cookie on response."""
+    if response is None:
+        return
     response.set_cookie(
         key=COOKIE_NAME,
         value=token,
@@ -51,8 +53,7 @@ def register(data: UserCreate, db: Session = Depends(get_db), response: Response
     db.commit()
     db.refresh(user)
     token_response = _create_token_response(user)
-    if response:
-        _set_auth_cookie(response, token_response.access_token)
+    _set_auth_cookie(response, token_response.access_token)
     return token_response
 
 
@@ -68,8 +69,7 @@ def login(data: UserLogin, db: Session = Depends(get_db), response: Response = N
     user.last_login_at = datetime.now(timezone.utc)
     db.commit()
     token_response = _create_token_response(user)
-    if response:
-        _set_auth_cookie(response, token_response.access_token)
+    _set_auth_cookie(response, token_response.access_token)
     return token_response
 
 
