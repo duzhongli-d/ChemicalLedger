@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import { authApi } from "@/lib/api-client";
 import { useAuthStore } from "@/lib/auth-store";
+import { setAuthToken } from "@/lib/cookie";
 
 type LoginMode = "email" | "username";
 
@@ -30,6 +31,8 @@ export default function LoginPage() {
         ? { email: form.email, password: form.password }
         : { username: form.username, password: form.password };
       const { data } = await authApi.login(payload);
+      // Set cookie manually since backend Set-Cookie header is stripped by nginx
+      setAuthToken(data.access_token);
       setAuth(data.user);
       if (isAdmin()) {
         router.push(`/${locale}/admin/categories`);

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useLocale } from "next-intl";
 import { authApi } from "@/lib/api-client";
 import { useAuthStore } from "@/lib/auth-store";
+import { setAuthToken } from "@/lib/cookie";
 
 type LoginMode = "email" | "username";
 
@@ -37,6 +38,8 @@ export default function AdminLoginPage() {
         return;
       }
 
+      // Set cookie manually since backend Set-Cookie header is stripped by nginx
+      setAuthToken(data.access_token);
       setAuth(data.user);
       router.push(`/${locale}/admin/dashboard`);
     } catch (err: unknown) {

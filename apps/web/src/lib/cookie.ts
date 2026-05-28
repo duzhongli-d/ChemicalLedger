@@ -12,7 +12,8 @@ export function getAuthToken(): string | null {
 
 export function setAuthToken(token: string): void {
   if (typeof document === "undefined") return;
-  document.cookie = `access_token=${token}; path=/; max-age=${60 * 60 * 24 * 7}`; // 7 days
+  // Secure + SameSite=None for cross-origin HTTPS (frontend -> API on different subdomain)
+  document.cookie = `access_token=${token}; path=/; max-age=${60 * 60 * 24 * 7}; Secure; SameSite=None`;
 }
 
 export function clearAuthToken(): void {
