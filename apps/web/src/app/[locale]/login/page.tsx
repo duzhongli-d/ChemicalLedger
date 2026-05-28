@@ -32,7 +32,7 @@ export default function LoginPage() {
       const { data } = await authApi.login(payload);
       // Set cookie manually since backend Set-Cookie header is stripped by nginx
       // Secure + SameSite=None for cross-origin HTTPS
-      document.cookie = `access_token=${data.access_token}; path=/; max-age=${60*60*24*7}; Secure; SameSite=None`;
+      document.cookie = `access_token=${encodeURIComponent(data.access_token)}; path=/; max-age=${60*60*24*7}; Secure; SameSite=None`;
       setAuth(data.user);
       if (isAdmin()) {
         router.push(`/${locale}/admin/categories`);
