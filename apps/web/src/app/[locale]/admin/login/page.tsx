@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { authApi } from "@/lib/api-client";
@@ -14,6 +14,8 @@ export default function AdminLoginPage() {
   const t = useTranslations("auth");
   const router = useRouter();
   const locale = useLocale();
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get("returnTo");
   const { setAuth, isAdmin } = useAuthStore();
   const [loginMode, setLoginMode] = useState<LoginMode>("email");
   const [form, setForm] = useState({ username: "", email: "", password: "" });
@@ -41,7 +43,11 @@ export default function AdminLoginPage() {
       // Secure + SameSite=None for cross-origin HTTPS
       document.cookie = `access_token=${encodeURIComponent(data.access_token)}; path=/; max-age=${60*60*24*7}; Secure; SameSite=None`;
       setAuth(data.user);
-      router.push(`/${locale}/admin/dashboard`);
+      if (returnTo) {
+        router.push(decodeURIComponent(returnTo));
+      } else {
+        router.push(`/${locale}/admin/dashboard`);
+      }
     } catch (err: unknown) {
       // Handle Axios error response
       if (typeof err === 'object' && err !== null && 'response' in err) {

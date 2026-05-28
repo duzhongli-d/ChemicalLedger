@@ -158,7 +158,7 @@ export function Header() {
               </div>
             ) : (
               <Link
-                href="/login"
+                href={`/login?returnTo=${encodeURIComponent(pathname)}`}
                 className="text-sm font-medium bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all shadow-lg shadow-orange-500/25"
               >
                 {t("login")}

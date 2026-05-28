@@ -47,7 +47,11 @@ export function middleware(request: NextRequest) {
       const redirectPath = isAdminPath
         ? `/${locale}/admin/login`
         : `/${locale}/login`;
-      return NextResponse.redirect(new URL(redirectPath, request.url));
+      // Add returnTo parameter so login redirects back to original page
+      const returnTo = encodeURIComponent(request.url);
+      return NextResponse.redirect(
+        new URL(`${redirectPath}?returnTo=${returnTo}`, request.url)
+      );
     }
   }
 

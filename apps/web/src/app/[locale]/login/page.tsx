@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import { authApi } from "@/lib/api-client";
@@ -14,6 +14,8 @@ export default function LoginPage() {
   const t = useTranslations("auth");
   const router = useRouter();
   const locale = useLocale();
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get("returnTo");
   const { setAuth, isAdmin } = useAuthStore();
   const [loginMode, setLoginMode] = useState<LoginMode>("email");
   const [form, setForm] = useState({ username: "", email: "", password: "" });
@@ -34,8 +36,8 @@ export default function LoginPage() {
       // Secure + SameSite=None for cross-origin HTTPS
       document.cookie = `access_token=${encodeURIComponent(data.access_token)}; path=/; max-age=${60*60*24*7}; Secure; SameSite=None`;
       setAuth(data.user);
-      if (isAdmin()) {
-        router.push(`/${locale}/admin/categories`);
+      if (returnTo) {
+        router.push(decodeURIComponent(returnTo));
       } else {
         router.push("/");
       }
