@@ -28,8 +28,8 @@ def _set_auth_cookie(response: Response, token: str) -> None:
         key=COOKIE_NAME,
         value=token,
         httponly=True,
-        secure=False,  # Set to True in production with HTTPS
-        samesite="lax",
+        secure=True,  # Must be True for HTTPS
+        samesite="none",  # Required for cross-origin with credentials
         max_age=60 * 60 * 24 * 7,  # 7 days
     )
 
