@@ -43,11 +43,25 @@ export default function AdminLoginPage() {
       // Secure + SameSite=None for cross-origin HTTPS
       document.cookie = `access_token=${encodeURIComponent(data.access_token)}; path=/; max-age=${60*60*24*7}; Secure; SameSite=None`;
       setAuth(data.user);
+
+      // Validate returnTo origin - only redirect if it matches current origin
+      // This prevents redirecting to wrong origins (e.g., localhost) when
+      // nginx strips the Host header and middleware passed a corrupted returnTo
       if (returnTo) {
-        router.push(decodeURIComponent(returnTo));
-      } else {
-        router.push(`/${locale}/admin/dashboard`);
+        const decodedReturnTo = decodeURIComponent(returnTo);
+        try {
+          const returnToUrl = new URL(decodedReturnTo);
+          const currentOrigin = window.location.origin;
+          // Only use returnTo if it matches current origin
+          if (returnToUrl.origin === currentOrigin) {
+            router.push(decodedReturnTo);
+            return;
+          }
+        } catch {
+          // Invalid URL, fall through to default
+        }
       }
+      router.push(`/${locale}/admin/dashboard`);
     } catch (err: unknown) {
       // Handle Axios error response
       if (typeof err === 'object' && err !== null && 'response' in err) {

@@ -48,7 +48,14 @@ export function middleware(request: NextRequest) {
         ? `/${locale}/admin/login`
         : `/${locale}/login`;
       // Add returnTo parameter so login redirects back to original page
-      const returnTo = encodeURIComponent(request.url);
+      // Use X-Forwarded-* headers to get correct origin when behind reverse proxy
+      // nginx may rewrite Host header to localhost:3000, breaking returnTo URLs
+      const forwardedHost = request.headers.get("x-forwarded-host");
+      const forwardedProto = request.headers.get("x-forwarded-proto");
+      const host = forwardedHost || request.headers.get("host");
+      const protocol = forwardedProto || new URL(request.url).protocol;
+      const origin = `${protocol}//${host}`;
+      const returnTo = encodeURIComponent(`${origin}${pathname}`);
       return NextResponse.redirect(
         new URL(`${redirectPath}?returnTo=${returnTo}`, request.url)
       );
